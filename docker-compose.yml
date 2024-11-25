@@ -1,0 +1,17 @@
+services:
+
+  angular-app:
+    container_name: angular-app
+    restart: always
+    build:
+      context: .
+      dockerfile: ./apps/angular/Dockerfile
+    ports:
+      - "8080:80"
+
+  api-app:
+    container_name: api-app
+    restart: always
+    build:
+      context: .
+      dockerfile: ./apps/api/Dockerfile
