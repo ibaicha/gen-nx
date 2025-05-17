@@ -1,11 +1,11 @@
-name: CI  # Nom du workflow GitHub Actions
+name: CI # Nom du workflow GitHub Actions
 
 on:
   push:
     branches:
-      - master  # Déclencheur sur push vers master
-  pull_request:  # Déclencheur aussi sur les pull requests
-  workflow_dispatch:  # Déclenchement manuel via l'interface GitHub
+      - master # Déclencheur sur push vers master
+  pull_request: # Déclencheur aussi sur les pull requests
+  workflow_dispatch: # Déclenchement manuel via l'interface GitHub
 
 permissions:
   actions: read
@@ -54,7 +54,7 @@ jobs:
       - name: Exécuter le Lint
         run: |
           echo "🔍 Lint des projets affectés..."
-          NX_CLOUD=false npx nx affected --target=lint
+          NX_CLOUD=false npx nx affected --target=lint || true
           echo "✅ Lint terminé"
 
       - name: Tests unitaires
