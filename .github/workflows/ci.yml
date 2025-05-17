@@ -8,20 +8,18 @@ on:
   workflow_dispatch:  # Déclenchement manuel via l'interface GitHub
 
 permissions:
-  actions: read   # Accès en lecture seule aux métadonnées des actions
-  contents: read  # Accès en lecture seule aux contenus du dépôt
-  pull-requests: write  # 🔁 Autorise la publication de commentaires dans les PR
+  actions: read
+  contents: read
+  pull-requests: write
 
 jobs:
   main:
     runs-on: ${{ matrix.os }}
-    env:
-      NX_CLOUD_AUTH_TOKEN: ${{ secrets.NX_CLOUD_AUTH_TOKEN }}  # Exécute dynamiquement sur les OS définis ci-dessous
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]  # Matrice des OS
-      max-parallel: 3 # Limite le nombre de jobs simultanés à 3
+        os: [ubuntu-latest, macos-latest, windows-latest]
+      max-parallel: 3
 
     steps:
       - name: Récupération du dépôt
@@ -56,53 +54,53 @@ jobs:
       - name: Exécuter le Lint
         run: |
           echo "🔍 Lint des projets affectés..."
-          npx nx affected --target=lint
+          NX_CLOUD=false npx nx affected --target=lint
           echo "✅ Lint terminé"
 
       - name: Tests unitaires
         run: |
           echo "🧪 Lancement des tests unitaires..."
-          npx nx affected --target=test
+          NX_CLOUD=false npx nx affected --target=test
           echo "✅ Tests terminés"
 
       - name: Compilation des projets affectés
         run: |
           echo "🏗️ Compilation des projets..."
-          npx nx affected --target=build
+          NX_CLOUD=false npx nx affected --target=build
           echo "✅ Build terminé"
         timeout-minutes: 30
 
       - name: Génération du graphe de dépendances
         run: |
           echo "📊 Génération du graphe des dépendances..."
-          npx nx dep-graph --file=dist/graph.html
+          NX_CLOUD=false npx nx dep-graph --file=dist/graph.html
           echo "✅ Graphe généré"
 
       - name: Applications affectées
         run: |
           echo "📦 Liste des applications affectées :"
-          npx nx show projects --affected --type=app
+          NX_CLOUD=false npx nx show projects --affected --type=app
 
       - name: Librairies affectées
         run: |
           echo "📚 Liste des librairies affectées :"
-          npx nx show projects --affected --type=lib
+          NX_CLOUD=false npx nx show projects --affected --type=lib
 
       - name: Déploiement des projets affectés
         run: |
           echo "🚀 Déploiement en cours..."
-          npx nx affected --target=deploy
+          NX_CLOUD=false npx nx affected --target=deploy
           echo "✅ Déploiement terminé"
 
       - name: Tests avec couverture
         run: |
           echo "📈 Tests avec génération de couverture..."
-          npx nx affected --target=test --coverage
+          NX_CLOUD=false npx nx affected --target=test --coverage
 
       - name: Compilation d'un projet spécifique
         run: |
           echo "🔧 Build du projet spécifique..."
-          npx nx build my-fullstack-app
+          NX_CLOUD=false npx nx build my-fullstack-app
 
       - name: Génération du timestamp
         run: echo "timestamp=$(date +%s)" >> "$GITHUB_ENV"
