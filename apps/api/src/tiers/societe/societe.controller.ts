@@ -13,11 +13,9 @@ import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
 import { AuthGuard } from '@nestjs/passport'
 
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
-import {
-  CreateSocieteDto,
-  UpdateSocieteDto,
-} from '../../../../../libs/shared-models/src/lib/dtos/societe.dto'
+
 import { SocieteService } from './societe.service'
+import { CreateSocieteDto, UpdateSocieteDto } from '@shared-models'
 
 @ApiTags('Societe')
 @Controller('societes')

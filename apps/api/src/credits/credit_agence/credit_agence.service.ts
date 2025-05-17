@@ -45,7 +45,7 @@ export class CreditAgenceService {
     filtersInput: GetCreditAgenceParamsDTO,
   ) {
     try {
-      const where: any = {}
+      const where: Record<string, unknown> = {}
 
       if (filtersInput.creditAgenceId) {
         const ids = Array.isArray(filtersInput.creditAgenceId)
@@ -150,7 +150,7 @@ export class CreditAgenceService {
     filtersInput: GetCreditAgenceParamsDTO,
   ) {
     try {
-      const where: any = {}
+      const where: Record<string, unknown> = {}
       // Ajout des filtres existants
 
       if (filtersInput.creditAgenceId) {

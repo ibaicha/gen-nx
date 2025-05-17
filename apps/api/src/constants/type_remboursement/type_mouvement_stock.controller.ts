@@ -7,7 +7,6 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  Req,
 } from '@nestjs/common'
 import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
 import { TypeMouvementStockService } from './type_mouvement_stock.service'
@@ -17,7 +16,6 @@ import {
   UpdateTypeMouvementStockDto,
 } from './type_mouvement_stock.dto'
 
-import { Request } from 'express'
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('TypeMouvementStock')
@@ -35,7 +33,6 @@ export class TypeMouvementStockController {
   @Get('/:id')
   get(
     @Param('id', ParseIntPipe) typeMouvementStockId: number,
-    createTypeMouvementStockDto: CreateTypeMouvementStockDto,
   ) {
     return this.typeMouvementStockService.getOne(typeMouvementStockId)
   }
@@ -52,8 +49,6 @@ export class TypeMouvementStockController {
   @Delete('delete/:id')
   delete(
     @Param('id', ParseIntPipe) typeMouvementStockId: number,
-    createTypeMouvementStockDto: CreateTypeMouvementStockDto,
-    @Req() request: Request,
   ) {
     return this.typeMouvementStockService.delete(typeMouvementStockId)
   }

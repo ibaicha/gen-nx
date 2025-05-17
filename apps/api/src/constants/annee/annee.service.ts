@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 
-import { EventsGateway } from '../../socket/events/events.gateway'
 import { PrismaService } from '../../prisma/prisma.service'
 import { CreateAnneeDto, UpdateAnneeDto } from '@shared-models'
 
@@ -27,7 +26,7 @@ export class AnneeService {
       data: { name, valeur },
     })
     //this.eventsGateway.notifyRecordAdded(annee);
-    return { data: 'Annee created' }
+    return { data: annee }
   }
 
   async update(anneeId: number, updateAnneeDto: UpdateAnneeDto) {
