@@ -1,16 +1,26 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing'
+import { CreditAgenceService } from './credit-agence.service'
 
-import { CreditAgenceService } from './credit-agence.service';
+import { provideHttpClientTesting } from '@angular/common/http/testing'
+import { provideHttpClient } from '@angular/common/http'
+import { AppService } from './app.service'
 
 describe('CreditAgenceService', () => {
-  let service: CreditAgenceService;
+  let service: CreditAgenceService
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(CreditAgenceService);
-  });
+    TestBed.configureTestingModule({
+      providers: [
+        CreditAgenceService,
+        AppService,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ], // ✅ ajoute AppService ici
+    })
+    service = TestBed.inject(CreditAgenceService)
+  })
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+    expect(service).toBeTruthy()
+  })
+})
