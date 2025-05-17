@@ -12,13 +12,7 @@ export const appRoutes: Route[] = [
     loadComponent: () =>
       import('./composants/home/home.component').then((m) => m.HomeComponent),
   },
-  {
-    path: 'filieres',
-    loadComponent: () =>
-      import('./composants/filiere/filiere.component').then(
-        (m) => m.FiliereComponent,
-      ),
-  },
+  
   {
     path: 'clients',
     loadComponent: () =>
