@@ -18,8 +18,7 @@
       <ng-template pTemplate="header">
         <div class="flex align-items-center">
           <b
-            class="vertical-align-middle"
-            style="font-size: 1.2rem; color: blue"
+            class="vertical-align-middle credits-filtrage-title"
           >
             CREDITS | FILTRAGE
           </b>
@@ -114,7 +113,7 @@
 >
   <ng-template pTemplate="header">
     <span class="p-inputgroup-addon">
-      <i class="pi pi-file-edit" style="font-size: 2.5rem; color: green"></i>
+      <i class="pi pi-file-edit icon-file-edit"></i>
     </span>
     <span class="text-xl font-bold">AJOUTER CREDITS CAMPAGNE</span>
   </ng-template>
@@ -273,8 +272,7 @@
                     title="Saisir uniquement un nombre"
                     pInputText
                     [(ngModel)]="rowData[col.field]"
-                    class="text-right"
-                    style="text-align: right"
+                    class="text-right input-align-right"
                   />
                 </ng-template>
                 <ng-template pTemplate="output">
@@ -379,26 +377,16 @@
       <ng-template pTemplate="header">
         <div class="flex align-items-center">
           <i
-            class="pi pi-folder-open mr-2"
-            style="font-size: 2rem; color: orange"
+            class="pi pi-folder-open mr-2 icon-folder-brown"
           ></i>
 
           <span
-            class="vertical-align-middle"
-            style="font-size: 1.3rem; color: blue"
+            class="vertical-align-middle credit-agence-header"
             >{{ item.id }} - {{ item.name }}
             @if (this.creditSumGroupsAgence[item.id] &&
             this.creditSumGroupsAgence[item.id].sumExigibles > 0) {
             <span
-              [ngStyle]="{
-                'background-color': '#f0f0f0',
-                'font-size': '1.3rem',
-                'font-bold': 'bold',
-                color: 'blue',
-                'border-radius': '5px',
-                padding: '0.5rem',
-                'margin-left': '1rem'
-              }"
+              class="credit-agence-exigibles"
             >
               | Exigibles:
               {{ this.creditSumGroupsAgence[item.id].sumExigiblesFormatString }}
@@ -409,16 +397,11 @@
               }}
               |
               <span
+                class="credit-agence-taux-remb"
                 [ngStyle]="{
                   'background-color': this.appService.backgroundColorCredit(
                     this.creditSumGroupsAgence[item.id].sumTauxRemboursement
-                  ),
-                  'font-size': '1.3rem',
-                  'font-bold': 'bold',
-                  color: 'black',
-                  'border-radius': '5px',
-                  padding: '0.5rem',
-                  'margin-left': '1rem'
+                  )
                 }"
               >
                 Taux Remb.:
@@ -443,26 +426,16 @@
               <ng-template pTemplate="header">
                 <div class="flex align-items-center">
                   <i
-                    class="pi pi-folder-open mr-2"
-                    style="font-size: 2rem; color: brown"
+                    class="pi pi-folder-open mr-2 icon-folder-brown"
                   ></i>
 
                   <span
-                    class="vertical-align-middle"
-                    style="font-size: 1.3rem; color: brown"
+                    class="vertical-align-middle span-point-header"
                     >{{ itemPoint.pointId}} - {{ itemPoint.point?.name }}
                     @if (this.creditSumGroups[itemPoint.pointId].sumExigibles >
                     0) {
                     <span
-                      [ngStyle]="{
-                        'background-color': '#f0f0f0',
-                        'font-size': '1.3rem',
-                        'font-bold': 'bold',
-                        color: 'blue',
-                        'border-radius': '5px',
-                        padding: '0.5rem',
-                        'margin-left': '1rem'
-                      }"
+                      class="credit-exigibles-info"
                     >
                       | Exigibles:
                       {{

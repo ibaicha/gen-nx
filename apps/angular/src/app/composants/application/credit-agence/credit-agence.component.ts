@@ -2,10 +2,10 @@ import { AppService } from './../../../services/app.service'
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { Observable, Subject, Subscription } from 'rxjs'
-import { ICreditCustom, ISumCredit } from '../../../interfaces/credit.interface'
+import { ISumCredit } from '../../../interfaces/credit.interface'
 import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms'
 import { DialogModule } from 'primeng/dialog'
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'
+import { DialogService } from 'primeng/dynamicdialog'
 import { StepsModule } from 'primeng/steps'
 import { PanelModule } from 'primeng/panel'
 import { MessageModule } from 'primeng/message'
@@ -16,17 +16,12 @@ import { MultiSelectModule } from 'primeng/multiselect'
 import { ProgressSpinnerModule } from 'primeng/progressspinner'
 
 import {
-  LazyLoadEvent,
-  SortEvent,
   MessageService,
   ConfirmationService,
   MenuItem,
-  SharedModule,
-  Message,
   PrimeNGConfig,
 } from 'primeng/api'
 import { Store, select } from '@ngrx/store'
-import * as fromCredits from '../../../store/credit'
 import * as fromCreditsAgences from '../../../store/credit_agence'
 import * as fromOps from '../../../store/op'
 import * as fromExploitations from '../../../store/exploitation'
@@ -34,22 +29,20 @@ import * as fromPointAgences from '../../../store/point_agence'
 import * as fromRemboursements from '../../../store/remboursement'
 import * as fromMouvementStockages from '../../../store/mouvement_stockage'
 import * as fromAgences from '../../../store/agence'
-import moment from 'moment'
 
 import { InputTextModule } from 'primeng/inputtext'
 import { Table, TableModule } from 'primeng/table'
 import { ChipModule } from 'primeng/chip'
 import { AccordionModule } from 'primeng/accordion'
-import { ButtonModule, Button } from 'primeng/button'
+import { ButtonModule } from 'primeng/button'
 import { ToolbarModule } from 'primeng/toolbar'
 import { CardModule } from 'primeng/card'
 import { FieldsetModule } from 'primeng/fieldset'
 import { InputNumberModule } from 'primeng/inputnumber'
-import { SelectItemGroup } from 'primeng/api'
 import { CalendarModule } from 'primeng/calendar'
 import { TooltipModule } from 'primeng/tooltip'
 import { DropdownModule } from 'primeng/dropdown'
-import { NgIf, NgFor, NgSwitch, NgSwitchDefault } from '@angular/common'
+import { NgIf } from '@angular/common'
 import { ToastModule } from 'primeng/toast'
 import { AutoCompleteModule } from 'primeng/autocomplete'
 //import { ClientService } from '../../../services/client.service'
@@ -84,22 +77,13 @@ import {
   SelectItem,
 } from '@shared-models'
 
-import { FormatNumberFcfaPipe } from '../../../shared/format-number-fcfa.pipe'
 import { AuthService } from '../../auth/shared/auth.service'
 import { NavigationService } from '../../../services/navigation.service'
-import { IFilter } from '../client/client.component'
-import { FormatCfaPipe } from '../../../shared/format-cfa.pipe'
-import { ReplacePipe } from '../../../shared/replace.pipe'
 import { FormatNumberSuffixePipe } from '../../../shared/format-number-suffixe.pipe'
 
 export enum PageNames {
   DebutPage,
   FinPage,
-}
-
-interface AutoCompleteCompleteEvent {
-  originalEvent: Event
-  query: string
 }
 
 @Component({
@@ -139,23 +123,42 @@ interface AutoCompleteCompleteEvent {
     ToolbarModule,
     MultiSelectModule,
     NgIf,
-    NgFor,
-    NgSwitch,
-    NgSwitchDefault,
     ToastModule,
-    FormatNumberFcfaPipe,
-    FormatCfaPipe,
-    ReplacePipe,
     FormatNumberSuffixePipe,
   ],
 })
 export class CreditAgenceComponent implements OnInit {
-  colsCredit: any[] = []
-  colsOps: any[] = []
-  colsCreditCustom: any[] = []
-  colsCreditsAgences: any[] = []
-  colsRemboursements: any[] = []
-  @ViewChild('dt') dt: any
+  colsCredit: {
+    field: string
+    header: string
+    sort?: boolean
+    filter?: boolean
+  }[] = []
+  colsOps: {
+    field: string
+    header: string
+    sort?: boolean
+    filter?: boolean
+  }[] = []
+  colsCreditCustom: {
+    field: string
+    header: string
+    sort?: boolean
+    filter?: boolean
+  }[] = []
+  colsCreditsAgences: {
+    field: string
+    header: string
+    sort?: boolean
+    filter?: boolean
+  }[] = []
+  colsRemboursements: {
+    field: string
+    header: string
+    sort?: boolean
+    filter?: boolean
+  }[] = []
+  @ViewChild('dt') dt!: Table
   @ViewChild('mapElement') mapElement!: ElementRef
 
   PageNames = PageNames
@@ -210,7 +213,7 @@ export class CreditAgenceComponent implements OnInit {
 
   societes$!: Observable<ISociete[]>
   societes: ISociete[] = []
-  societe: any = {}
+  societe: ISociete = {} as ISociete
   selectedSociete: ISociete | undefined
 
   agences$!: Observable<IAgence[]> | undefined
@@ -257,7 +260,7 @@ export class CreditAgenceComponent implements OnInit {
   private opsWithFiltersSubscription: Subscription | undefined
   opsWithFilters: IOp[] = []
   opsAddRowsWithFilters: any[] = []
-  op: any = {}
+  op: IOp = {} as IOp
   selectedopsWithFilters: IOp[] | undefined
 
   editedOpsWithFiltersRows: any[] = []
@@ -270,19 +273,19 @@ export class CreditAgenceComponent implements OnInit {
   creditsAgencesWithFilters$!: Observable<ICreditAgence[]>
   private creditsAgencesWithFiltersSubscription: Subscription | undefined
   creditsAgencesWithFilters: ICreditAgence[] = []
-  creditAgence: any = {}
+  creditAgence: ICreditAgence = {} as ICreditAgence
   selectedcreditsAgencesWithFilters: ICreditAgence[] | undefined
 
   agencesOpsWithFilters$!: Observable<IAgenceOp[]>
   private agencesOpsWithFiltersSubscription: Subscription | undefined
   agencesOpsWithFilters: IAgenceOp[] = []
-  agenceOp: any = {}
+  agenceOp: IAgenceOp = {} as IAgenceOp
   selectedagencesOpsWithFilters: IAgenceOp[] | undefined
 
   pointsCollectesFromAgence$!: Observable<IPointAgence[]>
   private pointsCollectesFromAgenceSubscription: Subscription | undefined
   pointsCollectesFromAgence: IPointAgence[] = []
-  pointFromAgence: any = {}
+  pointFromAgence: IPointAgence | undefined = undefined
   selectedpointsCollectesFromAgence: IPointAgence[] | undefined
 
   pointsCollectesFromSociete$!: Observable<IPointAgence[]>
@@ -318,7 +321,7 @@ export class CreditAgenceComponent implements OnInit {
 
     this.produitsBruit = this.authService.allProduitsBrut
 
-    this.annees = this.loginService.allAnnees.map((device: any) => {
+    this.annees = this.loginService.allAnnees.map((device: IAnnee) => {
       return { ...device }
     })
 
@@ -332,7 +335,7 @@ export class CreditAgenceComponent implements OnInit {
       },
     )
 
-    this.saisons = this.loginService.allSaisons.map((device: any) => {
+    this.saisons = this.loginService.allSaisons.map((device: ISaison) => {
       return { ...device }
     })
 
@@ -760,7 +763,7 @@ export class CreditAgenceComponent implements OnInit {
     // mySelectedProduitBruitIds: number[]
 
     this.creditsAgencesWithFiltersSubscription =
-      this.creditsAgencesWithFilters$.subscribe((credits: any) => {
+      this.creditsAgencesWithFilters$.subscribe((credits: ICreditAgence[]) => {
         if (credits) {
           // console.log(' ✅ ✅ ✅ ✅ ✅ ✅  credits before', credits)
 
@@ -822,11 +825,13 @@ export class CreditAgenceComponent implements OnInit {
 
     this.pointsCollectesFromSocieteSubscription =
       this.pointsCollectesFromSociete$.subscribe(
-        (points: any) => {
+        (points: IPointAgence[]) => {
           if (points) {
-            this.pointsCollectesFromSociete = points.map((device: any) => {
-              return { ...device }
-            })
+            this.pointsCollectesFromSociete = points.map(
+              (device: IPointAgence) => {
+                return { ...device }
+              },
+            )
 
             this.selectedAgences.forEach((agence) => {
               this.pointsCollectesFromAgence =
@@ -1175,7 +1180,7 @@ export class CreditAgenceComponent implements OnInit {
     }, 0)
   }
 
-  CountRecords(myTabClients: any, RowsWithFilters: any): number {
+  CountRecords(myTabClients: Table, RowsWithFilters: unknown[]): number {
     const data = myTabClients.filteredValue ?? RowsWithFilters
 
     return data.length
@@ -1185,44 +1190,44 @@ export class CreditAgenceComponent implements OnInit {
     return myTable?.length || 0
   }
 
-  filteredRows(myTableFiltre: any, myTable: any): number {
+  filteredRows(myTableFiltre: Table, myTable: unknown[]): number {
     return myTableFiltre.filteredValue?.length ?? this.totalRows(myTable)
   }
 
-  getTotalExigibles(myTabClients: any): number {
+  getTotalExigibles(myTabClients: Table): number {
     if (myTabClients.filteredValue) {
       //return myTabClients.filteredValue.length;
       return (
         myTabClients.filteredValue
-          ?.map((item: { exigible: any }) => item.exigible)
-          ?.reduce((a: any, b: any) => a + b, 0) || 0
+          ?.map((item: { exigible: number }) => item.exigible)
+          ?.reduce((a: number, b: number) => a + b, 0) || 0
       )
     } else {
       return (
         myTabClients.value
-          ?.map((item: { exigible: any }) => item.exigible)
-          ?.reduce((a: any, b: any) => a + b, 0) || 0
+          ?.map((item: { exigible: number }) => item.exigible)
+          ?.reduce((a: number, b: number) => a + b, 0) || 0
       )
     }
   }
-  getTotalRemboursements(myTabClients: any): number {
+  getTotalRemboursements(myTabClients: Table): number {
     if (myTabClients.filteredValue) {
       //return myTabClients.filteredValue.length;
       return (
         myTabClients.filteredValue
-          ?.map((item: { remboursementsSum: any }) => item.remboursementsSum)
-          ?.reduce((a: any, b: any) => a + b, 0) || 0
+          ?.map((item: { remboursementsSum: number }) => item.remboursementsSum)
+          ?.reduce((a: number, b: number) => a + b, 0) || 0
       )
     } else {
       return (
         myTabClients.value
-          ?.map((item: { remboursementsSum: any }) => item.remboursementsSum)
-          ?.reduce((a: any, b: any) => a + b, 0) || 0
+          ?.map((item: { remboursementsSum: number }) => item.remboursementsSum)
+          ?.reduce((a: number, b: number) => a + b, 0) || 0
       )
     }
   }
 
-  getTauxRemboursements(myTabClients: any): number {
+  getTauxRemboursements(myTabClients: Table): number {
     let taux = 0
     if (this.getTotalExigibles(myTabClients) !== 0) {
       taux =
@@ -1249,59 +1254,59 @@ export class CreditAgenceComponent implements OnInit {
     return null
   }
 
-  showDialogRemboursements(action: string, creditOnClient: ICreditCustom) {
+  showDialogRemboursements() {
     return null
   }
 
-  showDialogExploitationS(action: string, creditOnClient: ICreditCustom) {
+  showDialogExploitationS() {
     return null
   }
 
-  showDialogCredit(action: string, creditOnClient: ICreditCustom) {
+  showDialogCredit() {
     return null
   }
   clear(table: Table) {
     table.clear()
   }
 
-  async onAnneeChange(event: any) {
+  async onAnneeChange(event: { value: IAnnee }) {
     this.selectedAnnee = event.value
     console.log('event.value: ' + event.value.id)
     localStorage.setItem('selectedAnneeId', event.value.id.toString())
     localStorage.setItem('selectedAnneeName', event.value.name.toString())
-    this.selectedAnneeId = event.value.id.toString()
+    this.selectedAnneeId = event.value.id
     this.loginService.mySelectedAnnee = event.value
 
     this.loading = true
     this.onReloadCreditAgence()
   }
 
-  async onAnneeChangeDialog(event: any) {
+  async onAnneeChangeDialog(event: { value: IAnnee }) {
     this.selectedAnnee = event.value
     console.log('event.value: ' + event.value.id)
     localStorage.setItem('selectedAnneeId', event.value.id.toString())
     localStorage.setItem('selectedAnneeName', event.value.name.toString())
-    this.selectedAnneeId = event.value.id.toString()
+    this.selectedAnneeId = event.value.id
     this.loginService.mySelectedAnnee = event.value
   }
 
-  onSaisonChange(event: any) {
+  onSaisonChange(event: { value: ISaison }) {
     this.selectedSaison = event.value
     console.log('event.value: ' + event.value)
     localStorage.setItem('selectedSaisonId', event.value.id.toString())
     localStorage.setItem('selectedSaisonName', event.value.name.toString())
-    this.selectedSaisonId = event.value.id.toString()
+    this.selectedSaisonId = event.value.id
     this.loginService.mySelectedSaison = event.value
 
     this.loading = true
     this.onReloadCreditAgence()
   }
-  onSaisonChangeDialog(event: any) {
+  onSaisonChangeDialog(event: { value: ISaison }) {
     this.selectedSaison = event.value
     console.log('event.value: ' + event.value)
     localStorage.setItem('selectedSaisonId', event.value.id.toString())
     localStorage.setItem('selectedSaisonName', event.value.name.toString())
-    this.selectedSaisonId = event.value.id.toString()
+    this.selectedSaisonId = event.value.id
     this.loginService.mySelectedSaison = event.value
   }
   onAgencesChange() {
@@ -1323,7 +1328,7 @@ export class CreditAgenceComponent implements OnInit {
     // this.initDispatch()
     this.initSubscriptions(this.selectedProduitBruitIds)
   }
-  onSelectGroupVarieteChange(event: any) {
+  onSelectGroupVarieteChange(event: { value: IVariete }) {
     this.selectedVarieteDialog = event.value
     console.log('⭐ ⭐ ⭐ selectedDate: ' + this.selectedDate)
     console.log(
@@ -1333,7 +1338,7 @@ export class CreditAgenceComponent implements OnInit {
       this.activeAddCredit = true
     }
   }
-  onSelectDateChange(event: any) {
+  onSelectDateChange(event: { value: Date }) {
     this.selectedDate = event.value
     console.log('⭐ ⭐ ⭐ selectedDate: ' + this.selectedDate)
     console.log(
@@ -1416,7 +1421,7 @@ export class CreditAgenceComponent implements OnInit {
     })
   }
 
-  onValueChange(rowData: any, field: string): void {
+  onValueChange(): void {
     // Déclenche l'animation
     this.animateCell = true
     // Réinitialise la variable après 1 seconde (durée de l'animation)
@@ -1512,15 +1517,15 @@ export class CreditAgenceComponent implements OnInit {
     console.log('✅ ✅ ✅  ✅ ✅ ✅ this.dateAffichee: ', this.dateAffichee)
   }
 
-  sanitizeAmount(value: any): number {
+  sanitizeAmount(value: string | number): number {
     if (typeof value === 'string') {
       // Nettoyer FCFA, espaces, virgules
       value = value.replace(/[^\d.-]/g, '').replace(',', '.')
     }
-    return parseFloat(value) || 0
+    return parseFloat(value as string) || 0
   }
 
-  getExigible(rowData: any): number {
+  getExigible(rowData: { capital: string | number; interet: string | number; moratoire: string | number; autres_engagements: string | number }): number {
     return (
       this.sanitizeAmount(rowData.capital) +
       this.sanitizeAmount(rowData.interet) +
