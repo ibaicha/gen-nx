@@ -1,39 +1,38 @@
-name: CI  # Name of the GitHub Actions workflow
+name: CI # Nom du workflow GitHub Actions
 
 on:
   push:
     branches:
-      - master  # Trigger on push to master
-  pull_request:  # Also trigger on any pull request
+      - master # Déclencheur sur push vers master
+  pull_request: # Déclencheur aussi sur les pull requests
 
 permissions:
-  actions: read   # Grants read-only access to GitHub Actions metadata (e.g., check runs)
-  contents: read  # Grants read-only access to repository contents (e.g., cloning the repo)
+  actions: read # Accès en lecture seule aux métadonnées des actions
+  contents: read # Accès en lecture seule aux contenus du dépôt
 
 jobs:
   main:
-    runs-on: ${{ matrix.os }}  # Dynamically run on different OSes defined below
+    runs-on: ${{ matrix.os }} # Exécute dynamiquement sur les OS définis ci-dessous
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]  # Define the OS matrix
-      max-parallel: 3 # Limits the number of matrix jobs that can run simultaneously to 3
+        os: [ubuntu-latest, macos-latest, windows-latest] # Matrice des OS
+      max-parallel: 3 # Limite le nombre de jobs simultanés à 3
 
     steps:
-      # Checkout the repository
-      - uses: actions/checkout@v4
+      - name: Récupération du dépôt
+        uses: actions/checkout@v4
         with:
-          filter: tree:0  # Reduces fetch payload
-          fetch-depth: 0  # Full history (required by Nx affected commands)
+          filter: tree:0
+          fetch-depth: 0
 
-      # Set up Node.js version 20 and enable npm caching
-      - uses: actions/setup-node@v4
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'  # Uses npm caching to speed up installs
+          cache: 'npm'
 
-      # Cache node_modules based on OS and lockfile hash
-      - name: Cache node_modules
+      - name: Mise en cache de node_modules
         uses: actions/cache@v3
         with:
           path: node_modules
@@ -41,66 +40,88 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-modules-
 
-      # Install dependencies using npm ci for reproducible builds
-      - run: npm ci --legacy-peer-deps
+      - name: Installation des dépendances
+        run: |
+          echo "📦 Installation des dépendances..."
+          npm ci --legacy-peer-deps
+          echo "✅ Dépendances installées"
 
-      # Set the base and head SHAs so that Nx can determine what changed
-      - uses: nrwl/nx-set-shas@v4
+      - name: Définir les SHAs Nx
+        uses: nrwl/nx-set-shas@v4
 
-      # Run lint checks only on affected projects
-      - name: Run Lint
-        run: npx nx affected --target=lint
+      - name: Exécuter le Lint
+        run: |
+          echo "🔍 Lint des projets affectés..."
+          npx nx affected --target=lint
+          echo "✅ Lint terminé"
 
-      # Run unit tests on affected projects
-      - name: Run Unit Tests
-        run: npx nx affected --target=test
+      - name: Tests unitaires
+        run: |
+          echo "🧪 Lancement des tests unitaires..."
+          npx nx affected --target=test
+          echo "✅ Tests terminés"
 
-      # Build only affected projects with a timeout
-      - name: Build Affected Projects
-        run: npx nx affected --target=build
+      - name: Compilation des projets affectés
+        run: |
+          echo "🏗️ Compilation des projets..."
+          npx nx affected --target=build
+          echo "✅ Build terminé"
         timeout-minutes: 30
 
-      # Generate an interactive HTML dependency graph
-      - name: Generate Dependency Graph
-        run: npx nx dep-graph --file=dist/graph.html
-
-      # List affected applications (apps only)
-      - name: List Affected Applications
-        run: npx nx show projects --affected --type=app
-
-      # List affected libraries (libs only)
-      - name: List Affected Libraries
-        run: npx nx show projects --affected --type=lib
-
-      # Deploy only affected projects (if deploy target is configured)
-      - name: Deploy Affected Projects
-        run: npx nx affected --target=deploy
-
-      # Run tests with coverage reporting
-      - name: Run Tests with Code Coverage
-        run: npx nx affected --target=test --coverage
-
-      # Build a specific project (replace with your project name)
-      - name: Build the project
-        run: npx nx build my-fullstack-app
-
-      # Generate a unique timestamp to differentiate artifacts  
-      # It is not allowed to upload artifacts with the same name
-      - name: Generate timestamp
+      - name: Génération du graphe de dépendances
         run: |
-          echo "timestamp=$(date +%s)" >> "$GITHUB_ENV"
-      
-      # Upload the built app as an artifact
-      - name: Upload build artifact
+          echo "📊 Génération du graphe des dépendances..."
+          npx nx dep-graph --file=dist/graph.html
+          echo "✅ Graphe généré"
+
+      - name: Applications affectées
+        run: |
+          echo "📦 Liste des applications affectées :"
+          npx nx show projects --affected --type=app
+
+      - name: Librairies affectées
+        run: |
+          echo "📚 Liste des librairies affectées :"
+          npx nx show projects --affected --type=lib
+
+      - name: Déploiement des projets affectés
+        run: |
+          echo "🚀 Déploiement en cours..."
+          npx nx affected --target=deploy
+          echo "✅ Déploiement terminé"
+
+      - name: Tests avec couverture
+        run: |
+          echo "📈 Tests avec génération de couverture..."
+          npx nx affected --target=test --coverage
+
+      - name: Compilation d'un projet spécifique
+        run: |
+          echo "🔧 Build du projet spécifique..."
+          npx nx build my-fullstack-app
+
+      - name: Génération du timestamp
+        run: echo "timestamp=$(date +%s)" >> "$GITHUB_ENV"
+
+      - name: Téléverser l'artefact de build
         uses: actions/upload-artifact@v4
         with:
           name: build-artifact-${{ env.timestamp }}
-          path: apps/my-fullstack-app/dist  # Make sure this is the correct output path
+          path: apps/my-fullstack-app/dist
 
-      # Upload the generated dependency graph as an artifact
-      - name: Upload Dependency Graph Artifact
+      - name: Téléverser le graphe de dépendances
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: dependency-graph-${{ env.timestamp }}
-          path: dist/**/*  # Includes graph.html and supporting files
+          path: dist/**/*
+
+      - name: Résumé Markdown visuel
+        run: |
+          echo "## ✅ Résumé de l'exécution du workflow" >> $GITHUB_STEP_SUMMARY
+          echo "- 📦 Dépendances installées" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔍 Lint terminé" >> $GITHUB_STEP_SUMMARY
+          echo "- 🧪 Tests OK" >> $GITHUB_STEP_SUMMARY
+          echo "- 🏗️ Build effectué" >> $GITHUB_STEP_SUMMARY
+          echo "- 📈 Couverture générée" >> $GITHUB_STEP_SUMMARY
+          echo "- 📊 Graphe de dépendances prêt" >> $GITHUB_STEP_SUMMARY
