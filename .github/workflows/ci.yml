@@ -1,0 +1,106 @@
+name: CI  # Name of the GitHub Actions workflow
+
+on:
+  push:
+    branches:
+      - master  # Trigger on push to master
+  pull_request:  # Also trigger on any pull request
+
+permissions:
+  actions: read   # Grants read-only access to GitHub Actions metadata (e.g., check runs)
+  contents: read  # Grants read-only access to repository contents (e.g., cloning the repo)
+
+jobs:
+  main:
+    runs-on: ${{ matrix.os }}  # Dynamically run on different OSes defined below
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]  # Define the OS matrix
+      max-parallel: 3 # Limits the number of matrix jobs that can run simultaneously to 3
+
+    steps:
+      # Checkout the repository
+      - uses: actions/checkout@v4
+        with:
+          filter: tree:0  # Reduces fetch payload
+          fetch-depth: 0  # Full history (required by Nx affected commands)
+
+      # Set up Node.js version 20 and enable npm caching
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'  # Uses npm caching to speed up installs
+
+      # Cache node_modules based on OS and lockfile hash
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+
+      # Install dependencies using npm ci for reproducible builds
+      - run: npm ci --legacy-peer-deps
+
+      # Set the base and head SHAs so that Nx can determine what changed
+      - uses: nrwl/nx-set-shas@v4
+
+      # Run lint checks only on affected projects
+      - name: Run Lint
+        run: npx nx affected --target=lint
+
+      # Run unit tests on affected projects
+      - name: Run Unit Tests
+        run: npx nx affected --target=test
+
+      # Build only affected projects with a timeout
+      - name: Build Affected Projects
+        run: npx nx affected --target=build
+        timeout-minutes: 30
+
+      # Generate an interactive HTML dependency graph
+      - name: Generate Dependency Graph
+        run: npx nx dep-graph --file=dist/graph.html
+
+      # List affected applications (apps only)
+      - name: List Affected Applications
+        run: npx nx show projects --affected --type=app
+
+      # List affected libraries (libs only)
+      - name: List Affected Libraries
+        run: npx nx show projects --affected --type=lib
+
+      # Deploy only affected projects (if deploy target is configured)
+      - name: Deploy Affected Projects
+        run: npx nx affected --target=deploy
+
+      # Run tests with coverage reporting
+      - name: Run Tests with Code Coverage
+        run: npx nx affected --target=test --coverage
+
+      # Build a specific project (replace with your project name)
+      - name: Build the project
+        run: npx nx build my-fullstack-app
+
+      # Generate a unique timestamp to differentiate artifacts  
+      # It is not allowed to upload artifacts with the same name
+      - name: Generate timestamp
+        run: |
+          echo "timestamp=$(date +%s)" >> "$GITHUB_ENV"
+      
+      # Upload the built app as an artifact
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact-${{ env.timestamp }}
+          path: apps/my-fullstack-app/dist  # Make sure this is the correct output path
+
+      # Upload the generated dependency graph as an artifact
+      - name: Upload Dependency Graph Artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-graph-${{ env.timestamp }}
+          path: dist/**/*  # Includes graph.html and supporting files
