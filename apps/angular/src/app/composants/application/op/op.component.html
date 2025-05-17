@@ -60,7 +60,7 @@
         label="Ajout"
         icon="pi pi-plus"
         class="p-button-success p-mr-2"
-        (click)="showDialogOp('add', this.opForm.value)"
+        (click)="showDialogOp('add')"
         [disabled]="disableAdd"
         title="Add new item"
       ></button>
@@ -340,7 +340,7 @@
 >
   <ng-template pTemplate="header">
     <span class="p-inputgroup-addon">
-      <i class="pi pi-file-edit" style="font-size: 2.5rem; color: green"></i>
+      <i class="pi pi-file-edit op-dialog-icon"></i>
     </span>
     <span class="text-xl font-bold">{{ this.titleOpDialogCredit }}</span>
   </ng-template>
@@ -408,10 +408,8 @@
           </div>
           <br />
           <div class="card flex justify-content-left">
-            <span style="width: 25%">
-              <i style="font-size: 1.5rem; color: blue; font-style: normal"
-                >Localité</i
-              >
+            <span class="width-25">
+              <i class="localite-icon">Localité</i>
             </span>
             <p-autoComplete
               [suggestions]="filteredLocaliteAutocompletes!"
@@ -419,7 +417,7 @@
               [group]="true"
               [dropdown]="true"
               emptyMessage="Aucune localité trouvée"
-              (onSelect)="onSelectLocalite($event)"
+              (onSelect)="onSelectLocalite($event.value)"
               (completeMethod)="filterLocalite($event)"
               formControlName="localiteId"
               inputId="localiteId"
@@ -645,8 +643,8 @@
           </div>
           <br />
           <div class="card flex justify-content-left">
-            <span style="width: 25%">
-              <i style="font-size: 1.5rem; color: blue; font-style: normal"
+            <span class="point-collecte-label">
+              <i class="point-collecte-icon"
                 >Point Collecte</i
               >
             </span>
@@ -658,8 +656,8 @@
               placeholder="Choisir un PC ..."
               [forceSelection]="false"
               (completeMethod)="filterPonitCollecte($event)"
-              (onFocus)="filterPonitCollecte({ query: '' })"
-              (onDropdownClick)="filterPonitCollecte({ query: '' })"
+              (onFocus)="filterPonitCollecte({ query: '', originalEvent: $event })"
+              (onDropdownClick)="filterPonitCollecte({ query: '', originalEvent: $event.originalEvent })"
               formControlName="pointCollecteId"
               inputId="pointCollecteId"
               id="pointCollecteId"

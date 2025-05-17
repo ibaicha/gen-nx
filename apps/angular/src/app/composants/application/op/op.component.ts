@@ -32,13 +32,7 @@ import { ProgressBarModule } from 'primeng/progressbar'
 
 import { DropdownModule } from 'primeng/dropdown'
 import { DialogModule } from 'primeng/dialog'
-import {
-  CommonModule,
-  NgFor,
-  NgIf,
-  NgSwitch,
-  NgSwitchDefault,
-} from '@angular/common'
+import { CommonModule, NgIf } from '@angular/common'
 import { InputTextModule } from 'primeng/inputtext'
 import { ButtonModule } from 'primeng/button'
 import { ToolbarModule } from 'primeng/toolbar'
@@ -93,10 +87,7 @@ import { NavigationService } from '../../../services/navigation.service'
     ButtonModule,
     TableModule,
     InputTextModule,
-    NgFor,
     NgIf,
-    NgSwitch,
-    NgSwitchDefault,
     DialogModule,
     DropdownModule,
     MultiSelectModule,
@@ -112,9 +103,10 @@ import { NavigationService } from '../../../services/navigation.service'
     CalendarModule,
   ],
 })
-export class OpComponent {
-  cols: any[] = []
-  @ViewChild('dt') dt: any
+export class OpComponent implements OnInit {
+  cols: { field: string; header?: string; sort?: boolean; filter?: boolean }[] =
+    []
+  @ViewChild('dt') dt!: Table
   @ViewChild('mapElement') mapElement!: ElementRef
 
   submitted = false
@@ -127,7 +119,7 @@ export class OpComponent {
   PageNames = PageNames
   dialogPageIndex = PageNames.DebutPage
   @Input() opId?: number
-  @Output() saved = new EventEmitter<any>()
+  @Output() saved = new EventEmitter<void>()
   msgs: Message[] = []
 
   dialogPages: MenuItem[] = [{ label: 'Infos OP ...' }, { label: 'Autres ...' }]
@@ -144,7 +136,7 @@ export class OpComponent {
   opsWithFilters$!: Observable<IOp[]>
   private opsWithFiltersSubscription: Subscription | undefined
   opsWithFilters: IOp[] = []
-  op: any = {}
+  op: IOp = {} as IOp
   selectedopsWithFilters: IOp[] | undefined
 
   ops$: Observable<IOp[]> | undefined
@@ -158,7 +150,7 @@ export class OpComponent {
   pointsCollectesFromAgence$!: Observable<IPointAgence[]>
   private pointsCollectesFromAgenceSubscription: Subscription | undefined
   pointsCollectesFromAgence: IPointAgence[] = []
-  pointFromAgence: any = {}
+  pointFromAgence: IPointAgence | undefined = undefined
   selectedpointsCollectesFromAgence: IPointAgence[] | undefined
 
   myPointsOnAgence: IPoint[] = []
@@ -184,8 +176,8 @@ export class OpComponent {
   disableAdd = false
   loading = false
 
-  selectedLocaliteAutocomplete: any
-  filteredLocaliteAutocompletes: any[] | undefined
+  selectedLocaliteAutocomplete: ILocalite | null = null
+  filteredLocaliteAutocompletes: { label: string; items: ILocalite[] }[] | undefined
 
   // Valeur par défaut pour le select
   selectedValue = 1
@@ -246,20 +238,22 @@ export class OpComponent {
 
   ngBeforeViewInit() {
     this.op = {
-      id: null,
-      code: '',
+      id: 0,
       name: '',
-      adresse: '',
-      telephone: '',
-      email: '',
-      firstName: '',
-      lastName: '',
-      societe: '',
       sigle: '',
-      typeOp: {
-        id: null,
-        name: '',
-      },
+      email: '',
+      telephone: '',
+      adresse: '',
+      latitude: 0,
+      longitude: 0,
+      prenomContact: '',
+      nomContact: '',
+      emailContact: '',
+      telephoneContact: '',
+      isActive: true,
+      formeJuridiqueId: 0,
+      localiteId: 0,
+      pointId: 0,
     }
   }
   ngOnInit() {
@@ -356,7 +350,7 @@ export class OpComponent {
     this.store.dispatch(fromOps.deleteOp({ op }))
   }
 
-  onGetOp(id: number, listOps: IOp[]): any {
+  onGetOp(id: number, listOps: IOp[]): IOp | undefined {
     const _Op = listOps.find((item) => item.id === id)
 
     return _Op
@@ -408,7 +402,7 @@ export class OpComponent {
   }
 
   // Méthode pour gérer l'événement onChange
-  onPortefeuilleChange(event: any) {
+  onPortefeuilleChange(event: { value: number }) {
     this.selectedPortefeuille = event.value // Assurez-vous que `event.value` est bien un nombre
     console.log('Valeur sélectionnée :', this.selectedPortefeuille)
     this.onAgencesClear()
@@ -459,8 +453,8 @@ export class OpComponent {
       this.onSelectLocalite(uniqueLocalite)
     }
   }
-  private groupLocalites(localites: any[]): any[] {
-    const grouped: { [departementName: string]: any[] } = {}
+  private groupLocalites(localites: ILocalite[]): { label: string; items: ILocalite[] }[] {
+    const grouped: { [departementName: string]: ILocalite[] } = {}
 
     for (const loc of localites) {
       const departementName = loc.departement?.name || 'Inconnu'
@@ -538,7 +532,7 @@ export class OpComponent {
     }
   }
 
-  onIsPorteFeuilleChange(event: any): void {
+  onIsPorteFeuilleChange(event: { checked: boolean }): void {
     const isChecked = event.checked // PrimeNG renvoie un objet avec la propriété 'checked'
     console.log('✅ bla bla bla', isChecked)
     if (isChecked) {
@@ -550,11 +544,11 @@ export class OpComponent {
     }
   }
 
-  onSelectDateChange(event: any) {
+  onSelectDateChange(event: { value: Date }) {
     this.selectedDate = event.value
     console.log('⭐ ⭐ ⭐ selectedDate: ' + this.selectedDate)
   }
-  onSelectLocalite(event: any) {
+  onSelectLocalite(event: ILocalite) {
     console.log('event', event)
   }
   getDepartmentColor(departmentName: string): string {
@@ -804,7 +798,7 @@ export class OpComponent {
     return points
   }
 
-  filterPonitCollecte(event: any): void {
+  filterPonitCollecte(event: AutoCompleteCompleteEvent): void {
     const query = event.query?.toLowerCase() || ''
 
     if (query.trim() === '') {
@@ -833,7 +827,7 @@ export class OpComponent {
     this.viderOp()
   }
 
-  showDialogOp(action: string, op: IOp) {
+  showDialogOp(action: string) {
     this.opDialogDisplay = true
     this.isEditMode = false
     if (action === 'add') {
@@ -845,7 +839,7 @@ export class OpComponent {
 
   editOp(op: IOp) {
     this.op = { ...op }
-    this.isPersonneOrSociete()
+ 
     console.log(' this.op    --- ', op)
     this.titleHeader = 'Update Op'
     this.opDialogDisplay = true
@@ -854,7 +848,7 @@ export class OpComponent {
   saveOp() {
     this.submitted = true
 
-    this.isPersonneOrSociete()
+ 
     console.log(' this.op    --- ', this.op)
 
     if (this.op.id) {
@@ -896,44 +890,38 @@ export class OpComponent {
     this.opDialogDisplay = false
   }
 
-  isMoment(MyMomment: any) {
+  isMoment(MyMomment: string | Date | moment.Moment) {
     const newDate = moment(MyMomment).format('DD/MM/YYYY')
     return newDate
   }
 
-  isMomentAutre(MyMomment: any) {
+  isMomentAutre(MyMomment: string | Date | moment.Moment) {
     const newDate = moment(MyMomment).format('YYYY-MM-DD')
     return newDate
   }
 
   viderOp() {
     this.op = {
-      id: null,
-      code: '',
+      id: 0,
       name: '',
-      adresse: '',
-      telephone: '',
-      email: '',
-      firstName: '',
-      lastName: '',
-      profession: {
-        id: null,
-        name: '',
-      },
-      societe: '',
       sigle: '',
-      typeSociete: {
-        id: null,
-        name: '',
-        sigle: '',
-      },
-      typeOp: {
-        id: null,
-        name: '',
-      },
+      email: '',
+      telephone: '',
+      adresse: '',
+      latitude: 0,
+      longitude: 0,
+      prenomContact: '',
+      nomContact: '',
+      emailContact: '',
+      telephoneContact: '',
+      isActive: true,
+      formeJuridiqueId: 0,
+      localiteId: 0,
+      pointId: 0,
+      
     }
 
-    this.isPersonneOrSociete()
+ 
     this.chargerOp()
   }
 
@@ -952,72 +940,53 @@ export class OpComponent {
     // TO DO: implement the logic to display op details
   }
 
-  onClicked(event: any) {
-    console.log(event.value)
+  onClicked(event: Event) {
+    // If you expect a specific structure, you can cast or define a custom type
+    // For example, if event is a MouseEvent:
+    // onClicked(event: MouseEvent) { ... }
+    // Or if event has a value property:
+    // onClicked(event: { value: any }) { ... }
+    // Adjust as needed for your use case
+
+    // Example for generic Event with possible value property:
+    const target = event.target as HTMLInputElement | null
+    if (target && 'value' in target) {
+      console.log(target.value)
+    } else {
+      console.log(event)
+    }
   }
 
-  getValue($event: any): string {
+  getValue($event: Event): string {
     console.log(($event.target as HTMLInputElement).value)
     return ($event.target as HTMLInputElement).value
   }
 
-  onFilter(event: any, dt: any) {
-    dt.filteredValues = event.filteredValue
+  onFilter(event: { filteredValue: IOp[] }, dt: Table) {
+    dt.filteredValue = event.filteredValue
   }
 
   tableauPointServicesXLSX(): void {
     console.log('tableauPointServicesXLSX')
   }
 
-  onRowExpandRetourne(event: any): any {
+  onRowExpandRetourne(event: TableRowExpandEvent): void {
     console.log('event   --- ', event.data)
     console.log('event.data --- ', event.data.id)
     console.log('event.data --- ', event.data.name)
   }
 
-  onRowExpandRetournePersonne(event: any): any {
+  onRowExpandRetournePersonne(event: TableRowExpandEvent): void {
     console.log('event   --- ', event.data)
     console.log('event.data --- ', event.data.id)
     console.log('event.data --- ', event.data.name)
 
     if (event.data.typeOp.name === 'PERSONNE') {
-      return null
+      return
     }
   }
-
-  onChangeTypeOp(event: any): void {
-    console.log(event.value)
-    console.log('event_id :' + event.value['id'])
-
-    this.op.typeOp.id = event.value['id']
-    this.op.typeOp.name = event.value['name']
-
-    this.isPersonneOrSociete()
-  }
-
-  isPersonneOrSociete(): void {
-    if (this.op.typeOp.name === 'PERSONNE') {
-      this.op.name = this.op.firstName + ' ' + this.op.lastName
-      this.op.societe = ''
-      this.op.sigle = ''
-      this.op.typeSociete.id = null
-      this.op.typeSociete.name = ''
-      this.isPersonne = true
-      this.isSociete = false
-    } else if (this.op.typeOp.name === 'SOCIETE') {
-      this.op.name = this.op.sigle
-      this.op.firstName = ''
-      this.op.lastName = ''
-      this.op.profession.id = null
-      this.op.profession.name = ''
-      this.isPersonne = false
-      this.isSociete = true
-    } else {
-      this.op.name = ''
-      this.isPersonne = false
-      this.isSociete = false
-    }
-  }
+ 
+ 
 
   onClearTypeOp(): void {
     this.isPersonne = false
