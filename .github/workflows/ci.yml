@@ -5,10 +5,12 @@ on:
     branches:
       - master # Déclencheur sur push vers master
   pull_request: # Déclencheur aussi sur les pull requests
+  workflow_dispatch: # Déclenchement manuel via l'interface GitHub
 
 permissions:
   actions: read # Accès en lecture seule aux métadonnées des actions
   contents: read # Accès en lecture seule aux contenus du dépôt
+  pull-requests: write # 🔁 Autorise la publication de commentaires dans les PR
 
 jobs:
   main:
@@ -125,3 +127,14 @@ jobs:
           echo "- 🏗️ Build effectué" >> $GITHUB_STEP_SUMMARY
           echo "- 📈 Couverture générée" >> $GITHUB_STEP_SUMMARY
           echo "- 📊 Graphe de dépendances prêt" >> $GITHUB_STEP_SUMMARY
+
+      - name: Commentaire automatique dans la PR
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## 🔁 Résultats CI
+            ✅ Lint, build et tests passés avec succès.
+            📊 [Télécharger le graphe de dépendances](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) dans les artefacts.
