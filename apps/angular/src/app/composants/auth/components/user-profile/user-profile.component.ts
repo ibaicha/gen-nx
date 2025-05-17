@@ -8,18 +8,18 @@ import { AuthService } from './../../shared/auth.service'
   styleUrls: ['./user-profile.component.scss'],
   standalone: true,
 })
-export class UserProfileComponent implements OnInit {
+export class UserProfileComponent  {
   currentUser: any = {}
 
   constructor(
     public authService: AuthService,
     private actRoute: ActivatedRoute,
   ) {
-    let id = this.actRoute.snapshot.paramMap.get('id')
+    const id = this.actRoute.snapshot.paramMap.get('id')
     this.authService.getUserProfile(id).subscribe((res) => {
       this.currentUser = res.msg
     })
   }
 
-  ngOnInit() {}
+  
 }

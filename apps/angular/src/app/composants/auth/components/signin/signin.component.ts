@@ -15,7 +15,7 @@ import { Router } from '@angular/router'
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule],
 })
-export class SigninComponent implements OnInit {
+export class SigninComponent{
   signinForm: FormGroup
 
   constructor(
@@ -29,7 +29,7 @@ export class SigninComponent implements OnInit {
     })
   }
 
-  ngOnInit() {}
+
 
   loginUser() {
     this.authService.signIn(this.signinForm.value)
