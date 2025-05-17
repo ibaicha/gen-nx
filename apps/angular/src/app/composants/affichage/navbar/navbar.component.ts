@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, Injectable } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { LoginService } from '../../../services/login.service'
 import { MessageService } from 'primeng/api'
 
@@ -14,7 +14,7 @@ import { User } from '../../auth/shared/user'
 import { ButtonModule } from 'primeng/button'
 import { MenubarModule } from 'primeng/menubar'
 import { ToastModule } from 'primeng/toast'
-import { Menu, MenuModule } from 'primeng/menu'
+import { MenuModule } from 'primeng/menu'
 
 @Component({
   selector: 'app-navbar',
@@ -374,12 +374,11 @@ export class NavbarComponent implements OnInit {
         console.log('this.user -------- ', this.user)
         this.loginService.UserConnexion.user.role.name =
           this.user[0]['profil_name']
-
-        const role = this.loginService.UserConnexion.user.role.name
       })
   }
 
   selectNavProfile(profil: string) {
+    /*
     if (profil === 'Admin') {
       const itemsAdmins = [
         {
@@ -471,6 +470,7 @@ export class NavbarComponent implements OnInit {
         },
       ]
     }
+    */
 
     if (profil === 'defaut') {
       this.loginService.items = this.itemsDefaut
@@ -521,7 +521,7 @@ export class NavbarComponent implements OnInit {
       cancelButtonText: 'Fermer',
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      inputValidator: (value: any) => {
+      inputValidator: (value: string) => {
         return new Promise((resolve) => {
           if (value !== '') {
             // resolve()

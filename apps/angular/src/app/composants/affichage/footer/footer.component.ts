@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core'
+import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core'
 import { NgClass, NgFor } from '@angular/common'
 import { ToastModule } from 'primeng/toast'
 
@@ -14,7 +14,7 @@ interface SocialLink {
   standalone: true,
   imports: [NgFor, ToastModule, NgClass],
 })
-export class FooterComponent {
+export class FooterComponent implements AfterViewInit {
   readonly currentYear = new Date().getFullYear()
 
   isDarkMode = false

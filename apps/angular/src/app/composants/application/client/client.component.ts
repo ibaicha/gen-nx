@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core'
+import { Component, ElementRef, Inject, ViewChild, OnInit } from '@angular/core'
 
 import { MessageService, SharedModule } from 'primeng/api'
 import { Observable, Subscription } from 'rxjs'
@@ -6,17 +6,14 @@ import { Observable, Subscription } from 'rxjs'
 import { select, Store } from '@ngrx/store'
 import * as fromClients from '../../../store/client'
 import * as fromOps from '../../../store/op'
- 
-
 
 import * as fromTypeSocietes from '../../../store/type_societe'
 import moment from 'moment'
 
 import { Table, TableModule } from 'primeng/table'
 
-
 import { Router } from '@angular/router'
-import { clone } from 'lodash'
+
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { InputTextareaModule } from 'primeng/inputtextarea'
 
@@ -53,9 +50,9 @@ import { IOp, ITypeSociete } from '@shared-models'
     ConfirmDialogModule,
   ],
 })
-export class ClientComponent {
-  cols: any[] = []
-  @ViewChild('dt') dt: any
+export class ClientComponent implements OnInit {
+  cols: { field: string; header: string; sort: boolean; filter: boolean }[] = []
+  @ViewChild('dt') dt!: Table
   @ViewChild('mapElement') mapElement!: ElementRef
 
   submitted = false
@@ -64,21 +61,21 @@ export class ClientComponent {
 
   clients$: Observable<IOp[]> | undefined
   clients: IOp[] = []
-  client: any = {}
+  client: IOp = {} as IOp
   selectedClients: IOp[] | undefined
 
   /*
   opWithFilters$!: Observable<IOpCustom[]>
   private opWithFiltersSubscription: Subscription | undefined
   opWithFilters: IOpCustom[] = []
-  op: any = {}
+  op: IOp = {} as IOp
   selectedopWithFilters: IOpCustom[] | undefined
   */
 
   opsWithFilters$!: Observable<IOp[]>
   private opsWithFiltersSubscription: Subscription | undefined
   opsWithFilters: IOp[] = []
-  op: any = {}
+  op: IOp = {} as IOp
   selectedopsWithFilters: IOp[] | undefined
 
   ops$: Observable<IOp[]> | undefined
@@ -87,12 +84,6 @@ export class ClientComponent {
 
   isPersonne = false
   isSociete = false
-
-   
-
- 
-
- 
 
   typeSocietes$!: Observable<ITypeSociete[]>
   typeSocietes: ITypeSociete[] = []
@@ -107,7 +98,7 @@ export class ClientComponent {
     //private router: Router,
     @Inject(Router) private router: Router,
     private readonly store: Store,
-  
+
     private clientService: OpService,
     private opService: OpService,
     public appService: AppService,
@@ -116,20 +107,22 @@ export class ClientComponent {
 
   ngBeforeViewInit() {
     this.client = {
-      id: null,
-      code: '',
+      id: 0,
       name: '',
-      adresse: '',
-      telephone: '',
-      email: '',
-      firstName: '',
-      lastName: '',
-      societe: '',
       sigle: '',
-      typeClient: {
-        id: null,
-        name: '',
-      },
+      email: '',
+      telephone: '',
+      adresse: '',
+      latitude: 0,
+      longitude: 0,
+      prenomContact: '',
+      nomContact: '',
+      emailContact: '',
+      telephoneContact: '',
+      isActive: true,
+      formeJuridiqueId: 0,
+      localiteId: 0,
+      pointId: 0,
     }
   }
   ngOnInit() {
@@ -185,20 +178,18 @@ export class ClientComponent {
     this.store.dispatch(fromClients.deleteClient({ client }))
   }
 
-  onGetClient(id: number, listClients: IOp[]): any {
+  onGetClient(id: number, listClients: IOp[]): IOp | undefined {
     const _Client = listClients.find((item) => item.id === id)
     //console.log(_Client);
     return _Client
   }
 
- 
-
-/*************  ✨ Windsurf Command ⭐  *************/
+  /*************  ✨ Windsurf Command ⭐  *************/
   /**
    * Initialise les dispatchers pour récupérer les données des différentes entités
    * Utilisé pour charger les données initiales de la page
    * @returns {void}
-/*******  d3b9b29e-4c4b-415c-96b6-9fefa6567cdf  *******/  private initDispatch(): void {
+/*******  d3b9b29e-4c4b-415c-96b6-9fefa6567cdf  *******/ private initDispatch(): void {
     /*
     this.store.dispatch(fromClients.getClients())
     this.store.dispatch(fromOps.getOps())
@@ -251,11 +242,10 @@ export class ClientComponent {
     this.ops$ = this.store.pipe(select(fromOps.selectOpsList))
     this.isLoadingOps$ = this.store.pipe(select(fromOps.selectOpIsLoading))
 
- 
     this.typeSocietes$ = this.store.pipe(
       select(fromTypeSocietes.selectTypeSocietesList),
     )
-   
+
     /*
     this.clients$.subscribe((data: any[]) => {
       //this.clients = data;
@@ -285,20 +275,15 @@ export class ClientComponent {
       },
     )
 
-    this.ops$.subscribe((data: any[]) => {
+    this.ops$.subscribe((data: IOp[]) => {
       this.ops = data
-      this.ops = data.map((device: any) => {
+      this.ops = data.map((device: IOp) => {
         return { ...device }
       })
     })
 
-
-    
-  
-   
-
-    this.typeSocietes$.subscribe((data: any[]) => {
-      this.typeSocietes = data.map((device: any) => {
+    this.typeSocietes$.subscribe((data: ITypeSociete[]) => {
+      this.typeSocietes = data.map((device: ITypeSociete) => {
         return { ...device }
       })
       /*
@@ -308,8 +293,6 @@ export class ClientComponent {
       });
      */
     })
-
- 
   }
 
   hideDialog() {
@@ -325,7 +308,7 @@ export class ClientComponent {
 
   editClient(client: IOp) {
     this.client = { ...client }
-    this.isPersonneOrSociete()
+
     console.log(' this.client    --- ', client)
     this.titleHeader = 'Update Client'
     this.clientDialog = true
@@ -334,7 +317,6 @@ export class ClientComponent {
   saveClient() {
     this.submitted = true
 
-    this.isPersonneOrSociete()
     console.log(' this.client    --- ', this.client)
 
     if (this.client.id) {
@@ -376,44 +358,36 @@ export class ClientComponent {
     this.clientDialog = false
   }
 
-  isMoment(MyMomment: any) {
+  isMoment(MyMomment: string | Date | moment.Moment) {
     const newDate = moment(MyMomment).format('DD/MM/YYYY')
     return newDate
   }
 
-  isMomentAutre(MyMomment: any) {
+  isMomentAutre(MyMomment: string | Date | moment.Moment) {
     const newDate = moment(MyMomment).format('YYYY-MM-DD')
     return newDate
   }
 
   viderClient() {
     this.client = {
-      id: null,
-      code: '',
+      id: 0,
       name: '',
-      adresse: '',
-      telephone: '',
-      email: '',
-      firstName: '',
-      lastName: '',
-      profession: {
-        id: null,
-        name: '',
-      },
-      societe: '',
       sigle: '',
-      typeSociete: {
-        id: null,
-        name: '',
-        sigle: '',
-      },
-      typeClient: {
-        id: null,
-        name: '',
-      },
+      email: '',
+      telephone: '',
+      adresse: '',
+      latitude: 0,
+      longitude: 0,
+      prenomContact: '',
+      nomContact: '',
+      emailContact: '',
+      telephoneContact: '',
+      isActive: true,
+      formeJuridiqueId: 0,
+      localiteId: 0,
+      pointId: 0,
     }
 
-    this.isPersonneOrSociete()
     this.chargerClient()
   }
 
@@ -431,11 +405,13 @@ export class ClientComponent {
     // TO DO: implement the logic to display client details
   }
 
-  onClicked(event: any) {
-    console.log(event.value)
+  onClicked(event: Event) {
+    // If the event target is an input element, access its value safely
+    const target = event.target as HTMLInputElement;
+    console.log(target.value);
   }
 
-  getValue($event: any): string {
+  getValue($event: Event): string {
     console.log(($event.target as HTMLInputElement).value)
     return ($event.target as HTMLInputElement).value
   }
@@ -448,54 +424,25 @@ export class ClientComponent {
     console.log('tableauPointServicesXLSX')
   }
 
-  onRowExpandRetourne(event: any): any {
+  onRowExpandRetourne(event: { data: IOp }): void {
     console.log('event   --- ', event.data)
     console.log('event.data --- ', event.data.id)
     console.log('event.data --- ', event.data.name)
   }
 
-  onRowExpandRetournePersonne(event: any): any {
+  onRowExpandRetournePersonne(event: { data: { id: number; name: string; typeClient: { name: string } } }): void {
     console.log('event   --- ', event.data)
     console.log('event.data --- ', event.data.id)
     console.log('event.data --- ', event.data.name)
 
     if (event.data.typeClient.name === 'PERSONNE') {
-      return null
+      return
     }
   }
 
-  onChangeTypeClient(event: any): void {
+  onChangeTypeClient(event: { value: { id: number; [key: string]: unknown } }): void {
     console.log(event.value)
     console.log('event_id :' + event.value['id'])
-
-    this.client.typeClient.id = event.value['id']
-    this.client.typeClient.name = event.value['name']
-
-    this.isPersonneOrSociete()
-  }
-
-  isPersonneOrSociete(): void {
-    if (this.client.typeClient.name === 'PERSONNE') {
-      this.client.name = this.client.firstName + ' ' + this.client.lastName
-      this.client.societe = ''
-      this.client.sigle = ''
-      this.client.typeSociete.id = null
-      this.client.typeSociete.name = ''
-      this.isPersonne = true
-      this.isSociete = false
-    } else if (this.client.typeClient.name === 'SOCIETE') {
-      this.client.name = this.client.sigle
-      this.client.firstName = ''
-      this.client.lastName = ''
-      this.client.profession.id = null
-      this.client.profession.name = ''
-      this.isPersonne = false
-      this.isSociete = true
-    } else {
-      this.client.name = ''
-      this.isPersonne = false
-      this.isSociete = false
-    }
   }
 
   onClearTypeClient(): void {
@@ -504,7 +451,7 @@ export class ClientComponent {
   }
 
   getTypeSociete(option: ITypeSociete): string {
-    return  option.name
+    return option.name
   }
 
   showDetailClient(client: IOp) {

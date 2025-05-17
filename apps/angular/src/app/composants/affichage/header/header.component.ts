@@ -41,9 +41,9 @@ export class HeaderComponent implements OnInit {
 
   constructor(public router: Router, public loginService: LoginService) {}
 
-  ngOnInit(): void {
-    const x = this.loginService.UserConnexion.user.username
-  }
+ ngOnInit(): void {
+  console.log('this.loginService.UserConnexion -------- ', this.loginService.UserConnexion)
+ }
 
   openDialog() {
     this.opensweetalertmsg()
@@ -84,7 +84,6 @@ export class HeaderComponent implements OnInit {
     })
   }
   opensweetalertmsg() {
-    let timerInterval
     Swal.fire({
       // icon: 'question',
       //imageUrl: '<img src="../../../assets/images/agricash_logo.jpeg">',
@@ -131,7 +130,7 @@ export class HeaderComponent implements OnInit {
 
       timer: 40000,
       timerProgressBar: true,
-    }).then((result: any) => {
+    }).then((result: import('sweetalert2').SweetAlertResult<string[]>) => {
       if (result.value) {
         this.newLogin['username'] = result.value[0]
         this.newLogin['password'] = result.value[1]
@@ -556,8 +555,8 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/'])
   }
 
-  async openslistprogrammes(programmes_connexion: any) {
-    const { value: entrepotss } = await Swal.fire({
+  async openslistprogrammes(programmes_connexion: Record<string, string>) {
+    await Swal.fire({
       icon: 'success',
       title: 'Liste des programmes',
       backdrop: 'linear-gradient(yellow, orange)',
