@@ -15,6 +15,7 @@ permissions:
 jobs:
   main:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
     env:
       NX_CLOUD_AUTH_TOKEN: ${{ secrets.NX_CLOUD_AUTH_TOKEN }} # Exécute dynamiquement sur les OS définis ci-dessous
 
