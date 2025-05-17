@@ -1,24 +1,26 @@
-name: CI # Nom du workflow GitHub Actions
+name: CI  # Nom du workflow GitHub Actions
 
 on:
   push:
     branches:
-      - master # Déclencheur sur push vers master
-  pull_request: # Déclencheur aussi sur les pull requests
-  workflow_dispatch: # Déclenchement manuel via l'interface GitHub
+      - master  # Déclencheur sur push vers master
+  pull_request:  # Déclencheur aussi sur les pull requests
+  workflow_dispatch:  # Déclenchement manuel via l'interface GitHub
 
 permissions:
-  actions: read # Accès en lecture seule aux métadonnées des actions
-  contents: read # Accès en lecture seule aux contenus du dépôt
-  pull-requests: write # 🔁 Autorise la publication de commentaires dans les PR
+  actions: read   # Accès en lecture seule aux métadonnées des actions
+  contents: read  # Accès en lecture seule aux contenus du dépôt
+  pull-requests: write  # 🔁 Autorise la publication de commentaires dans les PR
 
 jobs:
   main:
-    runs-on: ${{ matrix.os }} # Exécute dynamiquement sur les OS définis ci-dessous
+    runs-on: ${{ matrix.os }}
+    env:
+      NX_CLOUD_AUTH_TOKEN: ${{ secrets.NX_CLOUD_AUTH_TOKEN }}  # Exécute dynamiquement sur les OS définis ci-dessous
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest] # Matrice des OS
+        os: [ubuntu-latest, macos-latest, windows-latest]  # Matrice des OS
       max-parallel: 3 # Limite le nombre de jobs simultanés à 3
 
     steps:
