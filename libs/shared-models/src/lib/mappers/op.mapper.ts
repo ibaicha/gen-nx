@@ -1,5 +1,4 @@
 import { OpDto, CreateOpDto } from '../dtos/op.dto'
-// import { IOp } from '../interfaces/interfaces'
 
 import { Op } from '@prisma/client'
 
