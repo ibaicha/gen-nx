@@ -1,20 +1,27 @@
 import { Test, TestingModule } from '@nestjs/testing'
+import { TypeMouvementIntrantController } from './type_mouvement_intrant.controller'
 import { TypeMouvementIntrantService } from './type_mouvement_intrant.service'
+import { PrismaService } from '../../prisma/prisma.service'
 
-describe('TypeMouvementIntrantService', () => {
-  let service: TypeMouvementIntrantService
+describe('TypeMouvementIntrantController', () => {
+  let controller: TypeMouvementIntrantController
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [TypeMouvementIntrantService],
+      controllers: [TypeMouvementIntrantController],
+      providers: [
+        TypeMouvementIntrantService,
+        {
+          provide: PrismaService,
+          useValue: {}, // 👈 mock vide (ajuste selon les méthodes appelées dans ton service)
+        },
+      ],
     }).compile()
 
-    service = module.get<TypeMouvementIntrantService>(
-      TypeMouvementIntrantService,
-    )
+    controller = module.get<TypeMouvementIntrantController>(TypeMouvementIntrantController)
   })
 
   it('should be defined', () => {
-    expect(service).toBeDefined()
+    expect(controller).toBeDefined()
   })
 })
