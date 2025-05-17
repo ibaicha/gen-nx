@@ -4,7 +4,7 @@ export class User {
   firstName: string
   email: string
   password: string
-  profil_id: Number
+  profil_id: number
 
   constructor() {
     this.id = 0
