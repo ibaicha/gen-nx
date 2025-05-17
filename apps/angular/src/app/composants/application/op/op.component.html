@@ -1,0 +1,742 @@
+<div *ngIf="loading" class="overlay">
+  <p-progressSpinner
+    strokeWidth="5"
+    styleClass="custom-spinner"
+  ></p-progressSpinner>
+</div>
+
+<p-toast [style]="{ marginTop: '80px' }"></p-toast>
+<br />
+<p-toolbar>
+  <!-- Section de gauche -->
+  <div class="flex items-center gap-4 w-full">
+    <!-- Portefeuille -->
+    <div class="flex items-center">
+      <label class="text-lg w-30" for="portefeuille-dropdown"
+        >EST CLIENT?
+      </label>
+      <p-dropdown
+        [options]="portefeuilles"
+        class="w-48 border border-gray-100 rounded-md shadow-sm focus:ring focus:ring-blue-100 ml-4"
+        [(ngModel)]="selectedPortefeuille"
+        (onChange)="onPortefeuilleChange($event)"
+      >
+      </p-dropdown>
+    </div>
+
+    <!-- Agences -->
+    @if (selectedPortefeuille === 2) {
+    <div class="flex items-center flex-1">
+      <label class="text-lg w-24" for="agence-dropdown">Agences</label>
+      <p-multiSelect
+        [options]="agences"
+        class="flex-1 border border-gray-100 rounded-md shadow-sm focus:ring focus:ring-blue-100"
+        [(ngModel)]="selectedAgences"
+        optionLabel="name"
+        optionValue="id"
+        display="chip"
+        [showClear]="true"
+        (onClear)="onAgencesClear()"
+        (onChange)="onAgencesChange()"
+        placeholder="Select Agences"
+        [maxSelectedLabels]="agences.length"
+        selectedItemsLabel="{0} items selected"
+      >
+      </p-multiSelect>
+    </div>
+    }
+  </div>
+</p-toolbar>
+<br />
+<div id="mapElement" #mapElement></div>
+
+<div class="card">
+  <p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+      <button
+        type="button"
+        pButton
+        pRipple
+        label="Ajout"
+        icon="pi pi-plus"
+        class="p-button-success p-mr-2"
+        (click)="showDialogOp('add', this.opForm.value)"
+        [disabled]="disableAdd"
+        title="Add new item"
+      ></button>
+      <!--<button pButton pRipple [label]="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedPointServices()" [disabled]="!selectedPointServices || !selectedPointServices.length"></button>-->
+    </ng-template>
+    <ng-template pTemplate="right">
+      <button
+        type="button"
+        pButton
+        pRipple
+        label="Export"
+        icon="pi pi-upload"
+        class="p-button-help"
+        (click)="getValue($event)"
+        title="Export data"
+      ></button>
+    </ng-template>
+  </p-toolbar>
+
+  <p-table
+    #myTabClients
+    [columns]="cols"
+    [value]="this.opsWithFilters"
+    dataKey="id"
+    [tableStyle]="{ 'min-width': '60rem' }"
+    [expandedRowKeys]="expandedRows"
+    (onRowExpand)="onRowExpand($event)"
+    sortMode="single"
+    rowExpandMode="single"
+    [rows]="25"
+    [paginator]="true"
+    [rowHover]="true"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[25, 50, 100]"
+    [scrollable]="true"
+    scrollHeight="600px"
+    (onRowExpand)="this.onRowExpandRetourne($event)"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  >
+    <br />
+
+    <ng-template pTemplate="caption">
+      <div
+        class="flex justify-between items-center bg-primary text-white p-3 rounded-lg shadow-md"
+      >
+        <h3 class="text-lg font-semibold">Gestion des Opérations</h3>
+        <div class="flex gap-2">
+          <p-button
+            label="Tout Déplier"
+            icon="pi pi-angle-double-down"
+            class="p-button-success p-button-outlined"
+            (click)="expandAll()"
+          />
+          <p-button
+            label="Tout Réduire"
+            icon="pi pi-angle-double-up"
+            class="p-button-danger p-button-outlined"
+            (click)="collapseAll()"
+          />
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="caption">
+      <div class="flex">
+        <button
+          type="button"
+          pButton
+          label="Clear"
+          class="p-button-outlined"
+          icon="pi pi-filter-slash"
+          (click)="clear(myTabClients)"
+          title="Clear filters"
+        >
+          Clear
+        </button>
+        <span class="p-input-icon-left ml-auto">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            type="text"
+            [(ngModel)]="globalFilter"
+            (input)="
+              myTabClients.filterGlobal($any($event.target).value, 'contains')
+            "
+            placeholder="Search keyword"
+          />
+        </span>
+      </div>
+    </ng-template>
+    <br />
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th style="width: 3rem; background-color: aqua">
+          <i>CREDITS</i>
+        </th>
+
+        @for (col of columns; track $index) { @if(col.field !==
+        'havePortefeuille' && col.field !== 'havePortefeuilleOnSociete' &&
+        col.field !== 'havePortefeuilleOnAgence' && col.field !==
+        'havePortefeuilleOnAgences'){
+
+        <th [pSortableColumn]="col.field" style="background-color: aqua">
+          @if (col.filter) {
+          <p-columnFilter
+            type="text"
+            [field]="col.field"
+            display="menu"
+            class="ml-auto"
+          ></p-columnFilter>
+          }
+          {{ col.header }}
+          @if (col.sort) {
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+          }
+        </th>
+        }}@empty { Empty list of credits } @if
+        (this.loginService.UserConnexion.user.role.name === 'Agence') {
+        <th
+          colspan="2"
+          style="
+            text-align: center;
+            vertical-align: middle;
+            background-color: aqua;
+          "
+        >
+          ACTIONS
+        </th>
+        } @else if (this.loginService.UserConnexion.user.role.name !== 'Agence')
+        {
+        <th
+          colspan="1"
+          style="
+            text-align: center;
+            vertical-align: middle;
+            background-color: aqua;
+          "
+        >
+          ACTIONS
+        </th>
+        }
+      </tr>
+    </ng-template>
+
+    <ng-template
+      pTemplate="body"
+      let-rowData
+      let-columns="columns"
+      let-expanded="expanded"
+    >
+      <tr>
+        <td>
+          <p-button
+            type="button"
+            pRipple
+            [pRowToggler]="rowData"
+            [text]="true"
+            [rounded]="true"
+            [plain]="true"
+            [style]="{
+              backgroundColor: expanded ? '#ff6600' : 'white',
+              color: expanded ? 'white' : '#ff6600',
+            }"
+            [styleClass]="expanded ? 'p-button-outlined' : 'p-button-text'"
+            [disabled]="!rowData['havePortefeuilleOnAgences']"
+            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+            aria-label="Toggle row"
+          />
+        </td>
+
+        @for (col of columns; track $index) { @if(col.field !==
+        'havePortefeuille' && col.field !== 'havePortefeuilleOnSociete' &&
+        col.field !== 'havePortefeuilleOnAgence' && col.field !==
+        'havePortefeuilleOnAgences'){
+        <td>
+          <span>{{ rowData[col.field] }}</span>
+        </td>
+        }}
+
+        <td>
+          <button
+            type="button"
+            pButton
+            pRipple
+            icon="pi pi-eye"
+            class="p-button-rounded p-button-info p-mr-2"
+            (click)="editOp(rowData)"
+            title="Edit Client"
+          ></button>
+        </td>
+        @if (this.loginService.UserConnexion.user.role.name === 'Agence') {
+        <td>
+          <p-button
+            type="button"
+            pRipple
+            class="p-button-rounded"
+            (click)="showDetailOp(rowData)"
+            title="Show Details"
+            [text]="true"
+            [rounded]="true"
+            [plain]="true"
+            [style]="{
+              backgroundColor: rowData['havePortefeuille']
+                ? '#ff6600'
+                : 'white',
+              color: rowData['havePortefeuille'] ? 'white' : '#ff6600',
+              border: rowData['havePortefeuille']
+                ? '1px solid #ff6600'
+                : '1px solid #ff6600',
+            }"
+            [styleClass]="expanded ? 'p-button-outlined' : 'p-button-text'"
+            [disabled]="rowData['havePortefeuilleOnAgence']"
+            icon="pi pi-plus"
+          ></p-button>
+        </td>
+        }
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-op>
+      @if (op.AgenceOp.length > 0) {
+      <tr>
+        <td colspan="4">
+          <div
+            class="p-4 bg-gray-100 rounded-lg shadow-md border border-gray-300"
+          >
+            <h5 class="text-lg font-semibold text-primary mb-3">
+              🔹 Au portefeuille de: {{ op.name }}
+            </h5>
+
+            <p-table [value]="op.AgenceOp" dataKey="id" class="p-datatable-sm">
+              <ng-template pTemplate="header">
+                <tr class="bg-primary text-white">
+                  <th class="p-3">📌 ID Agence</th>
+                  <th class="p-3">🏢 Nom Agence</th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-order>
+                @if (order.agence.societeId ===
+                +this.appService.getLocalselectedSocieteId()) {
+                <tr class="hover:bg-gray-200 transition">
+                  <td class="p-3 border-b border-gray-300">
+                    {{ order.agence.id }}
+                  </td>
+                  <td class="p-3 border-b border-gray-300">
+                    {{ order.agence.name }}
+                  </td>
+                </tr>
+                }
+              </ng-template>
+            </p-table>
+          </div>
+        </td>
+      </tr>
+      }
+    </ng-template>
+
+    <ng-template pTemplate="summary">
+      <div class="p-d-flex p-ai-center p-jc-between">
+        Au total :
+        {{ myTabClients.filteredValue ? myTabClients.filteredValue.length : 0 }}
+        op(s).
+      </div>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  header="Header"
+  [(visible)]="opDialogDisplay"
+  [style]="{ width: '60vw' }"
+  (onHide)="hideDialog()"
+  [resizable]="false"
+  [modal]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [contentStyle]="{ height: '530px' }"
+>
+  <ng-template pTemplate="header">
+    <span class="p-inputgroup-addon">
+      <i class="pi pi-file-edit" style="font-size: 2.5rem; color: green"></i>
+    </span>
+    <span class="text-xl font-bold">{{ this.titleOpDialogCredit }}</span>
+  </ng-template>
+  <ng-template pTemplate="body">
+    <br />
+    <div>
+      <form [formGroup]="opForm" (ngSubmit)="(null)">
+        <p-steps
+          [model]="dialogPages"
+          [(activeIndex)]="dialogPageIndex"
+          [readonly]="false"
+        >
+        </p-steps>
+        <hr class="horizontal-line" />
+        <br />
+        @switch (dialogPageIndex) { @case (PageNames.DebutPage) {
+        <br />
+        <div>
+          <div class="p-inputgroup">
+            <span class="width-25"
+              ><i class="nom-icon">Forme Juridique</i></span
+            >
+            <p-dropdown
+              inputId="formeJuridiqueId"
+              [options]="formeJuridiques"
+              [style]="{ width: '200px' }"
+              optionLabel="name"
+              optionValue="id"
+              placeholder="Choisir..."
+              formControlName="formeJuridiqueId"
+            ></p-dropdown>
+          </div>
+          <br />
+          <div class="p-inputgroup">
+            <span class="width-25">
+              <i class="nom-icon">Nom</i>
+            </span>
+            <input
+              type="text"
+              pInputText
+              inputId="name"
+              pTooltip="Entrer Nom"
+              tooltipPosition="top"
+              placeholder="Nom..."
+              id="name"
+              formControlName="name"
+            />
+          </div>
+          <br />
+          <div class="p-inputgroup">
+            <span class="width-25">
+              <i class="nom-icon">Sigle</i>
+            </span>
+
+            <input
+              type="text"
+              pInputText
+              inputId="sigle"
+              pTooltip="Entrer Sigle"
+              tooltipPosition="top"
+              placeholder="Sigle..."
+              id="sigle"
+              formControlName="sigle"
+            />
+          </div>
+          <br />
+          <div class="card flex justify-content-left">
+            <span style="width: 25%">
+              <i style="font-size: 1.5rem; color: blue; font-style: normal"
+                >Localité</i
+              >
+            </span>
+            <p-autoComplete
+              [suggestions]="filteredLocaliteAutocompletes!"
+              field="name"
+              [group]="true"
+              [dropdown]="true"
+              emptyMessage="Aucune localité trouvée"
+              (onSelect)="onSelectLocalite($event)"
+              (completeMethod)="filterLocalite($event)"
+              formControlName="localiteId"
+              inputId="localiteId"
+              id="localiteId"
+              pTooltip="Selectionner Localité"
+              tooltipPosition="top"
+            >
+              <ng-template let-group pTemplate="group">
+                <div
+                  class="flex items-center justify-between gap-2 p-2 rounded-md font-semibold"
+                  [ngClass]="getDepartmentColor(group.label)"
+                >
+                  <div class="flex items-center gap-2">
+                    <i class="pi pi-map-marker"></i>
+                    <span>{{ group.label }}</span>
+                  </div>
+                  <div
+                    class="bg-white text-gray-800 text-xs px-2 py-1 rounded-full shadow-sm"
+                  >
+                    {{ group.items.length }}
+                  </div>
+                </div>
+              </ng-template>
+
+              <ng-template let-localite pTemplate="item">
+                <div class="flex items-center gap-2 pl-6">
+                  <i class="pi pi-map"></i>
+                  <span>{{ localite.name }}</span>
+                </div>
+              </ng-template>
+
+              <ng-template let-localite pTemplate="selectedItem">
+                <div *ngIf="localite" class="flex items-center gap-2">
+                  <i class="pi pi-map-marker"></i>
+                  <span
+                    >{{ localite.departementName }} / {{ localite.name }}</span
+                  >
+                </div>
+                <div *ngIf="!localite">Sélectionner Localité</div>
+              </ng-template>
+            </p-autoComplete>
+          </div>
+          <br />
+          <div class="p-inputgroup">
+            <span class="width-25"><i class="nom-icon">Email</i></span>
+            <input
+              type="email"
+              pInputText
+              inputId="email"
+              placeholder="Email..."
+              formControlName="email"
+            />
+          </div>
+          <br />
+          <div class="p-inputgroup">
+            <span class="width-25"><i class="nom-icon">Téléphone</i></span>
+            <input
+              type="text"
+              pInputText
+              inputId="telephone"
+              placeholder="Téléphone..."
+              formControlName="telephone"
+            />
+          </div>
+          <br />
+          <div class="p-inputgroup">
+            <span class="width-25"><i class="nom-icon">Adresse</i></span>
+            <input
+              type="text"
+              pInputText
+              inputId="adresse"
+              placeholder="Adresse..."
+              formControlName="adresse"
+            />
+          </div>
+
+          <br />
+          <div class="p-inputgroup">
+            <span class="width-25"><i class="nom-icon">Latitude</i></span>
+            <input
+              type="number"
+              pInputText
+              inputId="latitude"
+              placeholder="Latitude..."
+              formControlName="latitude"
+            />
+          </div>
+
+          <div class="p-inputgroup">
+            <span class="width-25"><i class="nom-icon">Longitude</i></span>
+            <input
+              type="number"
+              pInputText
+              inputId="longitude"
+              placeholder="Longitude..."
+              formControlName="longitude"
+            />
+          </div>
+          <br />
+          <p-footer>
+            <p-toolbar>
+              <div class="p-toolbar-group-start">
+                <p-button
+                  icon="pi pi-check"
+                  (click)="opDialogDisplay = false"
+                  label="Close"
+                  styleClass="p-button-text"
+                ></p-button>
+              </div>
+              <div class="p-toolbar-group-end">
+                <p-button
+                  icon="pi pi-arrow-right"
+                  (click)="allerSuivant()"
+                  label="Suivant"
+                  styleClass="p-button-text"
+                ></p-button>
+              </div>
+            </p-toolbar>
+          </p-footer>
+        </div>
+        } @case (PageNames.FinPage) {
+        <br />
+        <div>
+          <div class="p-inputgroup">
+            <span class="width-25"><i class="nom-icon">Prénom</i></span>
+            <input
+              type="text"
+              pInputText
+              inputId="prenomContact"
+              placeholder="Prénom..."
+              formControlName="prenomContact"
+            />
+          </div>
+          <br />
+          <div class="p-inputgroup">
+            <span class="width-25"><i class="nom-icon">Nom</i></span>
+            <input
+              type="text"
+              pInputText
+              inputId="nomContact"
+              placeholder="Nom..."
+              formControlName="nomContact"
+            />
+          </div>
+          <br />
+          <div class="p-inputgroup">
+            <span class="width-25"><i class="nom-icon">Email</i></span>
+            <input
+              type="email"
+              pInputText
+              inputId="emailContact"
+              placeholder="Email..."
+              formControlName="emailContact"
+            />
+          </div>
+          <br />
+          <div class="p-inputgroup">
+            <span class="width-25"><i class="nom-icon">Téléphone</i></span>
+            <input
+              type="text"
+              pInputText
+              inputId="telephoneContact"
+              placeholder="Téléphone..."
+              formControlName="telephoneContact"
+            />
+          </div>
+
+          <!-- TRAIT DE SÉPARATION -->
+          <hr class="my-4 border-t-2 border-gray-300" />
+
+          <div class="p-inputgroup">
+            <span class="width-25">
+              <i class="nom-icon"></i>
+            </span>
+            <input
+              type="checkbox"
+              inputId="isPorteFeuille"
+              placeholder="Est client?"
+              id="isPorteFeuille"
+              formControlName="isPorteFeuille"
+            />
+            <label for="isPorteFeuille" class="width-25 p-checkbox-label"
+              ><i class="nom-icon">Est client?</i></label
+            >
+          </div>
+          <div class="p-inputgroup">
+            <span class="width-25">
+              <i class="nom-icon">Date</i>
+            </span>
+            <p-calendar
+              [(ngModel)]="selectedDate"
+              inputId="datePorteFeuille"
+              formControlName="datePorteFeuille"
+              placeholder="Date de crédit"
+              dateFormat="dd/mm/yy"
+              [showIcon]="true"
+              placeholder="Date..."
+              pTooltip="Choisir Date"
+              tooltipPosition="top"
+              panelStyleClass="calendar-fun-panel"
+              inputStyleClass="calendar-fun-input"
+              [style]="{ borderRadius: '0.75rem', width: '300px' }"
+              [icon]="calendarIcon"
+              onselect="onSelectDateChange($event)"
+            ></p-calendar>
+          </div>
+          <br />
+          <div class="p-inputgroup">
+            <span class="width-25">
+              <i class="nom-icon">Compte</i>
+            </span>
+
+            <input
+              type="text"
+              pInputText
+              inputId="compte"
+              pTooltip="Entrer Compte"
+              tooltipPosition="top"
+              placeholder="Compte..."
+              id="compte"
+              formControlName="compte"
+            />
+          </div>
+          <br />
+          <div class="card flex justify-content-left">
+            <span style="width: 25%">
+              <i style="font-size: 1.5rem; color: blue; font-style: normal"
+                >Point Collecte</i
+              >
+            </span>
+            <p-autoComplete
+              [suggestions]="filteredPoints"
+              field="name"
+              [dropdown]="true"
+              emptyMessage="Aucun PC trouvé"
+              placeholder="Choisir un PC ..."
+              [forceSelection]="false"
+              (completeMethod)="filterPonitCollecte($event)"
+              (onFocus)="filterPonitCollecte({ query: '' })"
+              (onDropdownClick)="filterPonitCollecte({ query: '' })"
+              formControlName="pointCollecteId"
+              inputId="pointCollecteId"
+              id="pointCollecteId"
+              pTooltip="Sélectionner PC"
+              tooltipPosition="top"
+            >
+              <ng-template let-pointCollecte pTemplate="item">
+                <div class="flex items-center gap-2">
+                  <i class="pi pi-map"></i>
+                  <span>{{ pointCollecte.name }}</span>
+                </div>
+              </ng-template>
+            </p-autoComplete>
+          </div>
+          <br />
+
+          <div class="p-inputgroup">
+            <span class="width-25">
+              <i class="nom-icon">Registre Commerce</i>
+            </span>
+
+            <input
+              type="text"
+              pInputText
+              inputId="numRegistre"
+              pTooltip="Entrer RC"
+              tooltipPosition="top"
+              placeholder="RC ..."
+              id="numRegistre"
+              formControlName="numRegistre"
+            />
+          </div>
+          <br />
+          <div class="p-inputgroup">
+            <span class="width-25">
+              <i class="nom-icon">Ninéa</i>
+            </span>
+
+            <input
+              type="text"
+              pInputText
+              inputId="ninea"
+              pTooltip="Entrer Ninéa"
+              tooltipPosition="top"
+              placeholder="Ninéa ..."
+              id="ninea"
+              formControlName="ninea"
+            />
+          </div>
+
+          <p-footer>
+            <p-toolbar>
+              <div class="p-toolbar-group-start">
+                <p-button
+                  icon="pi pi-arrow-left"
+                  (click)="allerAvant()"
+                  label="Retour"
+                  styleClass="p-button-text"
+                ></p-button>
+              </div>
+              <div class="p-toolbar-group-end">
+                <p-confirmDialog [style]="{ width: '20vw' }"></p-confirmDialog>
+                <p-button
+                  icon="pi pi-check"
+                  (click)="onSaveOp()"
+                  [disabled]="!estFormulaireValide()"
+                ></p-button>
+                <p-messages [value]="msgs"></p-messages>
+              </div>
+            </p-toolbar>
+          </p-footer>
+        </div>
+        } }
+      </form>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer"> </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

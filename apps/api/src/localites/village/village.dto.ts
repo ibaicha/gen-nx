@@ -1,17 +1,17 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from 'class-validator'
 
 export class CreateVillageDto {
-    @IsNotEmpty()
-  readonly name!: string;
-    @IsNotEmpty()
-  readonly localiteId!: number;
-    readonly communeId!: number;
+  @IsNotEmpty()
+  readonly name!: string
+  @IsNotEmpty()
+  readonly localiteId!: number
+  readonly communeId!: number
 }
 
 export class UpdateVillageDto {
   @IsNotEmpty()
-  readonly name!: string;
+  readonly name!: string
   @IsNotEmpty()
-  readonly localiteId!: number;
-  readonly communeId!: number;
+  readonly localiteId!: number
+  readonly communeId!: number
 }

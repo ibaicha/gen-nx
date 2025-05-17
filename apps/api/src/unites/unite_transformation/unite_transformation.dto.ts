@@ -1,24 +1,15 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from 'class-validator'
 
 export class CreateUniteTransformationDto {
-    @IsNotEmpty()
-  readonly name!: string;
-    readonly sigle!: string;
-    readonly adresse!: string;
-    readonly telephone!: string;
-
-
-
+  @IsNotEmpty()
+  readonly name!: string
+  @IsNotEmpty()
+  readonly pointId!: number
 }
 
 export class UpdateUniteTransformationDto {
   @IsNotEmpty()
-  readonly name!: string;
-  readonly sigle!: string;
-  readonly adresse!: string;
-  readonly telephone!: string;
-
-
-
-
+  readonly name!: string
+  @IsNotEmpty()
+  readonly pointId!: number
 }

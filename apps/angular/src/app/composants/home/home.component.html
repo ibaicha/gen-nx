@@ -1,0 +1,38 @@
+<div
+  class="h-screen flex items-center justify-center bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 animate-gradient-x"
+>
+  <div class="flex flex-col items-center">
+    <img
+      class="w-48 h-48 object-contain rounded-full border-8 border-white animate-pulse"
+      src="public/assets/images/vfs.jpeg"
+      alt="Producteurs de la VFS"
+    />
+    <div class="text-center text-white mt-6">
+      <p class="text-6xl font-bold mb-4 animate-bounce">
+        <span>Ges'OPs </span> 👋
+      </p>
+      <p class="uppercase text-xl mt-4 animate-pulse">
+        Suivi <span class="text-red-500">❤</span> Organisations Paysannes
+      </p>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes gradient-x {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .animate-gradient-x {
+    background-size: 200% 200%;
+    animation: gradient-x 6s ease infinite;
+  }
+</style>

@@ -8,15 +8,18 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { UniteGrandeurService } from './unite_grandeur.service';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { UniteGrandeurService } from './unite_grandeur.service'
+import { AuthGuard } from '@nestjs/passport'
 
-import { CreateUniteGrandeurDto, UpdateUniteGrandeurDto } from './unite_grandeur.dto';
+import {
+  CreateUniteGrandeurDto,
+  UpdateUniteGrandeurDto,
+} from './unite_grandeur.dto'
 
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('UniteGrandeur')
 @Controller('unite_grandeurs')
@@ -25,7 +28,7 @@ export class UniteGrandeurController {
 
   @Get()
   getAll() {
-    return this.uniteGrandeurService.getAll();
+    return this.uniteGrandeurService.getAll()
   }
 
   @Get('/:id')
@@ -33,14 +36,14 @@ export class UniteGrandeurController {
     @Param('id', ParseIntPipe) uniteGrandeurId: number,
     createUniteGrandeurDto: CreateUniteGrandeurDto,
   ) {
-    return this.uniteGrandeurService.getOne(uniteGrandeurId);
+    return this.uniteGrandeurService.getOne(uniteGrandeurId)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(@Body() createUniteGrandeurDto: CreateUniteGrandeurDto) {
-    return this.uniteGrandeurService.create(createUniteGrandeurDto);
+    return this.uniteGrandeurService.create(createUniteGrandeurDto)
   }
 
   @ApiBearerAuth()
@@ -51,7 +54,7 @@ export class UniteGrandeurController {
     createUniteGrandeurDto: CreateUniteGrandeurDto,
     @Req() request: Request,
   ) {
-    return this.uniteGrandeurService.delete(uniteGrandeurId);
+    return this.uniteGrandeurService.delete(uniteGrandeurId)
   }
 
   @ApiBearerAuth()
@@ -64,6 +67,6 @@ export class UniteGrandeurController {
     return this.uniteGrandeurService.update(
       uniteGrandeurId,
       updateUniteGrandeurDto,
-    );
+    )
   }
 }

@@ -1,146 +1,145 @@
-
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator'
 
 export interface IMouvementIntrant {
-  id: number;
-  date: string;
-  pu: number;
-  quantiteEntreeEmballage: number;
-  quantiteSortieEmballage: number;
-  quantiteEntreeSortieEmballage: number;
-  nombreUnite: number;
-  valeur: number;
-  lot: string;
+  id: number
+  date: string
+  pu: number
+  quantiteEntreeEmballage: number
+  quantiteSortieEmballage: number
+  quantiteEntreeSortieEmballage: number
+  nombreUnite: number
+  valeur: number
+  lot: string
 
-  chargeExploitationId: number;
-  chargeExploitationName: string;
-  chargeExploitationUniteGrandeurId: number;
-  chargeExploitationUniteGrandeurName: string;
+  chargeExploitationId: number
+  chargeExploitationName: string
+  chargeExploitationUniteGrandeurId: number
+  chargeExploitationUniteGrandeurName: string
 
-  modeEntreeSortieIntrantId: number;
-  modeEntreeSortieIntrantName: string;
+  modeEntreeSortieIntrantId: number
+  modeEntreeSortieIntrantName: string
 
-  anneeId: number;
-  anneeName: string;
-  anneeValeur: number;
+  anneeId: number
+  anneeName: string
+  anneeValeur: number
 
-  saisonId: number;
-  saisonName: string;
-  saisonDescription: string;
+  saisonId: number
+  saisonName: string
+  saisonDescription: string
 
-  emballageIntrantId: number;
-  emballageIntrantName: string;
+  emballageIntrantId: number
+  emballageIntrantName: string
 
-  opId: number;
+  opId: number
 
-  opName: string;
-  opSigle: string;
+  opName: string
+  opSigle: string
 
-  fournisseurId: number;
-  fournisseurName: string;
-  fournisseurSigle: string;
+  societeId: number
+  societeName: string
+  societeSigle: string
 
-  partenaireId: number;
-  partenaireName: string;
-  partenaireSigle: string;
+  partenaireId: number
+  partenaireName: string
+  partenaireSigle: string
 
-  emplacementId: number;
-  emplacementName: string;
-  entrepotId: number;
-  entrepotName: string;
-  pointId: number;
-  pointName: string;
+  emplacementId: number
+  emplacementName: string
+  entrepotId: number
+  entrepotName: string
+  pointId: number
+  pointName: string
 
-  emplacementSourceId: number;
-  emplacementSourceName: string;
-  entrepotSourceId: number;
-  entrepotSourceName: string;
-  pointSourceId: number;
-  pointSourceName: string;
+  emplacementSourceId: number
+  emplacementSourceName: string
+  entrepotSourceId: number
+  entrepotSourceName: string
+  pointSourceId: number
+  pointSourceName: string
 
-  emplacementDestinationId: number;
-  emplacementDestinationName: string;
-  entrepotDestinationId: number;
-  entrepotDestinationName: string;
-  pointDestinationId: number;
-  pointDestinationName: string;
+  emplacementDestinationId: number
+  emplacementDestinationName: string
+  entrepotDestinationId: number
+  entrepotDestinationName: string
+  pointDestinationId: number
+  pointDestinationName: string
 }
 
 export class GetMouvementIntrantParamsDTO {
-  anneeId?: number;
-  saisonId?: number;
-  emplacementId?: number;
-  chargeExploitationId?: number;
-  opId?: number;
-  fournisseurId?: number;
-  lot?: string;
-  pointId?: number;
+  anneeId?: number
+  saisonId?: number
+  emplacementId?: number
+  chargeExploitationId?: number
+  opId?: number
+  societeId?: number
+  lot?: string
+  pointId?: number
 }
 
 export class CreateMouvementIntrantDto {
   @IsNotEmpty()
-  readonly date!: Date;
+  readonly date!: Date
   @IsNotEmpty()
-  readonly pu!: number;
+  readonly pu!: number
   @IsNotEmpty()
-  readonly quantiteEntreeEmballage!: number;
+  readonly quantiteEntreeEmballage!: number
   @IsNotEmpty()
-  readonly quantiteSortieEmballage!: number;
+  readonly quantiteSortieEmballage!: number
   @IsNotEmpty()
-  readonly nombreUnite!: number;
+  readonly nombreUnite!: number
   @IsNotEmpty()
-  readonly valeur!: number;
-  readonly lot!: string;
-  readonly opId!: number;
-  readonly fournisseurId!: number;
+  readonly valeur!: number
+  readonly lot!: string
+  readonly opId!: number
+  readonly societeId!: number
   @IsNotEmpty()
-  readonly chargeExploitationId!: number;
+  readonly chargeExploitationId!: number
   @IsNotEmpty()
-  readonly modeEntreeSortieIntrantId!: number;
+  readonly modeEntreeSortieIntrantId!: number
   @IsNotEmpty()
-  readonly emplacementId!: number;
+  readonly emplacementId!: number
   @IsNotEmpty()
-  readonly emplacementSourceId!: number;
+  readonly emplacementSourceId!: number
   @IsNotEmpty()
-  readonly emplacementDestinationId!: number;
+  readonly emplacementDestinationId!: number
   @IsNotEmpty()
-  readonly emballageIntrantId!: number;
+  readonly emballageIntrantId!: number
   @IsNotEmpty()
-  readonly anneeId!: number;
+  readonly anneeId!: number
   @IsNotEmpty()
-  readonly saisonId!: number;
+  readonly saisonId!: number
 }
 
 export class UpdateMouvementIntrantDto {
   @IsNotEmpty()
-  readonly date!: Date;
+  readonly date!: Date
   @IsNotEmpty()
-  readonly pu!: number;
+  readonly pu!: number
   @IsNotEmpty()
-  readonly quantiteEntreeEmballage!: number;
+  readonly quantiteEntreeEmballage!: number
   @IsNotEmpty()
-  readonly quantiteSortieEmballage!: number;
+  readonly quantiteSortieEmballage!: number
   @IsNotEmpty()
-  readonly nombreUnite!: number;
+  readonly nombreUnite!: number
   @IsNotEmpty()
-  readonly valeur!: number;
-  readonly lot!: string;
-  readonly opId!: number;
-  readonly fournisseurId!: number;
+  readonly valeur!: number
+  readonly lot!: string
+  readonly opId!: number
+  readonly societeId!: number
   @IsNotEmpty()
-  readonly chargeExploitationId!: number;
+  readonly chargeExploitationId!: number
   @IsNotEmpty()
-  readonly modeEntreeSortieStockId!: number;
+  readonly modeEntreeSortieStockId!: number
   @IsNotEmpty()
-  readonly emplacementId!: number;
+  readonly emplacementId!: number
   @IsNotEmpty()
-  readonly emplacementSourceId!: number;
+  readonly emplacementSourceId!: number
   @IsNotEmpty()
-  readonly emplacementDestinationId!: number;
+  readonly emplacementDestinationId!: number
   @IsNotEmpty()
-  readonly emballageIntrantId!: number;
+  readonly emballageIntrantId!: number
   @IsNotEmpty()
-  readonly anneeId!: number;
+  readonly anneeId!: number
   @IsNotEmpty()
-  readonly saisonId!: number;
+  readonly saisonId!: number
 }

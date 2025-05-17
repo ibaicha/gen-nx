@@ -1,10 +1,9 @@
-import { Module } from '@nestjs/common';
-import { ModeEntreeSortieStockService } from './mode_entree_sortie_stock.service';
-import { ModeEntreeSortieStockController } from './mode_entree_sortie_stock.controller';
- 
+import { Module } from '@nestjs/common'
+import { ModeEntreeSortieStockService } from './mode_entree_sortie_stock.service'
+import { ModeEntreeSortieStockController } from './mode_entree_sortie_stock.controller'
 
 @Module({
   controllers: [ModeEntreeSortieStockController],
-  providers: [ModeEntreeSortieStockService]
+  providers: [ModeEntreeSortieStockService],
 })
 export class ModeEntreeSortieStockModule {}

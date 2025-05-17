@@ -1,12 +1,9 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { PrismaService } from '../../prisma/prisma.service'
 import {
   CreateEmballageIntrantDto,
   UpdateEmballageIntrantDto,
-} from './emballage_intrant.dto';
+} from './emballage_intrant.dto'
 
 @Injectable()
 export class EmballageIntrantService {
@@ -36,16 +33,16 @@ export class EmballageIntrantService {
           },
         },
       },
-    });
+    })
   }
 
   async getOne(emballageIntrantId: number) {
     const emballageIntrant =
       await this.prismaService.emballageIntrant.findUnique({
         where: { id: emballageIntrantId },
-      });
-    if (!emballageIntrant) throw new NotFoundException('Post not found');
-    return emballageIntrant;
+      })
+    if (!emballageIntrant) throw new NotFoundException('Post not found')
+    return emballageIntrant
   }
   async create(createEmballageIntrantDto: CreateEmballageIntrantDto) {
     const {
@@ -58,7 +55,7 @@ export class EmballageIntrantService {
       isDefault,
       chargeExploitationId,
       typeEmballageId,
-    } = createEmballageIntrantDto;
+    } = createEmballageIntrantDto
     await this.prismaService.emballageIntrant.create({
       data: {
         name,
@@ -71,36 +68,36 @@ export class EmballageIntrantService {
         chargeExploitationId,
         typeEmballageId,
       },
-    });
-    return { data: 'EmballageIntrant created' };
+    })
+    return { data: 'EmballageIntrant created' }
   }
 
   async update(
     emballageIntrantId: number,
-    updateEmballageIntrantDto: UpdateEmballageIntrantDto
+    updateEmballageIntrantDto: UpdateEmballageIntrantDto,
   ) {
     const emballageIntrant =
       await this.prismaService.emballageIntrant.findUnique({
         where: { id: emballageIntrantId },
-      });
+      })
     if (!emballageIntrant)
-      throw new NotFoundException('EmballageIntrant not found');
+      throw new NotFoundException('EmballageIntrant not found')
     await this.prismaService.emballageIntrant.update({
       where: { id: emballageIntrantId },
       data: { ...updateEmballageIntrantDto },
-    });
-    return { data: 'EmballageIntrant updeted!' };
+    })
+    return { data: 'EmballageIntrant updeted!' }
   }
 
   async delete(emballageIntrantId: number) {
     const emballageIntrant =
       await this.prismaService.emballageIntrant.findUnique({
         where: { id: emballageIntrantId },
-      });
-    if (!emballageIntrant) throw new NotFoundException('Post not found');
+      })
+    if (!emballageIntrant) throw new NotFoundException('Post not found')
     await this.prismaService.emballageIntrant.delete({
       where: { id: emballageIntrantId },
-    });
-    return { data: 'EmballageIntrant deleted' };
+    })
+    return { data: 'EmballageIntrant deleted' }
   }
 }

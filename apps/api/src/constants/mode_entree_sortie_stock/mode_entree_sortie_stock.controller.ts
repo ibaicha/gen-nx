@@ -8,15 +8,18 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
 
-import { AuthGuard } from '@nestjs/passport';
- 
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ModeEntreeSortieStockService } from './mode_entree_sortie_stock.service';
-import { CreateModeEntreeSortieStockDto, UpdateModeEntreeSortieStockDto } from './mode_entree_sortie_stock.dto';
+import { AuthGuard } from '@nestjs/passport'
+
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { ModeEntreeSortieStockService } from './mode_entree_sortie_stock.service'
+import {
+  CreateModeEntreeSortieStockDto,
+  UpdateModeEntreeSortieStockDto,
+} from './mode_entree_sortie_stock.dto'
 
 @ApiTags('ModeEntreeSortieStock')
 @Controller('modeEntreeSortieStocks')
@@ -27,7 +30,7 @@ export class ModeEntreeSortieStockController {
 
   @Get()
   getAll() {
-    return this.modeEntreeSortieStockService.getAll();
+    return this.modeEntreeSortieStockService.getAll()
   }
 
   @Get('/:id')
@@ -35,7 +38,7 @@ export class ModeEntreeSortieStockController {
     @Param('id', ParseIntPipe) modeEntreeSortieStockId: number,
     createModeEntreeSortieStockDto: CreateModeEntreeSortieStockDto,
   ) {
-    return this.modeEntreeSortieStockService.getOne(modeEntreeSortieStockId);
+    return this.modeEntreeSortieStockService.getOne(modeEntreeSortieStockId)
   }
 
   @ApiBearerAuth()
@@ -46,7 +49,7 @@ export class ModeEntreeSortieStockController {
   ) {
     return this.modeEntreeSortieStockService.create(
       createModeEntreeSortieStockDto,
-    );
+    )
   }
 
   @ApiBearerAuth()
@@ -57,7 +60,7 @@ export class ModeEntreeSortieStockController {
     createModeEntreeSortieStockDto: CreateModeEntreeSortieStockDto,
     @Req() request: Request,
   ) {
-    return this.modeEntreeSortieStockService.delete(modeEntreeSortieStockId);
+    return this.modeEntreeSortieStockService.delete(modeEntreeSortieStockId)
   }
 
   @ApiBearerAuth()
@@ -70,6 +73,6 @@ export class ModeEntreeSortieStockController {
     return this.modeEntreeSortieStockService.update(
       modeEntreeSortieStockId,
       updateModeEntreeSortieStockDto,
-    );
+    )
   }
 }

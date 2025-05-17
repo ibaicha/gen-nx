@@ -1,11 +1,6 @@
-import {
- 
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { CreateProduitDto, UpdateProduitDto } from './produit.dto';
-
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { PrismaService } from '../../prisma/prisma.service'
+import { CreateProduitDto, UpdateProduitDto } from './produit.dto'
 
 @Injectable()
 export class ProduitService {
@@ -33,15 +28,15 @@ export class ProduitService {
           },
         },
       },
-    });
+    })
   }
 
   async getOne(produitId: number) {
     const produit = await this.prismaService.produit.findUnique({
       where: { id: produitId },
-    });
-    if (!produit) throw new NotFoundException('Post not found');
-    return produit;
+    })
+    if (!produit) throw new NotFoundException('Post not found')
+    return produit
   }
   async create(createProduitDto: CreateProduitDto) {
     const {
@@ -51,7 +46,7 @@ export class ProduitService {
       isEnsachage,
       filiereId,
       familleEmplacementId,
-    } = createProduitDto;
+    } = createProduitDto
     await this.prismaService.produit.create({
       data: {
         name,
@@ -61,28 +56,28 @@ export class ProduitService {
         filiereId,
         familleEmplacementId,
       },
-    });
-    return { data: 'Produit created' };
+    })
+    return { data: 'Produit created' }
   }
 
   async update(produitId: number, updateProduitDto: UpdateProduitDto) {
     const produit = await this.prismaService.produit.findUnique({
       where: { id: produitId },
-    });
-    if (!produit) throw new NotFoundException('Produit not found');
+    })
+    if (!produit) throw new NotFoundException('Produit not found')
     await this.prismaService.produit.update({
       where: { id: produitId },
       data: { ...updateProduitDto },
-    });
-    return { data: 'Produit updeted!' };
+    })
+    return { data: 'Produit updeted!' }
   }
 
   async delete(produitId: number) {
     const produit = await this.prismaService.produit.findUnique({
       where: { id: produitId },
-    });
-    if (!produit) throw new NotFoundException('Post not found');
-    await this.prismaService.produit.delete({ where: { id: produitId } });
-    return { data: 'Produit deleted' };
+    })
+    if (!produit) throw new NotFoundException('Post not found')
+    await this.prismaService.produit.delete({ where: { id: produitId } })
+    return { data: 'Produit deleted' }
   }
 }

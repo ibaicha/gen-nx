@@ -8,14 +8,14 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { AuthGuard } from '@nestjs/passport'
 
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { UserSocieteService } from './user_societe.service';
-import { CreateUserSocieteDto, UpdateUserSocieteDto } from './user_societe.dto';
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { UserSocieteService } from './user_societe.service'
+import { CreateUserSocieteDto, UpdateUserSocieteDto } from './user_societe.dto'
 
 @ApiTags('UserSociete')
 @Controller('userSocietes')
@@ -24,7 +24,7 @@ export class UserSocieteController {
 
   @Get()
   getAll() {
-    return this.userSocieteService.getAll();
+    return this.userSocieteService.getAll()
   }
 
   @Get('/:id')
@@ -32,14 +32,14 @@ export class UserSocieteController {
     @Param('id', ParseIntPipe) userSocieteId: number,
     createUserSocieteDto: CreateUserSocieteDto,
   ) {
-    return this.userSocieteService.getOne(userSocieteId);
+    return this.userSocieteService.getOne(userSocieteId)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(@Body() createUserSocieteDto: CreateUserSocieteDto) {
-    return this.userSocieteService.create(createUserSocieteDto);
+    return this.userSocieteService.create(createUserSocieteDto)
   }
 
   @ApiBearerAuth()
@@ -50,7 +50,7 @@ export class UserSocieteController {
     createUserSocieteDto: CreateUserSocieteDto,
     @Req() request: Request,
   ) {
-    return this.userSocieteService.delete(userSocieteId);
+    return this.userSocieteService.delete(userSocieteId)
   }
 
   @ApiBearerAuth()
@@ -60,9 +60,6 @@ export class UserSocieteController {
     @Param('id', ParseIntPipe) userSocieteId: number,
     @Body() updateUserSocieteDto: UpdateUserSocieteDto,
   ) {
-    return this.userSocieteService.update(
-      userSocieteId,
-      updateUserSocieteDto,
-    );
+    return this.userSocieteService.update(userSocieteId, updateUserSocieteDto)
   }
 }

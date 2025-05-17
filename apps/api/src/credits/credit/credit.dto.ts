@@ -1,146 +1,150 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator'
 
 export class CreateCreditDto {
   @IsNotEmpty()
-  readonly date!: Date;
+  readonly date!: Date
   @IsNotEmpty()
-  readonly capital!: number;
+  readonly capital!: number
   @IsNotEmpty()
-  readonly interet!: number;
+  readonly interet!: number
   @IsNotEmpty()
-  readonly moratoire!: number;
+  readonly moratoire!: number
   @IsNotEmpty()
-  readonly autres_engagements!: number;
+  readonly autres_engagements!: number
 
   @IsNotEmpty()
-  readonly exploitationId!: number;
+  readonly exploitationId!: number
+  @IsNotEmpty()
+  readonly agenceId!: number
 }
 
 export class UpdateCreditDto {
   @IsNotEmpty()
-  readonly date!: Date;
+  readonly date!: Date
   @IsNotEmpty()
-  readonly capital!: number;
+  readonly capital!: number
   @IsNotEmpty()
-  readonly interet!: number;
+  readonly interet!: number
   @IsNotEmpty()
-  readonly moratoire!: number;
+  readonly moratoire!: number
   @IsNotEmpty()
-  readonly autres_engagements!: number;
+  readonly autres_engagements!: number
 
   @IsNotEmpty()
-  readonly exploitationId!: number;
+  readonly exploitationId!: number
+  @IsNotEmpty()
+  readonly agenceId!: number
 }
 
 export class CreateExploitationCreditDto {
   @IsNotEmpty()
-  date!: Date;
+  date!: Date
   @IsNotEmpty()
-  capital!: number;
+  capital!: number
   @IsNotEmpty()
-  interet!: number;
+  interet!: number
   @IsNotEmpty()
-  moratoire!: number;
+  moratoire!: number
   @IsNotEmpty()
-  autres_engagements!: number;
+  autres_engagements!: number
   @IsNotEmpty()
-  exploitationId!: number;
+  exploitationId!: number
   /* */
 
-  compte!: number;
+  compte!: number
   @IsNotEmpty()
-  dateExploitation!: Date;
+  dateExploitation!: Date
   @IsNotEmpty()
-  unite!: string;
+  unite!: string
   @IsNotEmpty()
-  surface!: number;
+  surface!: number
   @IsNotEmpty()
-  readonly agenceId!: number;
+  readonly agenceId!: number
   @IsNotEmpty()
-  varieteId!: number;
+  varieteId!: number
   @IsNotEmpty()
-  anneeId!: number;
+  anneeId!: number
   @IsNotEmpty()
-  saisonId!: number;
-  producteurId!: number;
-  opId!: number;
+  saisonId!: number
+  producteurId!: number
+  opId!: number
 }
 
 export class GetCreditParamsDTO {
-  societeId?: number;
-  agenceId?: number;
-  anneeId?: number;
-  saisonId?: number;
-  opId?: number;
+  societeId?: number[]
+  agenceId?: number[]
+  anneeId?: number[]
+  saisonId?: number[]
+  opId?: number[]
 }
 
 export interface ICredit {
-  id: number;
-  dateCredit: string;
-  capital: number;
-  interet: number;
-  moratoire: number;
-  autres_engagements: number;
-  exigible: number;
-  capitalFormat: string;
-  interetFormat: string;
-  moratoireFormat: string;
-  autres_engagementsFormat: string;
-  exigibleFormat: string;
+  id: number
+  dateCredit: string
+  capital: number
+  interet: number
+  moratoire: number
+  autres_engagements: number
+  exigible: number
+  capitalFormat: string
+  interetFormat: string
+  moratoireFormat: string
+  autres_engagementsFormat: string
+  exigibleFormat: string
 
-  agenceId: number;
-  agenceName: string;
-  agenceSigle: string;
-  societeId: number;
-  societeName: string;
-  societeSigle: string;
+  agenceId: number
+  agenceName: string
+  agenceSigle: string
+  societeId: number
+  societeName: string
+  societeSigle: string
 
-  exploitationId: number;
-  exploitationOpId: number;
-  exploitationOpName: string;
+  exploitationId: number
+  exploitationOpId: number
+  exploitationOpName: string
 
-  exploitationOpPointId: number;
-  exploitationOpPointName: string;
+  exploitationOpPointId: number
+  exploitationOpPointName: string
 
-  exploitationOpPointAgenceId: number;
-  exploitationOpPointAgenceName: string;
-  exploitationOpPointAgenceSigle: string;
+  exploitationOpPointAgenceId: number
+  exploitationOpPointAgenceName: string
+  exploitationOpPointAgenceSigle: string
 
-  exploitationOpPointAgenceSocieteId: number;
-  exploitationOpPointAgenceSocieteName: string;
-  exploitationOpPointAgenceSocieteSigle: string;
+  exploitationOpPointAgenceSocieteId: number
+  exploitationOpPointAgenceSocieteName: string
+  exploitationOpPointAgenceSocieteSigle: string
 
-  exploitationTypeOpId: number;
-  exploitationTypeOpName: string;
+  exploitationTypeOpId: number
+  exploitationTypeOpName: string
 
-  exploitationAnneeId: number;
-  exploitationAnneeName: string;
-  exploitationSaisonId: number;
-  exploitationSaisonName: string;
+  exploitationAnneeId: number
+  exploitationAnneeName: string
+  exploitationSaisonId: number
+  exploitationSaisonName: string
 
-  exploitationVarieteId: number;
-  exploitationVarieteName: string;
-  exploitationProduitId: number;
-  exploitationProduitName: string;
-  exploitationFiliereId: number;
-  exploitationFiliereName: string;
-  exploitationFamilleEmplacemenId: number;
-  exploitationFamilleEmplacementName: string;
-  exploitationCompte: number;
-  exploitationDate: string;
-  exploitationUnite: string;
-  exploitationSurface: number;
+  exploitationVarieteId: number
+  exploitationVarieteName: string
+  exploitationProduitId: number
+  exploitationProduitName: string
+  exploitationFiliereId: number
+  exploitationFiliereName: string
+  exploitationFamilleEmplacemenId: number
+  exploitationFamilleEmplacementName: string
+  exploitationCompte: number
+  exploitationDate: string
+  exploitationUnite: string
+  exploitationSurface: number
 
-  remboursementsSum: number;
-  remboursementsSumFormat: string;
-  remboursementsCount: number;
-  tauxRemboursement: number;
-  tauxRemboursementFormat: string;
+  remboursementsSum: number
+  remboursementsSumFormat: string
+  remboursementsCount: number
+  tauxRemboursement: number
+  tauxRemboursementFormat: string
 
-  remboursementsMouvementSum: number;
-  remboursementsMouvementCount: number;
-  remboursementsMouvementSumFormat: string;
+  remboursementsMouvementSum: number
+  remboursementsMouvementCount: number
+  remboursementsMouvementSumFormat: string
 
-  tauxRemboursementMouvement: number;
-  tauxRemboursementMouvementFormat: string;
+  tauxRemboursementMouvement: number
+  tauxRemboursementMouvementFormat: string
 }

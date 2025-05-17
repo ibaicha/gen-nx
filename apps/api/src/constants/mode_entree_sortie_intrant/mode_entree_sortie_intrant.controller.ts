@@ -8,50 +8,48 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
 
-import { AuthGuard } from '@nestjs/passport';
+import { AuthGuard } from '@nestjs/passport'
 
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ModeEntreeSortieIntrantService } from './mode_entree_sortie_intrant.service';
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { ModeEntreeSortieIntrantService } from './mode_entree_sortie_intrant.service'
 import {
   CreateModeEntreeSortieIntrantDto,
   UpdateModeEntreeSortieIntrantDto,
-} from './mode_entree_sortie_intrant.dto';
+} from './mode_entree_sortie_intrant.dto'
 
 @ApiTags('ModeEntreeSortieIntrant')
 @Controller('modeEntreeSortieIntrants')
 export class ModeEntreeSortieIntrantController {
   constructor(
-    private readonly modeEntreeSortieIntrantService: ModeEntreeSortieIntrantService
+    private readonly modeEntreeSortieIntrantService: ModeEntreeSortieIntrantService,
   ) {}
 
   @Get()
   getAll() {
-    return this.modeEntreeSortieIntrantService.getAll();
+    return this.modeEntreeSortieIntrantService.getAll()
   }
 
   @Get('/:id')
   get(
     @Param('id', ParseIntPipe) modeEntreeSortieIntrantId: number,
-    createModeEntreeSortieIntrantDto: CreateModeEntreeSortieIntrantDto
+    createModeEntreeSortieIntrantDto: CreateModeEntreeSortieIntrantDto,
   ) {
-    return this.modeEntreeSortieIntrantService.getOne(
-      modeEntreeSortieIntrantId
-    );
+    return this.modeEntreeSortieIntrantService.getOne(modeEntreeSortieIntrantId)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(
-    @Body() createModeEntreeSortieIntrantDto: CreateModeEntreeSortieIntrantDto
+    @Body() createModeEntreeSortieIntrantDto: CreateModeEntreeSortieIntrantDto,
   ) {
     return this.modeEntreeSortieIntrantService.create(
-      createModeEntreeSortieIntrantDto
-    );
+      createModeEntreeSortieIntrantDto,
+    )
   }
 
   @ApiBearerAuth()
@@ -60,11 +58,9 @@ export class ModeEntreeSortieIntrantController {
   delete(
     @Param('id', ParseIntPipe) modeEntreeSortieIntrantId: number,
     createModeEntreeSortieIntrantDto: CreateModeEntreeSortieIntrantDto,
-    @Req() request: Request
+    @Req() request: Request,
   ) {
-    return this.modeEntreeSortieIntrantService.delete(
-      modeEntreeSortieIntrantId
-    );
+    return this.modeEntreeSortieIntrantService.delete(modeEntreeSortieIntrantId)
   }
 
   @ApiBearerAuth()
@@ -72,11 +68,11 @@ export class ModeEntreeSortieIntrantController {
   @Put('update/:id')
   update(
     @Param('id', ParseIntPipe) modeEntreeSortieIntrantId: number,
-    @Body() updateModeEntreeSortieIntrantDto: UpdateModeEntreeSortieIntrantDto
+    @Body() updateModeEntreeSortieIntrantDto: UpdateModeEntreeSortieIntrantDto,
   ) {
     return this.modeEntreeSortieIntrantService.update(
       modeEntreeSortieIntrantId,
-      updateModeEntreeSortieIntrantDto
-    );
+      updateModeEntreeSortieIntrantDto,
+    )
   }
 }

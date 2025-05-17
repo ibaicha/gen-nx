@@ -2,10 +2,9 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { CreateVillageDto, UpdateVillageDto } from './village.dto';
- 
+} from '@nestjs/common'
+import { PrismaService } from '../../prisma/prisma.service'
+import { CreateVillageDto, UpdateVillageDto } from './village.dto'
 
 @Injectable()
 export class VillageService {
@@ -23,42 +22,42 @@ export class VillageService {
           },
         },
       },
-    });
+    })
   }
 
   async getOne(villageId: number) {
     const village = await this.prismaService.village.findUnique({
       where: { id: villageId },
-    });
-    if (!village) throw new NotFoundException('Post not found');
-    return village;
+    })
+    if (!village) throw new NotFoundException('Post not found')
+    return village
   }
   async create(createVillageDto: CreateVillageDto) {
-    const { name, localiteId, communeId } = createVillageDto;
+    const { name, localiteId, communeId } = createVillageDto
     await this.prismaService.village.create({
       data: { name, localiteId, communeId },
-    });
-    return { data: 'Village created' };
+    })
+    return { data: 'Village created' }
   }
 
   async update(villageId: number, updateVillageDto: UpdateVillageDto) {
     const village = await this.prismaService.village.findUnique({
       where: { id: villageId },
-    });
-    if (!village) throw new NotFoundException('Village not found');
+    })
+    if (!village) throw new NotFoundException('Village not found')
     await this.prismaService.village.update({
       where: { id: villageId },
       data: { ...updateVillageDto },
-    });
-    return { data: 'Village updeted!' };
+    })
+    return { data: 'Village updeted!' }
   }
 
   async delete(villageId: number) {
     const village = await this.prismaService.village.findUnique({
       where: { id: villageId },
-    });
-    if (!village) throw new NotFoundException('Post not found');
-    await this.prismaService.village.delete({ where: { id: villageId } });
-    return { data: 'Village deleted' };
+    })
+    if (!village) throw new NotFoundException('Post not found')
+    await this.prismaService.village.delete({ where: { id: villageId } })
+    return { data: 'Village deleted' }
   }
 }

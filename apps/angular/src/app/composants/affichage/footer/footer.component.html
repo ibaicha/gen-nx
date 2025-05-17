@@ -1,0 +1,135 @@
+<!-- app.component.html -->
+<p-toast position="top-right"></p-toast>
+
+<div
+  class="min-h-screen bg-white dark:bg-blue-200 text-gray-800 dark:text-gray-900 transition duration-500"
+>
+  <header
+    #header
+    class="animated-gradient bg-gradient-to-r from-indigo-100 via-purple-100 to-blue-200 dark:from-blue-100 dark:via-blue-200 dark:to-blue-300 flex justify-between items-center px-6 py-4 shadow"
+  >
+    <h1 class="text-2xl font-bold">
+      Plateforme des Gestion des Organisations Paysannes
+    </h1>
+    <button
+      (click)="toggleDarkMode()"
+      class="p-2 rounded-full text-gray-500 dark:text-gray-700 hover:text-black dark:hover:text-black transition-colors duration-300"
+      aria-label="Toggle Theme"
+    >
+      <i class="pi" [ngClass]="isDarkMode ? 'pi-sun' : 'pi-moon'"></i>
+    </button>
+  </header>
+
+  <!-- Footer -->
+  <footer
+    class="animated-gradient bg-gradient-to-r from-blue-100 via-purple-100 to-indigo-200 dark:from-blue-200 dark:via-blue-300 dark:to-blue-400 py-12 px-4 sm:px-6 lg:px-8 shadow-inner"
+  >
+    <div class="mx-auto max-w-7xl">
+      <!-- Main Footer Content - 3 Columns -->
+      <div class="grid grid-cols-1 gap-10 md:grid-cols-3">
+        <!-- Column 1 - Support -->
+        <div class="flex flex-col items-center">
+          <h3 class="text-lg font-bold text-indigo-600 dark:text-indigo-800">
+            Appui Institutionnel
+          </h3>
+          <div
+            class="mt-3 h-1 w-16 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-full"
+          ></div>
+          <a
+            href="https://www.uncdf.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-6 group block p-4 bg-white dark:bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300"
+          >
+            <img
+              src="public/assets/images/UNCDF_logo.png"
+              alt="Logo UNCDF"
+              class="h-auto w-40 mx-auto filter grayscale hover:grayscale-0 transition-all duration-500"
+              loading="lazy"
+            />
+          </a>
+        </div>
+
+        <!-- Column 2 - Project -->
+        <div class="flex flex-col items-center">
+          <h3 class="text-lg font-bold text-indigo-600 dark:text-indigo-800">
+            Notre Projet
+          </h3>
+          <div
+            class="mt-3 h-1 w-16 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-full"
+          ></div>
+          <div
+            class="mt-6 p-6 bg-white dark:bg-white rounded-xl shadow-md text-center"
+          >
+            <p class="text-gray-600 dark:text-gray-700 mb-4">
+              <i class="pi pi-info-circle text-indigo-500 mr-2"></i>
+              Projet innovant pour le développement économique
+            </p>
+            <a
+              href="#"
+              class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+            >
+              <i class="pi pi-book mr-2"></i> En savoir plus
+            </a>
+          </div>
+        </div>
+
+        <!-- Column 3 - Partner -->
+        <div class="flex flex-col items-center">
+          <h3 class="text-lg font-bold text-indigo-600 dark:text-indigo-800">
+            {{ currentYear }} Partenaire
+          </h3>
+          <div
+            class="mt-3 h-1 w-16 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-full"
+          ></div>
+          <a
+            href="https://www.labanqueagricole.sn/accueil"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-6 group block p-4 bg-white dark:bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300"
+          >
+            <img
+              src="public/assets/images/lba.png"
+              alt="Logo LBA"
+              class="h-auto w-48 mx-auto filter grayscale hover:grayscale-0 transition-all duration-500"
+              loading="lazy"
+            />
+          </a>
+        </div>
+      </div>
+
+      <!-- Social Media Links -->
+      <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-300">
+        <div class="flex flex-col items-center">
+          <h4
+            class="text-sm font-semibold text-gray-500 dark:text-gray-700 uppercase tracking-wider mb-4"
+          >
+            Suivez-nous
+          </h4>
+          <div class="flex space-x-4">
+            <a
+              *ngFor="let social of socialLinks"
+              [href]="social.url"
+              class="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-white shadow-sm hover:shadow-md text-indigo-600 hover:text-white hover:bg-indigo-600 transition-all duration-300"
+              [attr.aria-label]="social.name"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path [attr.d]="social.icon"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Credits -->
+      <div class="mt-8 text-center">
+        <p class="text-xs text-gray-500 dark:text-gray-700">
+          © {{ currentYear }} Tous droits réservés |
+          <span class="text-indigo-600 dark:text-indigo-700 font-medium">
+            Design par SIS'Tech
+          </span>
+        </p>
+      </div>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,30 @@
+<p-toast> </p-toast>
+<div class="card">
+  <p-toast> </p-toast>
+  <p-menubar [model]="this.loginService.items">
+    <div>
+      @if ( this.loginService.visibleNav ) {
+      <button
+        type="button"
+        class="flex items-center gap-2 px-4 py-2 bg-red-500 text-white font-medium rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300"
+        aria-label="Logout"
+        (click)="close()"
+      >
+        <i class="pi pi-power-off"></i>
+        <span>Logout</span>
+      </button>
+
+      } @else {
+      <button
+        type="button"
+        class="flex items-center gap-2 px-4 py-2 bg-green-500 text-white font-medium rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"
+        aria-label="Login"
+        (click)="openDialog()"
+      >
+        <i class="pi pi-fw pi-lock-open"></i>
+        <span>Login</span>
+      </button>
+      }
+    </div>
+  </p-menubar>
+</div>

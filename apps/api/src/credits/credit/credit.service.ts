@@ -2,18 +2,16 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+} from '@nestjs/common'
+import { PrismaService } from '../../prisma/prisma.service'
 
-import { CreateExploitationDto } from '../../exploitations/exploitation/exploitation.dto';
+import { CreateExploitationDto } from '../../exploitations/exploitation/exploitation.dto'
 
 import {
   CreateCreditDto,
   CreateExploitationCreditDto,
-  GetCreditParamsDTO,
-  ICredit,
   UpdateCreditDto,
-} from './credit.dto';
+} from './credit.dto'
 
 //import { ExploitationChargeExploitationController } from 'src/exploitations/exploitation_charge_exploitation/exploitation_charge_exploitation.controller';
 
@@ -45,13 +43,10 @@ export class CreditService {
             saison: true,
             createdAt: true,
             updatedAt: true,
-            remboursements: {
-              include: {},
-            },
           },
         },
       },
-    });
+    })
   }
 
   async getAllCreditsFromExploitation(exploitationId: number) {
@@ -75,9 +70,6 @@ export class CreditService {
             //production: true,
             createdAt: true,
             updatedAt: true,
-            remboursements: {
-              include: {},
-            },
           },
         },
       },
@@ -86,11 +78,11 @@ export class CreditService {
           id: exploitationId,
         },
       },
-    });
+    })
   }
 
   formatMontant(montant: number) {
-    return montant.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' FCFA';
+    return montant.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' FCFA'
   }
 
   async getAllCustom() {
@@ -107,7 +99,7 @@ export class CreditService {
               op: {
                 include: {
                   point: true,
-                  typeOp: true,
+                  formeJuridique: true,
                 },
               },
               annee: true,
@@ -126,87 +118,77 @@ export class CreditService {
                   },
                 },
               },
-              remboursements: {
-                include: {},
-              },
             },
           },
         },
-      });
-      // return opsWithType;
+      })
+      // return opsWithType;s
       const credits: {
-        id: number;
-        date: string;
-        capital: number;
-        interet: number;
-        moratoire: number;
-        autres_engagements: number;
-        exigible: number;
-        remboursementsSum: number;
-        tauxRemboursement: number;
-        capitalFormat: string;
-        interetFormat: string;
-        moratoireFormat: string;
-        autres_engagementsFormat: string;
-        exigibleFormat: string;
-        remboursementsSumFormat: string;
-        tauxRemboursementFormat: string;
-        agenceId: number;
-        agenceName: string;
-        agenceSigle: string;
-        societeId: number;
-        societeName: string;
-        societeSigle: string;
-        exploitationId: number;
-        exploitationOpId: number;
-        exploitationOpName: string;
-        exploitationOpPointCollecteId: number;
-        exploitationOpPointCollecteName: string;
-        exploitationTypeOpId: number;
-        exploitationTypeOpName: string;
-        exploitationAnneeId: number;
-        exploitationAnneeName: string;
-        exploitationSaisonId: number;
-        exploitationSaisonName: string;
-        exploitationVarieteId: number;
-        exploitationVarieteName: string;
-        exploitationVarieteSurfaceUnite: string;
-        exploitationVarieteQuantiteUnite: string;
-        exploitationVarieteRendementUnite: number;
-        exploitationProduitId: number;
-        exploitationProduitName: string;
-        exploitationFiliereId: number;
-        exploitationFiliereName: string;
-        exploitationFamilleEmplacemenId: number;
-        exploitationFamilleEmplacementName: string;
-        exploitationCompte: number;
-        exploitationDate: string;
-        exploitationUnite: string;
-        exploitationSurface: number;
-      }[] = [];
+        id: number
+        date: string
+        capital: number
+        interet: number
+        moratoire: number
+        autres_engagements: number
+        exigible: number
+        //remboursementsSum: number
+        tauxRemboursement: number
+        capitalFormat: string
+        interetFormat: string
+        moratoireFormat: string
+        autres_engagementsFormat: string
+        exigibleFormat: string
+        //remboursementsSumFormat: string
+        tauxRemboursementFormat: string
+        agenceId: number
+        agenceName: string
+        agenceSigle: string
+        societeId: number
+        societeName: string
+        societeSigle: string
+        exploitationId: number
+        exploitationOpId: number
+        exploitationOpName: string
+        exploitationOpPointCollecteId: number
+        exploitationOpPointCollecteName: string
+        exploitationTypeOpId: number
+        exploitationTypeOpName: string
+        exploitationAnneeId: number
+        exploitationAnneeName: string
+        exploitationSaisonId: number
+        exploitationSaisonName: string
+        exploitationVarieteId: number
+        exploitationVarieteName: string
+        exploitationVarieteSurfaceUnite: string
+        exploitationVarieteQuantiteUnite: string
+        exploitationVarieteRendementUnite: number
+        exploitationProduitId: number
+        exploitationProduitName: string
+        exploitationFiliereId: number
+        exploitationFiliereName: string
+        exploitationFamilleEmplacemenId: number
+        exploitationFamilleEmplacementName: string
+        exploitationCompte: number
+        exploitationDate: string
+        exploitationUnite: string
+        exploitationSurface: number
+      }[] = []
 
       for (const credit of creditWithExploitation) {
-        const dateObjectCredit = new Date(credit.date);
-        const formattedDateCredit =
-          dateObjectCredit.toLocaleDateString('fr-FR');
+        const dateObjectCredit = new Date(credit.date)
+        const formattedDateCredit = dateObjectCredit.toLocaleDateString('fr-FR')
         const dateObjectExploitation = new Date(
-          credit.exploitation.date as Date
-        );
+          credit.exploitation.date as Date,
+        )
         const formattedDateExploitation =
-          dateObjectExploitation.toLocaleDateString('fr-FR');
-        const mesRemboursements = credit.exploitation.remboursements.reduce(
-          (sum, remboursement) => sum + remboursement.valeur,
-          0
-        );
+          dateObjectExploitation.toLocaleDateString('fr-FR')
+
         const exigible =
           credit.capital +
           credit.interet +
           credit.moratoire +
-          credit.autres_engagements;
-        let monTauxRemboursement = 0;
-        if (exigible > 0) {
-          monTauxRemboursement = (mesRemboursements / exigible) * 100;
-        }
+          credit.autres_engagements
+        const monTauxRemboursement = 0
 
         credits.push({
           id: credit.id,
@@ -221,7 +203,7 @@ export class CreditService {
           moratoireFormat: this.formatMontant(credit.moratoire),
           exigibleFormat: this.formatMontant(exigible),
           autres_engagementsFormat: this.formatMontant(
-            credit.autres_engagements
+            credit.autres_engagements,
           ),
           agenceId: credit.exploitation.agence.id,
           agenceName: credit.exploitation.agence.name,
@@ -230,8 +212,9 @@ export class CreditService {
           societeId: credit.exploitation.agence.societe.id,
           societeName: credit.exploitation.agence.societe.name,
           societeSigle: credit.exploitation.agence.societe.sigle,
-          exploitationTypeOpId: credit.exploitation.op?.typeOp.id ?? 0,
-          exploitationTypeOpName: credit.exploitation.op?.typeOp.name ?? '',
+          exploitationTypeOpId: credit.exploitation.op?.formeJuridique?.id ?? 0,
+          exploitationTypeOpName:
+            credit.exploitation.op?.formeJuridique?.name ?? '',
           exploitationId: credit.exploitation.id,
           exploitationOpId: credit.exploitation.op?.id ?? 0,
           exploitationOpName: credit.exploitation.op?.name ?? '',
@@ -256,24 +239,24 @@ export class CreditService {
           exploitationFiliereName:
             credit.exploitation.variete.produit.filiere.name,
           exploitationFamilleEmplacemenId:
-            credit.exploitation.variete.produit.familleEmplacement.id,
+            credit.exploitation.variete.produit.familleEmplacement?.id ?? 0,
           exploitationFamilleEmplacementName:
-            credit.exploitation.variete.produit.familleEmplacement.name,
+            credit.exploitation.variete.produit.familleEmplacement?.name ?? '',
           exploitationCompte: credit.exploitation.compte,
           exploitationDate: formattedDateExploitation,
           exploitationUnite: credit.exploitation.unite,
           exploitationSurface: credit.exploitation.surface,
-          remboursementsSum: mesRemboursements,
-          remboursementsSumFormat: this.formatMontant(mesRemboursements),
+          //remboursementsSum: mesRemboursements,
+          //remboursementsSumFormat: this.formatMontant(mesRemboursements),
           tauxRemboursement: monTauxRemboursement,
           tauxRemboursementFormat: monTauxRemboursement.toFixed(2) + ' %',
-        });
+        })
       }
-      return credits;
+      return credits
     } catch (error) {
-      throw new ForbiddenException(error);
+      throw new ForbiddenException(error)
     } finally {
-      await this.prismaService.$disconnect();
+      await this.prismaService.$disconnect()
     }
   }
 
@@ -291,7 +274,7 @@ export class CreditService {
               op: {
                 include: {
                   point: true,
-                  typeOp: true,
+                  formeJuridique: true,
                 },
               },
               annee: true,
@@ -318,62 +301,61 @@ export class CreditService {
             opId: opId,
           },
         },
-      });
+      })
       // return opsWithType;
       const credits: {
-        id: number;
-        date: string;
-        capital: number;
-        interet: number;
-        moratoire: number;
-        autres_engagements: number;
-        exigible: number;
-        capitalFormat: string;
-        interetFormat: string;
-        moratoireFormat: string;
-        autres_engagementsFormat: string;
-        exigibleFormat: string;
-        agenceId: number;
-        agenceName: string;
-        agenceSigle: string;
-        exploitationId: number;
-        exploitationOpId: number;
-        exploitationOpName: string;
-        exploitationOpPointCollecteId: number;
-        exploitationOpPointCollecteName: string;
-        exploitationTypeOpId: number;
-        exploitationTypeOpName: string;
-        exploitationAnneeId: number;
-        exploitationAnneeName: string;
-        exploitationSaisonId: number;
-        exploitationSaisonName: string;
-        exploitationVarieteId: number;
-        exploitationVarieteName: string;
-        exploitationVarieteSurfaceUnite: string;
-        exploitationVarieteQuantiteUnite: string;
-        exploitationVarieteRendementUnite: number;
-        exploitationProduitId: number;
-        exploitationProduitName: string;
-        exploitationFiliereId: number;
-        exploitationFiliereName: string;
-        exploitationFamilleEmplacemenId: number;
-        exploitationFamilleEmplacementName: string;
-        exploitationCompte: number;
-        exploitationDate: string;
-        exploitationUnite: string;
-        exploitationSurface: number;
-      }[] = [];
+        id: number
+        date: string
+        capital: number
+        interet: number
+        moratoire: number
+        autres_engagements: number
+        exigible: number
+        capitalFormat: string
+        interetFormat: string
+        moratoireFormat: string
+        autres_engagementsFormat: string
+        exigibleFormat: string
+        agenceId: number
+        agenceName: string
+        agenceSigle: string
+        exploitationId: number
+        exploitationOpId: number
+        exploitationOpName: string
+        exploitationOpPointCollecteId: number
+        exploitationOpPointCollecteName: string
+        exploitationTypeOpId: number
+        exploitationTypeOpName: string
+        exploitationAnneeId: number
+        exploitationAnneeName: string
+        exploitationSaisonId: number
+        exploitationSaisonName: string
+        exploitationVarieteId: number
+        exploitationVarieteName: string
+        exploitationVarieteSurfaceUnite: string
+        exploitationVarieteQuantiteUnite: string
+        exploitationVarieteRendementUnite: number
+        exploitationProduitId: number
+        exploitationProduitName: string
+        exploitationFiliereId: number
+        exploitationFiliereName: string
+        exploitationFamilleEmplacemenId: number
+        exploitationFamilleEmplacementName: string
+        exploitationCompte: number
+        exploitationDate: string
+        exploitationUnite: string
+        exploitationSurface: number
+      }[] = []
 
       for (const credit of creditWithExploitation) {
-        const dateObjectCredit = new Date(credit.date);
-        const formattedDateCredit =
-          dateObjectCredit.toLocaleDateString('fr-FR');
+        const dateObjectCredit = new Date(credit.date)
+        const formattedDateCredit = dateObjectCredit.toLocaleDateString('fr-FR')
 
         const dateObjectExploitation = new Date(
-          credit.exploitation.date as Date
-        );
+          credit.exploitation.date as Date,
+        )
         const formattedDateExploitation =
-          dateObjectExploitation.toLocaleDateString('fr-FR');
+          dateObjectExploitation.toLocaleDateString('fr-FR')
 
         credits.push({
           id: credit.id,
@@ -394,16 +376,17 @@ export class CreditService {
             credit.capital +
               credit.interet +
               credit.moratoire +
-              credit.autres_engagements
+              credit.autres_engagements,
           ),
           autres_engagementsFormat: this.formatMontant(
-            credit.autres_engagements
+            credit.autres_engagements,
           ),
           agenceId: credit.exploitation.agence.id,
           agenceName: credit.exploitation.agence.name,
           agenceSigle: credit.exploitation.agence.sigle,
-          exploitationTypeOpId: credit.exploitation.op?.typeOp.id ?? 0,
-          exploitationTypeOpName: credit.exploitation.op?.typeOp.name ?? '',
+          exploitationTypeOpId: credit.exploitation.op?.formeJuridique?.id ?? 0,
+          exploitationTypeOpName:
+            credit.exploitation.op?.formeJuridique?.name ?? '',
           exploitationId: credit.exploitation.id,
           exploitationOpId: credit.exploitation.op?.id ?? 0,
           exploitationOpName: credit.exploitation.op?.name ?? '',
@@ -428,20 +411,20 @@ export class CreditService {
           exploitationFiliereName:
             credit.exploitation.variete.produit.filiere.name,
           exploitationFamilleEmplacemenId:
-            credit.exploitation.variete.produit.familleEmplacement.id,
+            credit.exploitation.variete.produit.familleEmplacement?.id ?? 0,
           exploitationFamilleEmplacementName:
-            credit.exploitation.variete.produit.familleEmplacement.name,
+            credit.exploitation.variete.produit.familleEmplacement?.name ?? '',
           exploitationCompte: credit.exploitation.compte,
           exploitationDate: formattedDateExploitation,
           exploitationUnite: credit.exploitation.unite,
           exploitationSurface: credit.exploitation.surface,
-        });
+        })
       }
-      return credits;
+      return credits
     } catch (error) {
-      throw new ForbiddenException(error);
+      throw new ForbiddenException(error)
     } finally {
-      await this.prismaService.$disconnect();
+      await this.prismaService.$disconnect()
     }
   }
 
@@ -449,7 +432,7 @@ export class CreditService {
     agenceEtablissementId: number,
     produitId: number,
     anneeId: number,
-    saisonId: number
+    saisonId: number,
   ) {
     try {
       const creditWithExploitation = await this.prismaService.credit.findMany({
@@ -464,7 +447,7 @@ export class CreditService {
               op: {
                 include: {
                   point: true,
-                  typeOp: true,
+                  formeJuridique: true,
                 },
               },
               annee: true,
@@ -482,9 +465,6 @@ export class CreditService {
                     },
                   },
                 },
-              },
-              remboursements: {
-                include: {},
               },
             },
           },
@@ -505,82 +485,85 @@ export class CreditService {
             saisonId: saisonId,
           },
         },
-      });
+      })
       // return opsWithType;
       const credits: {
-        id: number;
-        date: string;
-        capital: number;
-        interet: number;
-        moratoire: number;
-        autres_engagements: number;
-        exigible: number;
-        remboursementsSum: number;
-        tauxRemboursement: number;
-        capitalFormat: string;
-        interetFormat: string;
-        moratoireFormat: string;
-        autres_engagementsFormat: string;
-        exigibleFormat: string;
-        remboursementsSumFormat: string;
-        tauxRemboursementFormat: string;
-        agenceId: number;
-        agenceName: string;
-        agenceSigle: string;
-        societeId: number;
-        societeName: string;
-        societeSigle: string;
-        exploitationId: number;
-        exploitationOpId: number;
-        exploitationOpName: string;
-        exploitationOpPointCollecteId: number;
-        exploitationOpPointCollecteName: string;
-        exploitationTypeOpId: number;
-        exploitationTypeOpName: string;
-        exploitationAnneeId: number;
-        exploitationAnneeName: string;
-        exploitationSaisonId: number;
-        exploitationSaisonName: string;
-        exploitationVarieteId: number;
-        exploitationVarieteName: string;
-        exploitationVarieteSurfaceUnite: string;
-        exploitationVarieteQuantiteUnite: string;
-        exploitationVarieteRendementUnite: number;
-        exploitationProduitId: number;
-        exploitationProduitName: string;
-        exploitationFiliereId: number;
-        exploitationFiliereName: string;
-        exploitationFamilleEmplacemenId: number;
-        exploitationFamilleEmplacementName: string;
-        exploitationCompte: number;
-        exploitationDate: string;
-        exploitationUnite: string;
-        exploitationSurface: number;
-      }[] = [];
+        id: number
+        date: string
+        capital: number
+        interet: number
+        moratoire: number
+        autres_engagements: number
+        exigible: number
+        //remboursementsSum: number
+        tauxRemboursement: number
+        capitalFormat: string
+        interetFormat: string
+        moratoireFormat: string
+        autres_engagementsFormat: string
+        exigibleFormat: string
+        //remboursementsSumFormat: string
+        tauxRemboursementFormat: string
+        agenceId: number
+        agenceName: string
+        agenceSigle: string
+        societeId: number
+        societeName: string
+        societeSigle: string
+        exploitationId: number
+        exploitationOpId: number
+        exploitationOpName: string
+        exploitationOpPointCollecteId: number
+        exploitationOpPointCollecteName: string
+        exploitationTypeOpId: number
+        exploitationTypeOpName: string
+        exploitationAnneeId: number
+        exploitationAnneeName: string
+        exploitationSaisonId: number
+        exploitationSaisonName: string
+        exploitationVarieteId: number
+        exploitationVarieteName: string
+        exploitationVarieteSurfaceUnite: string
+        exploitationVarieteQuantiteUnite: string
+        exploitationVarieteRendementUnite: number
+        exploitationProduitId: number
+        exploitationProduitName: string
+        exploitationFiliereId: number
+        exploitationFiliereName: string
+        exploitationFamilleEmplacemenId: number
+        exploitationFamilleEmplacementName: string
+        exploitationCompte: number
+        exploitationDate: string
+        exploitationUnite: string
+        exploitationSurface: number
+      }[] = []
 
       for (const credit of creditWithExploitation) {
-        const dateObjectCredit = new Date(credit.date);
-        const formattedDateCredit =
-          dateObjectCredit.toLocaleDateString('fr-FR');
+        const dateObjectCredit = new Date(credit.date)
+        const formattedDateCredit = dateObjectCredit.toLocaleDateString('fr-FR')
         const dateObjectExploitation = credit.exploitation.date
           ? new Date(credit.exploitation.date)
-          : null;
+          : null
         const formattedDateExploitation =
-          dateObjectExploitation?.toLocaleDateString('fr-FR');
-        const mesRemboursements = credit.exploitation.remboursements.reduce(
+          dateObjectExploitation?.toLocaleDateString('fr-FR')
+        /*
+        const mesRemboursements = credit.exploitation.Remboursement.reduce(
           (sum, remboursement) => sum + remboursement.valeur,
-          0
-        );
+          0,
+        )
+        */
         const exigible =
           credit.capital +
           credit.interet +
           credit.moratoire +
-          credit.autres_engagements;
-        let monTauxRemboursement = 0;
+          credit.autres_engagements
+        //let monTauxRemboursement = 0
+        /*
         if (exigible > 0) {
-          monTauxRemboursement = (mesRemboursements / exigible) * 100;
+          monTauxRemboursement = (mesRemboursements / exigible) * 100
         }
-
+*/
+        /*
         credits.push({
           id: credit.id,
           date: formattedDateCredit,
@@ -594,7 +577,7 @@ export class CreditService {
           moratoireFormat: this.formatMontant(credit.moratoire),
           exigibleFormat: this.formatMontant(exigible),
           autres_engagementsFormat: this.formatMontant(
-            credit.autres_engagements
+            credit.autres_engagements,
           ),
           agenceId: credit.exploitation.agence.id,
           agenceName: credit.exploitation.agence.name,
@@ -603,8 +586,9 @@ export class CreditService {
           societeId: credit.exploitation.agence.societe.id,
           societeName: credit.exploitation.agence.societe.name,
           societeSigle: credit.exploitation.agence.societe.sigle,
-          exploitationTypeOpId: credit.exploitation.op?.typeOp.id ?? 0,
-          exploitationTypeOpName: credit.exploitation.op?.typeOp.name ?? '',
+          exploitationTypeOpId: credit.exploitation.op?.formeJuridique?.id ?? 0,
+          exploitationTypeOpName:
+            credit.exploitation.op?.formeJuridique?.name ?? '',
           exploitationId: credit.exploitation.id,
           exploitationOpId: credit.exploitation.op?.id ?? 0,
           exploitationOpName: credit.exploitation.op?.name ?? '',
@@ -629,24 +613,27 @@ export class CreditService {
           exploitationFiliereName:
             credit.exploitation.variete.produit.filiere.name,
           exploitationFamilleEmplacemenId:
-            credit.exploitation.variete.produit.familleEmplacement.id,
+            credit.exploitation.variete.produit.familleEmplacement?.id ?? 0,
           exploitationFamilleEmplacementName:
-            credit.exploitation.variete.produit.familleEmplacement.name,
+            credit.exploitation.variete.produit.familleEmplacement?.name ?? '',
           exploitationCompte: credit.exploitation.compte,
           exploitationDate: formattedDateExploitation ?? '',
           exploitationUnite: credit.exploitation.unite,
           exploitationSurface: credit.exploitation.surface,
+          
           remboursementsSum: mesRemboursements,
           remboursementsSumFormat: this.formatMontant(mesRemboursements),
           tauxRemboursement: monTauxRemboursement,
           tauxRemboursementFormat: monTauxRemboursement.toFixed(2) + ' %',
-        });
+          
+        })
+          */
       }
-      return credits;
+      return credits
     } catch (error) {
-      throw new ForbiddenException(error);
+      throw new ForbiddenException(error)
     } finally {
-      await this.prismaService.$disconnect();
+      await this.prismaService.$disconnect()
     }
   }
 
@@ -654,7 +641,7 @@ export class CreditService {
     agenceEtablissementId: number,
     produitId: number,
     anneeId: number,
-    saisonId: number
+    saisonId: number,
   ) {
     try {
       const creditWithExploitation = await this.prismaService.credit.findMany({
@@ -669,8 +656,8 @@ export class CreditService {
               op: {
                 include: {
                   point: true,
-                  typeOp: true,
-                  movementsStocks: {
+                  formeJuridique: true,
+                  MouvementStock: {
                     where: {
                       variete: {
                         produitId: produitId,
@@ -697,9 +684,6 @@ export class CreditService {
                   },
                 },
               },
-              remboursements: {
-                include: {},
-              },
             },
           },
         },
@@ -719,106 +703,106 @@ export class CreditService {
             saisonId: saisonId,
           },
         },
-      });
+      })
       // return opsWithType;
       const credits: {
-        id: number;
-        date: string;
-        capital: number;
-        interet: number;
-        moratoire: number;
-        autres_engagements: number;
-        exigible: number;
-        remboursementsSum: number;
-        remboursementsCount: number;
-        tauxRemboursement: number;
-        remboursementsMouvementSum: number;
-        remboursementsMouvementCount: number;
-        tauxRemboursementMouvement: number;
-        capitalFormat: string;
-        interetFormat: string;
-        moratoireFormat: string;
-        autres_engagementsFormat: string;
-        exigibleFormat: string;
-        remboursementsSumFormat: string;
-        tauxRemboursementFormat: string;
-        remboursementsMouvementSumFormat: string;
-        tauxRemboursementMouvementFormat: string;
-        agenceId: number;
-        agenceName: string;
-        agenceSigle: string;
-        societeId: number;
-        societeName: string;
-        societeSigle: string;
-        exploitationId: number;
-        exploitationOpId: number;
-        exploitationOpName: string;
-        exploitationOpPointCollecteId: number;
-        exploitationOpPointCollecteName: string;
-        exploitationTypeOpId: number;
-        exploitationTypeOpName: string;
-        exploitationAnneeId: number;
-        exploitationAnneeName: string;
-        exploitationSaisonId: number;
-        exploitationSaisonName: string;
-        exploitationVarieteId: number;
-        exploitationVarieteName: string;
-        exploitationVarieteSurfaceUnite: string;
-        exploitationVarieteQuantiteUnite: string;
-        exploitationVarieteRendementUnite: number;
-        exploitationProduitId: number;
-        exploitationProduitName: string;
-        exploitationFiliereId: number;
-        exploitationFiliereName: string;
-        exploitationFamilleEmplacemenId: number;
-        exploitationFamilleEmplacementName: string;
-        exploitationCompte: number;
-        exploitationDate: string;
-        exploitationUnite: string;
-        exploitationSurface: number;
-      }[] = [];
+        id: number
+        date: string
+        capital: number
+        interet: number
+        moratoire: number
+        autres_engagements: number
+        exigible: number
+        remboursementsSum: number
+        remboursementsCount: number
+        tauxRemboursement: number
+        remboursementsMouvementSum: number
+        remboursementsMouvementCount: number
+        tauxRemboursementMouvement: number
+        capitalFormat: string
+        interetFormat: string
+        moratoireFormat: string
+        autres_engagementsFormat: string
+        exigibleFormat: string
+        remboursementsSumFormat: string
+        tauxRemboursementFormat: string
+        remboursementsMouvementSumFormat: string
+        tauxRemboursementMouvementFormat: string
+        agenceId: number
+        agenceName: string
+        agenceSigle: string
+        societeId: number
+        societeName: string
+        societeSigle: string
+        exploitationId: number
+        exploitationOpId: number
+        exploitationOpName: string
+        exploitationOpPointCollecteId: number
+        exploitationOpPointCollecteName: string
+        exploitationTypeOpId: number
+        exploitationTypeOpName: string
+        exploitationAnneeId: number
+        exploitationAnneeName: string
+        exploitationSaisonId: number
+        exploitationSaisonName: string
+        exploitationVarieteId: number
+        exploitationVarieteName: string
+        exploitationVarieteSurfaceUnite: string
+        exploitationVarieteQuantiteUnite: string
+        exploitationVarieteRendementUnite: number
+        exploitationProduitId: number
+        exploitationProduitName: string
+        exploitationFiliereId: number
+        exploitationFiliereName: string
+        exploitationFamilleEmplacemenId: number
+        exploitationFamilleEmplacementName: string
+        exploitationCompte: number
+        exploitationDate: string
+        exploitationUnite: string
+        exploitationSurface: number
+      }[] = []
 
       for (const credit of creditWithExploitation) {
-        const dateObjectCredit = new Date(credit.date);
-        const formattedDateCredit =
-          dateObjectCredit.toLocaleDateString('fr-FR');
+        const dateObjectCredit = new Date(credit.date)
+        const formattedDateCredit = dateObjectCredit.toLocaleDateString('fr-FR')
         const dateObjectExploitation = new Date(
-          credit.exploitation.date as Date
-        );
+          credit.exploitation.date as Date,
+        )
         const formattedDateExploitation =
-          dateObjectExploitation.toLocaleDateString('fr-FR');
+          dateObjectExploitation.toLocaleDateString('fr-FR')
 
-        const mesRemboursementsCount =
-          credit.exploitation.remboursements.length;
-
-        const mesRemboursements = credit.exploitation.remboursements.reduce(
+        //let mesRemboursementsCount = credit.exploitation.Remboursement.length
+        /*
+        const mesRemboursements = credit.exploitation.Remboursement.reduce(
           (sum, remboursement) => sum + remboursement.valeur,
-          0
-        );
+          0,
+        )
+        */
 
         const mesRemboursementsMouvementCount =
-          credit.exploitation.op?.movementsStocks.length;
+          credit.exploitation.op?.MouvementStock.length
         const mesRemboursementsMouvement =
-          credit.exploitation.op?.movementsStocks.reduce(
-            (sum, mouvement) => sum + mouvement.valeur,
-            0
-          );
+          credit.exploitation.op?.MouvementStock.reduce(
+            (sum: any, mouvement: { valeur: any }) => sum + mouvement.valeur,
+            0,
+          )
         const exigible =
           credit.capital +
           credit.interet +
           credit.moratoire +
-          credit.autres_engagements;
-        let monTauxRemboursement = 0;
+          credit.autres_engagements
+        //let monTauxRemboursement = 0
+        /*
         if (exigible > 0) {
-          monTauxRemboursement = (mesRemboursements / exigible) * 100;
+          monTauxRemboursement = (mesRemboursements / exigible) * 100
         }
-
-        let monTauxRemboursementMouvement = 0;
+*/
+        let monTauxRemboursementMouvement = 0
         if (exigible > 0) {
           monTauxRemboursementMouvement =
-            (mesRemboursementsMouvement ?? 0 / exigible) * 100;
+            (mesRemboursementsMouvement ?? 0 / exigible) * 100
         }
-
+        /*
         credits.push({
           id: credit.id,
           date: formattedDateCredit,
@@ -832,7 +816,7 @@ export class CreditService {
           moratoireFormat: this.formatMontant(credit.moratoire),
           exigibleFormat: this.formatMontant(exigible),
           autres_engagementsFormat: this.formatMontant(
-            credit.autres_engagements
+            credit.autres_engagements,
           ),
           agenceId: credit.exploitation.agence.id,
           agenceName: credit.exploitation.agence.name,
@@ -841,8 +825,9 @@ export class CreditService {
           societeId: credit.exploitation.agence.societe.id,
           societeName: credit.exploitation.agence.societe.name,
           societeSigle: credit.exploitation.agence.societe.sigle,
-          exploitationTypeOpId: credit.exploitation.op?.typeOp.id ?? 0,
-          exploitationTypeOpName: credit.exploitation.op?.typeOp.name ?? '',
+          exploitationTypeOpId: credit.exploitation.op?.formeJuridique?.id ?? 0,
+          exploitationTypeOpName:
+            credit.exploitation.op?.formeJuridique?.name ?? '',
           exploitationId: credit.exploitation.id,
           exploitationOpId: credit.exploitation.op?.id ?? 0,
           exploitationOpName: credit.exploitation.op?.name ?? '',
@@ -867,35 +852,38 @@ export class CreditService {
           exploitationFiliereName:
             credit.exploitation.variete.produit.filiere.name,
           exploitationFamilleEmplacemenId:
-            credit.exploitation.variete.produit.familleEmplacement.id,
+            credit.exploitation.variete.produit.familleEmplacement?.id ?? 0,
           exploitationFamilleEmplacementName:
-            credit.exploitation.variete.produit.familleEmplacement.name,
+            credit.exploitation.variete.produit.familleEmplacement?.name ?? '',
           exploitationCompte: credit.exploitation.compte,
           exploitationDate: formattedDateExploitation,
           exploitationUnite: credit.exploitation.unite,
           exploitationSurface: credit.exploitation.surface,
+          
           remboursementsSum: mesRemboursements,
           remboursementsSumFormat: this.formatMontant(mesRemboursements),
           remboursementsCount: mesRemboursementsCount,
           tauxRemboursement: monTauxRemboursement,
           tauxRemboursementFormat: monTauxRemboursement.toFixed(2) + ' %',
+          
 
           remboursementsMouvementSum: mesRemboursementsMouvement ?? 0,
           remboursementsMouvementCount: mesRemboursementsMouvementCount ?? 0,
           remboursementsMouvementSumFormat: this.formatMontant(
-            mesRemboursementsMouvement ?? 0
+            mesRemboursementsMouvement ?? 0,
           ),
           tauxRemboursementMouvement: monTauxRemboursementMouvement,
           tauxRemboursementMouvementFormat:
             monTauxRemboursementMouvement.toFixed(2) + ' %',
-        });
+        })
+        */
       }
 
-      return credits;
+      return credits
     } catch (error) {
-      throw new ForbiddenException(error);
+      throw new ForbiddenException(error)
     } finally {
-      await this.prismaService.$disconnect();
+      await this.prismaService.$disconnect()
     }
   }
 
@@ -903,7 +891,7 @@ export class CreditService {
     etablissementId: number,
     produitId: number,
     anneeId: number,
-    saisonId: number
+    saisonId: number,
   ) {
     try {
       const creditWithExploitation = await this.prismaService.credit.findMany({
@@ -918,8 +906,8 @@ export class CreditService {
               op: {
                 include: {
                   point: true,
-                  typeOp: true,
-                  movementsStocks: {
+                  formeJuridique: true,
+                  MouvementStock: {
                     where: {
                       variete: {
                         produitId: produitId,
@@ -946,9 +934,11 @@ export class CreditService {
                   },
                 },
               },
-              remboursements: {
+              /*
+              Remboursement: {
                 include: {},
               },
+              */
             },
           },
         },
@@ -964,105 +954,107 @@ export class CreditService {
             saisonId: saisonId,
           },
         },
-      });
+      })
       // return opsWithType;
       const credits: {
-        id: number;
-        date: string;
-        capital: number;
-        interet: number;
-        moratoire: number;
-        autres_engagements: number;
-        exigible: number;
-        remboursementsSum: number;
-        remboursementsCount: number;
-        tauxRemboursement: number;
-        remboursementsMouvementSum: number;
-        remboursementsMouvementCount: number;
-        tauxRemboursementMouvement: number;
-        capitalFormat: string;
-        interetFormat: string;
-        moratoireFormat: string;
-        autres_engagementsFormat: string;
-        exigibleFormat: string;
-        remboursementsSumFormat: string;
-        tauxRemboursementFormat: string;
-        remboursementsMouvementSumFormat: string;
-        tauxRemboursementMouvementFormat: string;
-        agenceId: number;
-        agenceName: string;
-        agenceSigle: string;
-        societeId: number;
-        societeName: string;
-        societeSigle: string;
-        exploitationId: number;
-        exploitationOpId: number;
-        exploitationOpName: string;
-        exploitationOpPointCollecteId: number;
-        exploitationOpPointCollecteName: string;
-        exploitationTypeOpId: number;
-        exploitationTypeOpName: string;
-        exploitationAnneeId: number;
-        exploitationAnneeName: string;
-        exploitationSaisonId: number;
-        exploitationSaisonName: string;
-        exploitationVarieteId: number;
-        exploitationVarieteName: string;
-        exploitationVarieteSurfaceUnite: string;
-        exploitationVarieteQuantiteUnite: string;
-        exploitationVarieteRendementUnite: number;
-        exploitationProduitId: number;
-        exploitationProduitName: string;
-        exploitationFiliereId: number;
-        exploitationFiliereName: string;
-        exploitationFamilleEmplacemenId: number;
-        exploitationFamilleEmplacementName: string;
-        exploitationCompte: number;
-        exploitationDate: string;
-        exploitationUnite: string;
-        exploitationSurface: number;
-      }[] = [];
+        id: number
+        date: string
+        capital: number
+        interet: number
+        moratoire: number
+        autres_engagements: number
+        exigible: number
+        remboursementsSum: number
+        remboursementsCount: number
+        tauxRemboursement: number
+        remboursementsMouvementSum: number
+        remboursementsMouvementCount: number
+        tauxRemboursementMouvement: number
+        capitalFormat: string
+        interetFormat: string
+        moratoireFormat: string
+        autres_engagementsFormat: string
+        exigibleFormat: string
+        remboursementsSumFormat: string
+        tauxRemboursementFormat: string
+        remboursementsMouvementSumFormat: string
+        tauxRemboursementMouvementFormat: string
+        agenceId: number
+        agenceName: string
+        agenceSigle: string
+        societeId: number
+        societeName: string
+        societeSigle: string
+        exploitationId: number
+        exploitationOpId: number
+        exploitationOpName: string
+        exploitationOpPointCollecteId: number
+        exploitationOpPointCollecteName: string
+        exploitationTypeOpId: number
+        exploitationTypeOpName: string
+        exploitationAnneeId: number
+        exploitationAnneeName: string
+        exploitationSaisonId: number
+        exploitationSaisonName: string
+        exploitationVarieteId: number
+        exploitationVarieteName: string
+        exploitationVarieteSurfaceUnite: string
+        exploitationVarieteQuantiteUnite: string
+        exploitationVarieteRendementUnite: number
+        exploitationProduitId: number
+        exploitationProduitName: string
+        exploitationFiliereId: number
+        exploitationFiliereName: string
+        exploitationFamilleEmplacemenId: number
+        exploitationFamilleEmplacementName: string
+        exploitationCompte: number
+        exploitationDate: string
+        exploitationUnite: string
+        exploitationSurface: number
+      }[] = []
 
       for (const credit of creditWithExploitation) {
-        const dateObjectCredit = new Date(credit.date);
-        const formattedDateCredit =
-          dateObjectCredit.toLocaleDateString('fr-FR');
+        const dateObjectCredit = new Date(credit.date)
+        const formattedDateCredit = dateObjectCredit.toLocaleDateString('fr-FR')
         const dateObjectExploitation = new Date(
-          credit.exploitation.date as Date
-        );
+          credit.exploitation.date as Date,
+        )
         const formattedDateExploitation =
-          dateObjectExploitation.toLocaleDateString('fr-FR');
-        const mesRemboursementsCount =
-          credit.exploitation.remboursements.length;
+          dateObjectExploitation.toLocaleDateString('fr-FR')
 
-        const mesRemboursements = credit.exploitation.remboursements.reduce(
+        /*
+        const mesRemboursementsCount = credit.exploitation.Remboursement.length
+
+        const mesRemboursements = credit.exploitation.Remboursement.reduce(
           (sum, remboursement) => sum + remboursement.valeur,
-          0
-        );
-
+          0,
+        )
+*/
         const mesRemboursementsMouvementCount =
-          credit.exploitation.op?.movementsStocks.length;
+          credit.exploitation.op?.MouvementStock.length
         const mesRemboursementsMouvement =
-          credit.exploitation.op?.movementsStocks.reduce(
-            (sum, mouvement) => sum + mouvement.valeur,
-            0
-          );
+          credit.exploitation.op?.MouvementStock.reduce(
+            (sum: any, mouvement: { valeur: any }) => sum + mouvement.valeur,
+            0,
+          )
         const exigible =
           credit.capital +
           credit.interet +
           credit.moratoire +
-          credit.autres_engagements;
-        let monTauxRemboursement = 0;
-        if (exigible > 0) {
-          monTauxRemboursement = (mesRemboursements / exigible) * 100;
-        }
+          credit.autres_engagements
 
-        let monTauxRemboursementMouvement = 0;
+        //let monTauxRemboursement = 0
+        /*
+        if (exigible > 0) {
+          monTauxRemboursement = (mesRemboursements / exigible) * 100
+        }
+*/
+        let monTauxRemboursementMouvement = 0
         if (exigible > 0) {
           monTauxRemboursementMouvement =
-            (mesRemboursementsMouvement ?? 0 / exigible) * 100;
+            (mesRemboursementsMouvement ?? 0 / exigible) * 100
         }
-
+        /*
         credits.push({
           id: credit.id,
           date: formattedDateCredit,
@@ -1076,7 +1068,7 @@ export class CreditService {
           moratoireFormat: this.formatMontant(credit.moratoire),
           exigibleFormat: this.formatMontant(exigible),
           autres_engagementsFormat: this.formatMontant(
-            credit.autres_engagements
+            credit.autres_engagements,
           ),
           agenceId: credit.exploitation.agence.id,
           agenceName: credit.exploitation.agence.name,
@@ -1085,8 +1077,9 @@ export class CreditService {
           societeId: credit.exploitation.agence.societe.id,
           societeName: credit.exploitation.agence.societe.name,
           societeSigle: credit.exploitation.agence.societe.sigle,
-          exploitationTypeOpId: credit.exploitation.op?.typeOp.id ?? 0,
-          exploitationTypeOpName: credit.exploitation.op?.typeOp.name ?? '',
+          exploitationTypeOpId: credit.exploitation.op?.formeJuridique?.id ?? 0,
+          exploitationTypeOpName:
+            credit.exploitation.op?.formeJuridique?.name ?? '',
           exploitationId: credit.exploitation.id,
           exploitationOpId: credit.exploitation.op?.id ?? 0,
           exploitationOpName: credit.exploitation.op?.name ?? '',
@@ -1111,34 +1104,37 @@ export class CreditService {
           exploitationFiliereName:
             credit.exploitation.variete.produit.filiere.name,
           exploitationFamilleEmplacemenId:
-            credit.exploitation.variete.produit.familleEmplacement.id,
+            credit.exploitation.variete.produit.familleEmplacement?.id ?? 0,
           exploitationFamilleEmplacementName:
-            credit.exploitation.variete.produit.familleEmplacement.name,
+            credit.exploitation.variete.produit.familleEmplacement?.name ?? '',
           exploitationCompte: credit.exploitation.compte,
           exploitationDate: formattedDateExploitation,
           exploitationUnite: credit.exploitation.unite,
           exploitationSurface: credit.exploitation.surface,
+          
           remboursementsSum: mesRemboursements,
           remboursementsSumFormat: this.formatMontant(mesRemboursements),
           remboursementsCount: mesRemboursementsCount,
           tauxRemboursement: monTauxRemboursement,
           tauxRemboursementFormat: monTauxRemboursement.toFixed(2) + ' %',
+          
 
           remboursementsMouvementSum: mesRemboursementsMouvement ?? 0,
           remboursementsMouvementCount: mesRemboursementsMouvementCount ?? 0,
           remboursementsMouvementSumFormat: this.formatMontant(
-            mesRemboursementsMouvement ?? 0
+            mesRemboursementsMouvement ?? 0,
           ),
           tauxRemboursementMouvement: monTauxRemboursementMouvement,
           tauxRemboursementMouvementFormat:
             monTauxRemboursementMouvement.toFixed(2) + ' %',
-        });
+        })
+        */
       }
-      return credits;
+      return credits
     } catch (error) {
-      throw new ForbiddenException(error);
+      throw new ForbiddenException(error)
     } finally {
-      await this.prismaService.$disconnect();
+      await this.prismaService.$disconnect()
     }
   }
 
@@ -1153,30 +1149,30 @@ export class CreditService {
         compte: 'desc',
       },
       take: 1,
-    });
-    let compteValue = 0;
+    })
+    let compteValue = 0
     if (credit.length > 0) {
-      compteValue = credit[0].compte;
-      compteValue = compteValue + 1;
+      compteValue = credit[0].compte
+      compteValue = compteValue + 1
     } else {
       compteValue = parseInt(
         anneeId.toString() +
           saisonId.toString() +
           varieteId.toString() +
           '00001',
-        10
-      );
+        10,
+      )
     }
-    console.log('compteValue:', compteValue);
-    return compteValue;
+    console.log('compteValue:', compteValue)
+    return compteValue
   }
 
   async getOne(creditId: number) {
     const credit = await this.prismaService.credit.findUnique({
       where: { id: creditId },
-    });
-    if (!credit) throw new NotFoundException('Post not found');
-    return credit;
+    })
+    if (!credit) throw new NotFoundException('Post not found')
+    return credit
   }
   async create(createCreditDto: CreateCreditDto) {
     const {
@@ -1187,7 +1183,8 @@ export class CreditService {
       autres_engagements,
 
       exploitationId,
-    } = createCreditDto;
+      agenceId,
+    } = createCreditDto
     await this.prismaService.credit.create({
       data: {
         date,
@@ -1197,9 +1194,10 @@ export class CreditService {
         autres_engagements,
 
         exploitationId,
+        agenceId,
       },
-    });
-    return { data: 'Credit created' };
+    })
+    return { data: 'Credit created' }
   }
 
   async createExploitation(createExploitationDto: CreateExploitationDto) {
@@ -1214,7 +1212,7 @@ export class CreditService {
       compte = await this.getLastCompte(anneeId, saisonId, varieteId),
       producteurId,
       opId,
-    } = createExploitationDto;
+    } = createExploitationDto
     return await this.prismaService.exploitation.create({
       data: {
         compte,
@@ -1225,13 +1223,13 @@ export class CreditService {
         varieteId,
         anneeId,
         saisonId,
-        producteurId,
+
         opId,
       },
-    });
+    })
   }
   async createExploitationCredit(
-    createExploitationCreditDto: CreateExploitationCreditDto
+    createExploitationCreditDto: CreateExploitationCreditDto,
   ) {
     const CreateExploitationDto: CreateExploitationDto = {
       compte: createExploitationCreditDto.compte,
@@ -1244,9 +1242,9 @@ export class CreditService {
       saisonId: createExploitationCreditDto.saisonId,
       producteurId: createExploitationCreditDto.producteurId,
       opId: createExploitationCreditDto.opId,
-    };
-    const myExploitation = this.createExploitation(CreateExploitationDto);
-    createExploitationCreditDto.exploitationId = (await myExploitation).id;
+    }
+    const myExploitation = this.createExploitation(CreateExploitationDto)
+    createExploitationCreditDto.exploitationId = (await myExploitation).id
 
     const {
       date,
@@ -1255,7 +1253,8 @@ export class CreditService {
       moratoire,
       autres_engagements,
       exploitationId,
-    } = createExploitationCreditDto;
+      agenceId,
+    } = createExploitationCreditDto
     await this.prismaService.credit.create({
       data: {
         date,
@@ -1264,29 +1263,30 @@ export class CreditService {
         moratoire,
         autres_engagements,
         exploitationId,
+        agenceId,
       },
-    });
-    return { data: 'Credit created' };
+    })
+    return { data: 'Credit created' }
   }
 
   async update(creditId: number, updateCreditDto: UpdateCreditDto) {
     const credit = await this.prismaService.credit.findUnique({
       where: { id: creditId },
-    });
-    if (!credit) throw new NotFoundException('Credit not found');
+    })
+    if (!credit) throw new NotFoundException('Credit not found')
     await this.prismaService.credit.update({
       where: { id: creditId },
       data: { ...updateCreditDto },
-    });
-    return { data: 'Credit updeted!' };
+    })
+    return { data: 'Credit updeted!' }
   }
 
   async delete(creditId: number) {
     const credit = await this.prismaService.credit.findUnique({
       where: { id: creditId },
-    });
-    if (!credit) throw new NotFoundException('Post not found');
-    await this.prismaService.credit.delete({ where: { id: creditId } });
-    return { data: 'Credit deleted' };
+    })
+    if (!credit) throw new NotFoundException('Post not found')
+    await this.prismaService.credit.delete({ where: { id: creditId } })
+    return { data: 'Credit deleted' }
   }
 }

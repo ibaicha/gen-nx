@@ -1,36 +1,35 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from 'class-validator'
 
 export class CreateProduitDto {
-    @IsNotEmpty()
-  readonly name!: string;
-    @IsNotEmpty()
-  readonly isRecolte!: boolean;
-    @IsNotEmpty()
-  readonly isDerive!: boolean;
-    @IsNotEmpty()
-  readonly isEnsachage!: boolean;
-    @IsNotEmpty()
-  readonly isActive!: boolean;
-    @IsNotEmpty()
-  readonly filiereId!: number;
-    @IsNotEmpty()
-  readonly familleEmplacementId!: number;
-
+  @IsNotEmpty()
+  readonly name!: string
+  @IsNotEmpty()
+  readonly isRecolte!: boolean
+  @IsNotEmpty()
+  readonly isDerive!: boolean
+  @IsNotEmpty()
+  readonly isEnsachage!: boolean
+  @IsNotEmpty()
+  readonly isActive!: boolean
+  @IsNotEmpty()
+  readonly filiereId!: number
+  @IsNotEmpty()
+  readonly familleEmplacementId!: number
 }
 
 export class UpdateProduitDto {
   @IsNotEmpty()
-  readonly name!: string;
+  readonly name!: string
   @IsNotEmpty()
-  readonly isRecolte!: boolean;
+  readonly isRecolte!: boolean
   @IsNotEmpty()
-  readonly isDerive!: boolean;
+  readonly isDerive!: boolean
   @IsNotEmpty()
-  readonly isEnsachage!: boolean;
+  readonly isEnsachage!: boolean
   @IsNotEmpty()
-  readonly isActive!: boolean;
+  readonly isActive!: boolean
   @IsNotEmpty()
-  readonly filiereId!: number;
+  readonly filiereId!: number
   @IsNotEmpty()
-  readonly familleEmplacementId!: number;
+  readonly familleEmplacementId!: number
 }

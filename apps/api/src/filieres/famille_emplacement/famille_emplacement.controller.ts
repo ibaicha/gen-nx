@@ -1,56 +1,73 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { FamilleEmplacementService } from './famille_emplacement.service';
-import { AuthGuard } from '@nestjs/passport';
- 
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { CreateFamilleEmplacementDto, UpdateFamilleEmplacementDto } from './famille_emplacement.dto';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  Req,
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { FamilleEmplacementService } from './famille_emplacement.service'
+import { AuthGuard } from '@nestjs/passport'
 
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import {
+  CreateFamilleEmplacementDto,
+  UpdateFamilleEmplacementDto,
+} from './famille_emplacement.dto'
 
 @ApiTags('FamilleEmplacement')
 @Controller('familleEmplacements')
 export class FamilleEmplacementController {
-    constructor(private readonly familleEmplacementService: FamilleEmplacementService) {}
+  constructor(
+    private readonly familleEmplacementService: FamilleEmplacementService,
+  ) {}
 
-    @Get()
-    getAll() {
-        return this.familleEmplacementService.getAll();
-    }
+  @Get()
+  getAll() {
+    return this.familleEmplacementService.getAll()
+  }
 
-    @Get("/:id")
-    get(@Param("id", ParseIntPipe) familleEmplacementId : number, createFamilleEmplacementDto: CreateFamilleEmplacementDto) {
-        return this.familleEmplacementService.getOne(familleEmplacementId);
-    }
+  @Get('/:id')
+  get(
+    @Param('id', ParseIntPipe) familleEmplacementId: number,
+    createFamilleEmplacementDto: CreateFamilleEmplacementDto,
+  ) {
+    return this.familleEmplacementService.getOne(familleEmplacementId)
+  }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Post('create')
+  create(@Body() createFamilleEmplacementDto: CreateFamilleEmplacementDto) {
+    return this.familleEmplacementService.create(createFamilleEmplacementDto)
+  }
 
-    @ApiBearerAuth()
-    @UseGuards(AuthGuard('jwt'))
-    @Post("create")
-    create(@Body() createFamilleEmplacementDto: CreateFamilleEmplacementDto) {
-        return this.familleEmplacementService.create(createFamilleEmplacementDto);
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('delete/:id')
+  delete(
+    @Param('id', ParseIntPipe) familleEmplacementId: number,
+    createFamilleEmplacementDto: CreateFamilleEmplacementDto,
+    @Req() request: Request,
+  ) {
+    return this.familleEmplacementService.delete(familleEmplacementId)
+  }
 
-    }
-
-
-    @ApiBearerAuth()
-    @UseGuards(AuthGuard('jwt'))
-    @Delete("delete/:id")
-    delete(@Param("id", ParseIntPipe) familleEmplacementId : number, createFamilleEmplacementDto: CreateFamilleEmplacementDto, @Req() request : Request) {
-        return this.familleEmplacementService.delete(familleEmplacementId);
-    }
-
-    @ApiBearerAuth()
-    @UseGuards(AuthGuard('jwt'))
-    @Put("update/:id")
-    update(
-        @Param("id", ParseIntPipe) familleEmplacementId : number,
-        @Body() updateFamilleEmplacementDto: UpdateFamilleEmplacementDto,
-        ) {
-        return this.familleEmplacementService.update(familleEmplacementId, updateFamilleEmplacementDto);
-    }
-
-
-
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Put('update/:id')
+  update(
+    @Param('id', ParseIntPipe) familleEmplacementId: number,
+    @Body() updateFamilleEmplacementDto: UpdateFamilleEmplacementDto,
+  ) {
+    return this.familleEmplacementService.update(
+      familleEmplacementId,
+      updateFamilleEmplacementDto,
+    )
+  }
 }
-

@@ -2,10 +2,12 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { CreateRemboursementDto, UpdateRemboursementDto } from './remboursement.dto';
-
+} from '@nestjs/common'
+import { PrismaService } from '../../prisma/prisma.service'
+import {
+  CreateRemboursementDto,
+  UpdateRemboursementDto,
+} from './remboursement.dto'
 
 @Injectable()
 export class RemboursementService {
@@ -15,18 +17,18 @@ export class RemboursementService {
     return this.prismaService.remboursement.findMany({
       include: {
         typeRemboursement: true,
-        exploitation: true,
+        credit: true,
         emballage: {
           include: {
             typeEmballage: true,
           },
         },
       },
-    });
+    })
   }
 
   formatMontant(montant: number) {
-    return montant.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    return montant.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
   }
   async getAllxx() {
     try {
@@ -34,40 +36,39 @@ export class RemboursementService {
         await this.prismaService.remboursement.findMany({
           include: {
             typeRemboursement: true,
-            exploitation: true,
+            credit: true,
             emballage: {
               include: {
                 typeEmballage: true,
               },
             },
           },
-        });
+        })
       // return opsWithType;
       const remboursements: {
-        id: number;
-        date: string;
-        pu: number;
-        puFormat: string;
-        nombreUnite: number;
-        nombreUniteFormat: string;
-        nombreEmballage: number;
-        nombreEmballageFormat: string;
-        valeur: number;
-        valeurFormat: string;
-        typeRemboursementId: number;
-        typeRemboursementName: string;
-        exploitationId: number;
-        emballageId: number;
-        emballageName: string;
-        emballageTypeEmballageId: number;
-        emballageTypeEmballageName: string;
-      }[] = [];
+        id: number
+        date: string
+        pu: number
+        puFormat: string
+        nombreUnite: number
+        nombreUniteFormat: string
+        nombreEmballage: number
+        nombreEmballageFormat: string
+        valeur: number
+        valeurFormat: string
+        typeRemboursementId: number
+        typeRemboursementName: string
+        exploitationId: number
+        emballageId: number
+        emballageName: string
+        emballageTypeEmballageId: number
+        emballageTypeEmballageName: string
+      }[] = []
 
       for (const credit of creditWithRemboursement) {
-        const dateObjectCredit = new Date(credit.date);
-        const formattedDateCredit =
-          dateObjectCredit.toLocaleDateString('fr-FR');
-
+        const dateObjectCredit = new Date(credit.date)
+        const formattedDateCredit = dateObjectCredit.toLocaleDateString('fr-FR')
+        /*
         remboursements.push({
           id: credit.id,
           date: formattedDateCredit,
@@ -85,14 +86,16 @@ export class RemboursementService {
           emballageId: credit.emballageId ?? 0,
           emballageName: credit.emballage?.name ?? '',
           emballageTypeEmballageId: credit.emballage?.typeEmballageId ?? 0,
-          emballageTypeEmballageName: credit.emballage?.typeEmballage.name ?? '',
-        });
+          emballageTypeEmballageName:
+            credit.emballage?.typeEmballage.name ?? '',
+        })
+        */
       }
-      return remboursements;
+      return remboursements
     } catch (error) {
-      throw new ForbiddenException(error);
+      throw new ForbiddenException(error)
     } finally {
-      await this.prismaService.$disconnect();
+      await this.prismaService.$disconnect()
     }
   }
 
@@ -143,7 +146,7 @@ export class RemboursementService {
           id: exploitationId,
         },
       },
-    });
+    })
   }
 
   async getAll() {
@@ -188,15 +191,15 @@ export class RemboursementService {
           },
         },
       },
-    });
+    })
   }
 
   async getOne(remboursementId: number) {
     const remboursement = await this.prismaService.remboursement.findUnique({
       where: { id: remboursementId },
-    });
-    if (!remboursement) throw new NotFoundException('Post not found');
-    return remboursement;
+    })
+    if (!remboursement) throw new NotFoundException('Post not found')
+    return remboursement
   }
 
   async create(createRemboursementDto: CreateRemboursementDto) {
@@ -207,9 +210,9 @@ export class RemboursementService {
       nombre_emballage,
       valeur,
       typeRemboursementId,
-      exploitationId,
+      creditId,
       emballageId,
-    } = createRemboursementDto;
+    } = createRemboursementDto
     await this.prismaService.remboursement.create({
       data: {
         date,
@@ -218,36 +221,36 @@ export class RemboursementService {
         nombre_emballage,
         valeur,
         typeRemboursementId,
-        exploitationId,
+        creditId,
         emballageId,
       },
-    });
-    return { data: 'Remboursement created' };
+    })
+    return { data: 'Remboursement created' }
   }
 
   async update(
     remboursementId: number,
-    updateRemboursementDto: UpdateRemboursementDto
+    updateRemboursementDto: UpdateRemboursementDto,
   ) {
     const remboursement = await this.prismaService.remboursement.findUnique({
       where: { id: remboursementId },
-    });
-    if (!remboursement) throw new NotFoundException('Remboursement not found');
+    })
+    if (!remboursement) throw new NotFoundException('Remboursement not found')
     await this.prismaService.remboursement.update({
       where: { id: remboursementId },
       data: { ...updateRemboursementDto },
-    });
-    return { data: 'Remboursement updeted!' };
+    })
+    return { data: 'Remboursement updeted!' }
   }
 
   async delete(remboursementId: number) {
     const remboursement = await this.prismaService.remboursement.findUnique({
       where: { id: remboursementId },
-    });
-    if (!remboursement) throw new NotFoundException('Post not found');
+    })
+    if (!remboursement) throw new NotFoundException('Post not found')
     await this.prismaService.remboursement.delete({
       where: { id: remboursementId },
-    });
-    return { data: 'Remboursement deleted' };
+    })
+    return { data: 'Remboursement deleted' }
   }
 }

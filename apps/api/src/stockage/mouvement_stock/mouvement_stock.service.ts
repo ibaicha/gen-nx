@@ -1,11 +1,9 @@
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { PrismaService } from '../../prisma/prisma.service'
 import {
-
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { CreateMouvementStockDto, UpdateMouvementStockDto } from './mouvement_stock.dto';
-
+  CreateMouvementStockDto,
+  UpdateMouvementStockDto,
+} from './mouvement_stock.dto'
 
 @Injectable()
 export class MouvementStockService {
@@ -83,12 +81,12 @@ export class MouvementStockService {
           },
         },
       },
-    });
+    })
   }
   async getAllMouvementStockProduitCampagne(
     produitId: number,
     anneeId: number,
-    saisonId: number
+    saisonId: number,
   ) {
     return this.prismaService.mouvementStock.findMany({
       select: {
@@ -182,14 +180,14 @@ export class MouvementStockService {
           produitId: produitId,
         },
       },
-    });
+    })
   }
 
   async getAllMouvementStockOpProduitCampagne(
     opId: number,
     produitId: number,
     anneeId: number,
-    saisonId: number
+    saisonId: number,
   ) {
     return this.prismaService.mouvementStock.findMany({
       select: {
@@ -284,7 +282,7 @@ export class MouvementStockService {
         },
         opId: opId,
       },
-    });
+    })
   }
 
   async getOne(mouvementStockId: number) {
@@ -340,15 +338,15 @@ export class MouvementStockService {
         },
       },
       where: { id: mouvementStockId },
-    });
+    })
   }
 
   async getOneX(mouvementStockId: number) {
     const mouvementStock = await this.prismaService.mouvementStock.findUnique({
       where: { id: mouvementStockId },
-    });
-    if (!mouvementStock) throw new NotFoundException('Post not found');
-    return mouvementStock;
+    })
+    if (!mouvementStock) throw new NotFoundException('Post not found')
+    return mouvementStock
   }
 
   async create(createMouvementStockDto: CreateMouvementStockDto) {
@@ -367,7 +365,7 @@ export class MouvementStockService {
       emballageId,
       anneeId,
       saisonId,
-    } = createMouvementStockDto;
+    } = createMouvementStockDto
     await this.prismaService.mouvementStock.create({
       data: {
         date,
@@ -385,34 +383,33 @@ export class MouvementStockService {
         anneeId,
         saisonId,
       },
-    });
-    return { data: 'MouvementStock created' };
+    })
+    return { data: 'MouvementStock created' }
   }
 
   async update(
     mouvementStockId: number,
-    updateMouvementStockDto: UpdateMouvementStockDto
+    updateMouvementStockDto: UpdateMouvementStockDto,
   ) {
     const mouvementStock = await this.prismaService.mouvementStock.findUnique({
       where: { id: mouvementStockId },
-    });
-    if (!mouvementStock)
-      throw new NotFoundException('MouvementStock not found');
+    })
+    if (!mouvementStock) throw new NotFoundException('MouvementStock not found')
     await this.prismaService.mouvementStock.update({
       where: { id: mouvementStockId },
       data: { ...updateMouvementStockDto },
-    });
-    return { data: 'MouvementStock updeted!' };
+    })
+    return { data: 'MouvementStock updeted!' }
   }
 
   async delete(mouvementStockId: number) {
     const mouvementStock = await this.prismaService.mouvementStock.findUnique({
       where: { id: mouvementStockId },
-    });
-    if (!mouvementStock) throw new NotFoundException('Post not found');
+    })
+    if (!mouvementStock) throw new NotFoundException('Post not found')
     await this.prismaService.mouvementStock.delete({
       where: { id: mouvementStockId },
-    });
-    return { data: 'MouvementStock deleted' };
+    })
+    return { data: 'MouvementStock deleted' }
   }
 }

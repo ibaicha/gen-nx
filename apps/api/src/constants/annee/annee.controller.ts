@@ -8,13 +8,13 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { AnneeService } from './annee.service';
-import { AuthGuard } from '@nestjs/passport';
-import { CreateAnneeDto, UpdateAnneeDto } from './annee.dto';
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { AnneeService } from './annee.service'
+import { AuthGuard } from '@nestjs/passport'
+import { CreateAnneeDto, UpdateAnneeDto } from '@shared-models'
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('Annee')
 @Controller('annees')
@@ -23,22 +23,22 @@ export class AnneeController {
 
   @Get()
   getAll() {
-    return this.anneeService.getAll();
+    return this.anneeService.getAll()
   }
 
   @Get('/:id')
   get(
     @Param('id', ParseIntPipe) anneeId: number,
-    createAnneeDto: CreateAnneeDto
+    createAnneeDto: CreateAnneeDto,
   ) {
-    return this.anneeService.getOne(anneeId);
+    return this.anneeService.getOne(anneeId)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(@Body() createAnneeDto: CreateAnneeDto) {
-    return this.anneeService.create(createAnneeDto);
+    return this.anneeService.create(createAnneeDto)
   }
 
   @ApiBearerAuth()
@@ -47,9 +47,9 @@ export class AnneeController {
   delete(
     @Param('id', ParseIntPipe) anneeId: number,
     createAnneeDto: CreateAnneeDto,
-    @Req() request: Request
+    @Req() request: Request,
   ) {
-    return this.anneeService.delete(anneeId);
+    return this.anneeService.delete(anneeId)
   }
 
   @ApiBearerAuth()
@@ -57,8 +57,8 @@ export class AnneeController {
   @Put('update/:id')
   update(
     @Param('id', ParseIntPipe) anneeId: number,
-    @Body() updateAnneeDto: UpdateAnneeDto
+    @Body() updateAnneeDto: UpdateAnneeDto,
   ) {
-    return this.anneeService.update(anneeId, updateAnneeDto);
+    return this.anneeService.update(anneeId, updateAnneeDto)
   }
 }

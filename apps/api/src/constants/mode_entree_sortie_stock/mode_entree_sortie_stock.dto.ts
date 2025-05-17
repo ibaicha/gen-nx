@@ -1,21 +1,18 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from 'class-validator'
 
 export class CreateModeEntreeSortieStockDto {
-    @IsNotEmpty()
-  readonly code!: string;
-    @IsNotEmpty()
-  readonly name!: string;
-    @IsNotEmpty()
-  readonly typeMouvementStockId!: number;
-
-
+  @IsNotEmpty()
+  readonly code!: string
+  @IsNotEmpty()
+  readonly name!: string
+  @IsNotEmpty()
+  readonly typeMouvementStockId!: number
 }
 export class UpdateModeEntreeSortieStockDto {
   @IsNotEmpty()
-  readonly code!: string;
+  readonly code!: string
   @IsNotEmpty()
-  readonly name!: string;
+  readonly name!: string
   @IsNotEmpty()
-  readonly typeMouvementStockId!: number;
+  readonly typeMouvementStockId!: number
 }
-

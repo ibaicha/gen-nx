@@ -1,53 +1,53 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common'
 
-import { EventsGateway } from '../../socket/events/events.gateway';
-import { PrismaService } from '../../prisma/prisma.service';
-import { CreateAnneeDto, UpdateAnneeDto } from './annee.dto';
+import { EventsGateway } from '../../socket/events/events.gateway'
+import { PrismaService } from '../../prisma/prisma.service'
+import { CreateAnneeDto, UpdateAnneeDto } from '@shared-models'
 
 @Injectable()
 export class AnneeService {
   constructor(
-    private readonly prismaService: PrismaService //private eventsGateway: EventsGateway,
+    private readonly prismaService: PrismaService, //private eventsGateway: EventsGateway,
   ) {}
 
   async getAll() {
-    return this.prismaService.annee.findMany();
+    return this.prismaService.annee.findMany()
   }
 
   async getOne(anneeId: number) {
     const annee = await this.prismaService.annee.findUnique({
       where: { id: anneeId },
-    });
-    if (!annee) throw new NotFoundException('Post not found');
-    return annee;
+    })
+    if (!annee) throw new NotFoundException('Post not found')
+    return annee
   }
   async create(createAnneeDto: CreateAnneeDto) {
-    const { name, valeur } = createAnneeDto;
+    const { name, valeur } = createAnneeDto
     const annee = await this.prismaService.annee.create({
       data: { name, valeur },
-    });
+    })
     //this.eventsGateway.notifyRecordAdded(annee);
-    return { data: 'Annee created' };
+    return { data: 'Annee created' }
   }
 
   async update(anneeId: number, updateAnneeDto: UpdateAnneeDto) {
     const annee = await this.prismaService.annee.findUnique({
       where: { id: anneeId },
-    });
-    if (!annee) throw new NotFoundException('Annee not found');
+    })
+    if (!annee) throw new NotFoundException('Annee not found')
     await this.prismaService.annee.update({
       where: { id: anneeId },
       data: { ...updateAnneeDto },
-    });
-    return { data: 'Annee updeted!' };
+    })
+    return { data: 'Annee updeted!' }
   }
 
   async delete(anneeId: number) {
     const annee = await this.prismaService.annee.findUnique({
       where: { id: anneeId },
-    });
-    if (!annee) throw new NotFoundException('Post not found');
-    await this.prismaService.annee.delete({ where: { id: anneeId } });
-    return { data: 'Annee deleted' };
+    })
+    if (!annee) throw new NotFoundException('Post not found')
+    await this.prismaService.annee.delete({ where: { id: anneeId } })
+    return { data: 'Annee deleted' }
   }
 }

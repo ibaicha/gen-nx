@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
-import { FamilleEmplacementController } from './famille_emplacement.controller';
-import { FamilleEmplacementService } from './famille_emplacement.service';
+import { Module } from '@nestjs/common'
+import { FamilleEmplacementController } from './famille_emplacement.controller'
+import { FamilleEmplacementService } from './famille_emplacement.service'
 
 @Module({
   controllers: [FamilleEmplacementController],
-  providers: [FamilleEmplacementService]
+  providers: [FamilleEmplacementService],
 })
 export class FamilleEmplacementModule {}

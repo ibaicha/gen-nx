@@ -9,50 +9,61 @@ import {
   Put,
   Query,
   Req,
-} from '@nestjs/common';
+} from '@nestjs/common'
 
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { MouvementIntrantService } from './mouvement_intrant.service';
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { AuthGuard } from '@nestjs/passport'
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { MouvementIntrantService } from './mouvement_intrant.service'
 import {
   CreateMouvementIntrantDto,
   GetMouvementIntrantParamsDTO,
   IMouvementIntrant,
   UpdateMouvementIntrantDto,
-} from './mouvement_intrant.dto';
-import { Prisma } from '@prisma/client';
+} from './mouvement_intrant.dto'
+import { Prisma } from '@prisma/client'
 
 @ApiTags('MouvementIntrant')
 @Controller('mouvementIntrants')
 //@Controller('mouvement-intrant')
 export class MouvementIntrantController {
   constructor(
-    private readonly mouvementIntrantService: MouvementIntrantService
+    private readonly mouvementIntrantService: MouvementIntrantService,
   ) {}
 
   @Get('/all')
   getAll() {
-    return this.mouvementIntrantService.getAll();
+    return this.mouvementIntrantService.getAll()
   }
 
   @Get('/:id')
   get(
     @Param('id', ParseIntPipe) mouvementIntrantId: number,
-    createMouvementIntrantDto: CreateMouvementIntrantDto
+    createMouvementIntrantDto: CreateMouvementIntrantDto,
   ) {
-    return this.mouvementIntrantService.getOne(mouvementIntrantId);
+    return this.mouvementIntrantService.getOne(mouvementIntrantId)
   }
 
   @Get()
   async getAllMouvementIntrantWithFilters(
-    @Query() params: GetMouvementIntrantParamsDTO
+    @Query() filtersInput: GetMouvementIntrantParamsDTO,
+  ) {
+    return this.mouvementIntrantService.getAllMouvementIntrantWithFilters(
+      filtersInput,
+    )
+  }
+
+  /*
+  @Get()
+  async getAllMouvementIntrantWithFilters(
+    @Query() params: GetMouvementIntrantParamsDTO,
   ): Promise<IMouvementIntrant[]> {
     return this.mouvementIntrantService.getAllMouvementIntrantWithFilters(
-      params
-    );
+      params,
+    )
   }
+  */
 
   /*
   @Get(
@@ -79,7 +90,7 @@ export class MouvementIntrantController {
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(@Body() createMouvementIntrantDto: CreateMouvementIntrantDto) {
-    return this.mouvementIntrantService.create(createMouvementIntrantDto);
+    return this.mouvementIntrantService.create(createMouvementIntrantDto)
   }
 
   @ApiBearerAuth()
@@ -88,9 +99,9 @@ export class MouvementIntrantController {
   delete(
     @Param('id', ParseIntPipe) mouvementIntrantId: number,
     createMouvementIntrantDto: CreateMouvementIntrantDto,
-    @Req() request: Request
+    @Req() request: Request,
   ) {
-    return this.mouvementIntrantService.delete(mouvementIntrantId);
+    return this.mouvementIntrantService.delete(mouvementIntrantId)
   }
 
   @ApiBearerAuth()
@@ -98,11 +109,11 @@ export class MouvementIntrantController {
   @Put('update/:id')
   update(
     @Param('id', ParseIntPipe) mouvementIntrantId: number,
-    @Body() updateMouvementIntrantDto: UpdateMouvementIntrantDto
+    @Body() updateMouvementIntrantDto: UpdateMouvementIntrantDto,
   ) {
     return this.mouvementIntrantService.update(
       mouvementIntrantId,
-      updateMouvementIntrantDto
-    );
+      updateMouvementIntrantDto,
+    )
   }
 }

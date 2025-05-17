@@ -1,12 +1,11 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from 'class-validator'
 
 export class CreateTypeUniteGrandeurDto {
-    @IsNotEmpty()
-  readonly name!: string;
+  @IsNotEmpty()
+  readonly name!: string
 }
-
 
 export class UpdateTypeUniteGrandeurDto {
   @IsNotEmpty()
-  readonly name!: string;
+  readonly name!: string
 }

@@ -1,11 +1,11 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from 'class-validator'
 
 export class CreateTypeEmballageDto {
-    @IsNotEmpty()
-  readonly name!: string;
+  @IsNotEmpty()
+  readonly name!: string
 }
 
 export class UpdateTypeEmballageDto {
   @IsNotEmpty()
-  readonly name!: string;
+  readonly name!: string
 }

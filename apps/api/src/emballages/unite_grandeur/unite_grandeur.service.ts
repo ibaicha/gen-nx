@@ -1,11 +1,9 @@
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { PrismaService } from '../../prisma/prisma.service'
 import {
-
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { CreateUniteGrandeurDto, UpdateUniteGrandeurDto } from './unite_grandeur.dto';
-
+  CreateUniteGrandeurDto,
+  UpdateUniteGrandeurDto,
+} from './unite_grandeur.dto'
 
 @Injectable()
 export class UniteGrandeurService {
@@ -23,47 +21,47 @@ export class UniteGrandeurService {
           },
         },
       },
-    });
+    })
   }
 
   async getOne(uniteGrandeurId: number) {
     const uniteGrandeur = await this.prismaService.uniteGrandeur.findUnique({
       where: { id: uniteGrandeurId },
-    });
-    if (!uniteGrandeur) throw new NotFoundException('Post not found');
-    return uniteGrandeur;
+    })
+    if (!uniteGrandeur) throw new NotFoundException('Post not found')
+    return uniteGrandeur
   }
   async create(createUniteGrandeurDto: CreateUniteGrandeurDto) {
-    const { name, typeUniteGrandeurId } = createUniteGrandeurDto;
+    const { name, sigle, typeUniteGrandeurId } = createUniteGrandeurDto
     await this.prismaService.uniteGrandeur.create({
-      data: { name, typeUniteGrandeurId },
-    });
-    return { data: 'UniteGrandeur created' };
+      data: { name, sigle, typeUniteGrandeurId },
+    })
+    return { data: 'UniteGrandeur created' }
   }
 
   async update(
     uniteGrandeurId: number,
-    updateUniteGrandeurDto: UpdateUniteGrandeurDto
+    updateUniteGrandeurDto: UpdateUniteGrandeurDto,
   ) {
     const uniteGrandeur = await this.prismaService.uniteGrandeur.findUnique({
       where: { id: uniteGrandeurId },
-    });
-    if (!uniteGrandeur) throw new NotFoundException('UniteGrandeur not found');
+    })
+    if (!uniteGrandeur) throw new NotFoundException('UniteGrandeur not found')
     await this.prismaService.uniteGrandeur.update({
       where: { id: uniteGrandeurId },
       data: { ...updateUniteGrandeurDto },
-    });
-    return { data: 'UniteGrandeur updeted!' };
+    })
+    return { data: 'UniteGrandeur updeted!' }
   }
 
   async delete(uniteGrandeurId: number) {
     const uniteGrandeur = await this.prismaService.uniteGrandeur.findUnique({
       where: { id: uniteGrandeurId },
-    });
-    if (!uniteGrandeur) throw new NotFoundException('Post not found');
+    })
+    if (!uniteGrandeur) throw new NotFoundException('Post not found')
     await this.prismaService.uniteGrandeur.delete({
       where: { id: uniteGrandeurId },
-    });
-    return { data: 'UniteGrandeur deleted' };
+    })
+    return { data: 'UniteGrandeur deleted' }
   }
 }

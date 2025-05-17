@@ -1,18 +1,18 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserZoneController } from './user_zone.controller';
+import { Test, TestingModule } from '@nestjs/testing'
+import { UserZoneController } from './user_zone.controller'
 
 describe('UserZoneController', () => {
-  let controller: UserZoneController;
+  let controller: UserZoneController
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserZoneController],
-    }).compile();
+    }).compile()
 
-    controller = module.get<UserZoneController>(UserZoneController);
-  });
+    controller = module.get<UserZoneController>(UserZoneController)
+  })
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
-});
+    expect(controller).toBeDefined()
+  })
+})

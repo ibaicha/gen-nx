@@ -1,11 +1,6 @@
-import {
-
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { CreateVarieteDto, UpdateVarieteDto } from './variete.dto';
-
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { PrismaService } from '../../prisma/prisma.service'
+import { CreateVarieteDto, UpdateVarieteDto } from './variete.dto'
 
 @Injectable()
 export class VarieteService {
@@ -44,15 +39,15 @@ export class VarieteService {
           },
         },
       },
-    });
+    })
   }
 
   async getOne(varieteId: number) {
     const variete = await this.prismaService.variete.findUnique({
       where: { id: varieteId },
-    });
-    if (!variete) throw new NotFoundException('Post not found');
-    return variete;
+    })
+    if (!variete) throw new NotFoundException('Post not found')
+    return variete
   }
   async create(createVarieteDto: CreateVarieteDto) {
     const {
@@ -63,7 +58,7 @@ export class VarieteService {
       rendement_unite,
       isActive,
       produitId,
-    } = createVarieteDto;
+    } = createVarieteDto
     await this.prismaService.variete.create({
       data: {
         name,
@@ -74,28 +69,28 @@ export class VarieteService {
         isActive,
         produitId,
       },
-    });
-    return { data: 'Variete created' };
+    })
+    return { data: 'Variete created' }
   }
 
   async update(varieteId: number, updateVarieteDto: UpdateVarieteDto) {
     const variete = await this.prismaService.variete.findUnique({
       where: { id: varieteId },
-    });
-    if (!variete) throw new NotFoundException('Variete not found');
+    })
+    if (!variete) throw new NotFoundException('Variete not found')
     await this.prismaService.variete.update({
       where: { id: varieteId },
       data: { ...updateVarieteDto },
-    });
-    return { data: 'Variete updeted!' };
+    })
+    return { data: 'Variete updeted!' }
   }
 
   async delete(varieteId: number) {
     const variete = await this.prismaService.variete.findUnique({
       where: { id: varieteId },
-    });
-    if (!variete) throw new NotFoundException('Post not found');
-    await this.prismaService.variete.delete({ where: { id: varieteId } });
-    return { data: 'Variete deleted' };
+    })
+    if (!variete) throw new NotFoundException('Post not found')
+    await this.prismaService.variete.delete({ where: { id: varieteId } })
+    return { data: 'Variete deleted' }
   }
 }

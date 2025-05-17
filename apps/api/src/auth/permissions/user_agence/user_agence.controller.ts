@@ -8,26 +8,23 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { UserAgenceService } from './user_agence.service';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { UserAgenceService } from './user_agence.service'
+import { AuthGuard } from '@nestjs/passport'
 
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { CreateUserAgenceDto, UpdateUserAgenceDto } from './user_agence.dto';
-
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { CreateUserAgenceDto, UpdateUserAgenceDto } from './user_agence.dto'
 
 @ApiTags('UserAgence')
 @Controller('userAgences')
 export class UserAgenceController {
-  constructor(
-    private readonly userAgenceService: UserAgenceService,
-  ) {}
+  constructor(private readonly userAgenceService: UserAgenceService) {}
 
   @Get()
   getAll() {
-    return this.userAgenceService.getAll();
+    return this.userAgenceService.getAll()
   }
 
   @Get('/:id')
@@ -35,9 +32,7 @@ export class UserAgenceController {
     @Param('id', ParseIntPipe) userAgenceId: number,
     createUserAgenceDto: CreateUserAgenceDto,
   ) {
-    return this.userAgenceService.getOne(
-      userAgenceId,
-    );
+    return this.userAgenceService.getOne(userAgenceId)
   }
 
   @ApiBearerAuth()
@@ -47,9 +42,7 @@ export class UserAgenceController {
     @Body()
     createUserAgenceDto: CreateUserAgenceDto,
   ) {
-    return this.userAgenceService.create(
-      createUserAgenceDto,
-    );
+    return this.userAgenceService.create(createUserAgenceDto)
   }
 
   @ApiBearerAuth()
@@ -60,9 +53,7 @@ export class UserAgenceController {
     createUserAgenceDto: CreateUserAgenceDto,
     @Req() request: Request,
   ) {
-    return this.userAgenceService.delete(
-      userAgenceId,
-    );
+    return this.userAgenceService.delete(userAgenceId)
   }
 
   @ApiBearerAuth()
@@ -73,9 +64,6 @@ export class UserAgenceController {
     @Body()
     updateUserAgenceDto: UpdateUserAgenceDto,
   ) {
-    return this.userAgenceService.update(
-      userAgenceId,
-      updateUserAgenceDto,
-    );
+    return this.userAgenceService.update(userAgenceId, updateUserAgenceDto)
   }
 }

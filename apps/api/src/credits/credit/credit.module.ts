@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
-import { CreditController } from './credit.controller';
-import { CreditService } from './credit.service';
+import { Module } from '@nestjs/common'
+import { CreditController } from './credit.controller'
+import { CreditService } from './credit.service'
 
 @Module({
   controllers: [CreditController],
-  providers: [CreditService]
+  providers: [CreditService],
 })
 export class CreditModule {}

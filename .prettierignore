@@ -1,6 +1,14 @@
 # Add files here to ignore them from prettier formatting
 /dist
+# add debut
+/node_modules
+/package-lock.json
+# add fin
 /coverage
 /.nx/cache
 /.nx/workspace-data
 .angular
+
+
+
+

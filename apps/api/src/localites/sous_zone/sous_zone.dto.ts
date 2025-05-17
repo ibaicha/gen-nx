@@ -1,16 +1,15 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from 'class-validator'
 
 export class CreateSousZoneDto {
-    @IsNotEmpty()
-  readonly name!: string;
-    @IsNotEmpty()
-  readonly zoneId!: number;
+  @IsNotEmpty()
+  readonly name!: string
+  @IsNotEmpty()
+  readonly zoneId!: number
 }
-
 
 export class UpdateSousZoneDto {
   @IsNotEmpty()
-  readonly name!: string;
+  readonly name!: string
   @IsNotEmpty()
-  readonly zoneId!: number;
+  readonly zoneId!: number
 }

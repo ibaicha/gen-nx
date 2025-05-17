@@ -1,0 +1,69 @@
+<header
+  class="sticky top-0 z-50 relative flex flex-wrap items-center justify-between px-2 py-2 bg-gradient-to-r from-green-400 via-teal-400 to-blue-500 rounded-lg shadow-xl border border-white/20"
+>
+  <div class="card w-full">
+    <p-toolbar class="bg-opacity-90">
+      <!-- Left Logo -->
+      <ng-template pTemplate="left">
+        <div class="flex items-center space-x-6 animate-fadeIn">
+          <a
+            class="block cursor-pointer"
+            (click)="openHome()"
+            tabindex="0"
+            (keydown.enter)="openHome()"
+            (keydown.space)="openHome()"
+            aria-label="Accueil"
+          >
+            <img
+              class="h-16 w-auto transition-transform duration-300 ease-in-out transform hover:scale-125 drop-shadow-md"
+              src="/public/assets/images/lba.png"
+              alt="LBA Logo"
+            />
+          </a>
+        </div>
+      </ng-template>
+
+      <!-- Center Title -->
+      <ng-template pTemplate="center">
+        <div
+          *ngIf="this.loginService.visibleNav"
+          class="flex flex-col items-center"
+        >
+          <div
+            class="bg-gradient-to-r from-blue-600 via-cyan-500 to-green-400 text-white font-bold rounded-xl px-6 py-2 shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300"
+          >
+            <span class="text-2xl tracking-widest drop-shadow-sm uppercase">
+              {{ this.loginService.titre }}
+            </span>
+          </div>
+        </div>
+      </ng-template>
+
+      <!-- Right Chips or Title -->
+      <ng-template pTemplate="right">
+        <div *ngIf="this.loginService.visibleNav">
+          <div class="flex flex-wrap items-center gap-3 justify-end">
+            <p-chip
+              label="{{ this.loginService.UserConnexion.user.username }}"
+              class="bg-blue-600 text-white px-4 py-2 rounded-full shadow-md"
+              icon="pi pi-user"
+            ></p-chip>
+            <p-chip
+              label="{{ this.loginService.UserConnexion.user.role.name }}"
+              class="bg-green-600 text-white px-4 py-2 rounded-full shadow-md"
+              icon="pi pi-eye"
+            ></p-chip>
+          </div>
+        </div>
+        <div *ngIf="!this.loginService.visibleNav" class="text-center">
+          <p
+            class="text-black text-3xl font-extrabold tracking-wide drop-shadow-sm"
+          >
+            {{ this.loginService.titre }}
+          </p>
+        </div>
+      </ng-template>
+    </p-toolbar>
+  </div>
+</header>
+<br />

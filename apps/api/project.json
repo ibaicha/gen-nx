@@ -24,5 +24,19 @@
         }
       }
     }
+  },
+  "api": {
+  "root": "apps/api",
+  "sourceRoot": "apps/api/src",
+  "projectType": "application",
+  "architect": {
+    "seed": {
+      "builder": "@nrwl/node:run-commands",
+      "options": {
+        "command": "npx ts-node apps/api/src/prisma/seed.ts"
+      }
+    }
   }
+}
+
 }

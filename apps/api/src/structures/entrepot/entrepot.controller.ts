@@ -8,14 +8,14 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { EntrepotService } from './entrepot.service';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { EntrepotService } from './entrepot.service'
+import { AuthGuard } from '@nestjs/passport'
 
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { CreateEntrepotDto } from './entrepot.dto';
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { CreateEntrepotDto } from './entrepot.dto'
 
 @ApiTags('Entrepot')
 @Controller('entrepots')
@@ -24,22 +24,22 @@ export class EntrepotController {
 
   @Get()
   getAll() {
-    return this.entrepotService.getAll();
+    return this.entrepotService.getAll()
   }
 
   @Get('/:id')
   get(
     @Param('id', ParseIntPipe) entrepotId: number,
-    createEntrepotDto: CreateEntrepotDto
+    createEntrepotDto: CreateEntrepotDto,
   ) {
-    return this.entrepotService.getOne(entrepotId);
+    return this.entrepotService.getOne(entrepotId)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(@Body() createEntrepotDto: CreateEntrepotDto) {
-    return this.entrepotService.create(createEntrepotDto);
+    return this.entrepotService.create(createEntrepotDto)
   }
 
   @ApiBearerAuth()
@@ -48,9 +48,9 @@ export class EntrepotController {
   delete(
     @Param('id', ParseIntPipe) entrepotId: number,
     createEntrepotDto: CreateEntrepotDto,
-    @Req() request: Request
+    @Req() request: Request,
   ) {
-    return this.entrepotService.delete(entrepotId);
+    return this.entrepotService.delete(entrepotId)
   }
 
   @ApiBearerAuth()
@@ -58,8 +58,8 @@ export class EntrepotController {
   @Put('update/:id')
   update(
     @Param('id', ParseIntPipe) entrepotId: number,
-    @Body() updateEntrepotDto: CreateEntrepotDto
+    @Body() updateEntrepotDto: CreateEntrepotDto,
   ) {
-    return this.entrepotService.update(entrepotId, updateEntrepotDto);
+    return this.entrepotService.update(entrepotId, updateEntrepotDto)
   }
 }

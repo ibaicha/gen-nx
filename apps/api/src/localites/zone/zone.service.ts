@@ -2,10 +2,10 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { CreateZoneDto, UpdateZoneDto } from './zone.dto';
- 
+} from '@nestjs/common'
+import { PrismaService } from '../../prisma/prisma.service'
+import { CreateZoneDto, UpdateZoneDto } from './zone.dto'
+
 @Injectable()
 export class ZoneService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -23,40 +23,40 @@ export class ZoneService {
           },
         },
       },
-    });
+    })
   }
 
   async getOne(zoneId: number) {
     const zone = await this.prismaService.zone.findUnique({
       where: { id: zoneId },
-    });
-    if (!zone) throw new NotFoundException('Post not found');
-    return zone;
+    })
+    if (!zone) throw new NotFoundException('Post not found')
+    return zone
   }
   async create(createZoneDto: CreateZoneDto) {
-    const { name, paysId } = createZoneDto;
-    await this.prismaService.zone.create({ data: { name, paysId } });
-    return { data: 'Zone created' };
+    const { name, paysId } = createZoneDto
+    await this.prismaService.zone.create({ data: { name, paysId } })
+    return { data: 'Zone created' }
   }
 
   async update(zoneId: number, updateZoneDto: UpdateZoneDto) {
     const zone = await this.prismaService.zone.findUnique({
       where: { id: zoneId },
-    });
-    if (!zone) throw new NotFoundException('Zone not found');
+    })
+    if (!zone) throw new NotFoundException('Zone not found')
     await this.prismaService.zone.update({
       where: { id: zoneId },
       data: { ...updateZoneDto },
-    });
-    return { data: 'Zone updeted!' };
+    })
+    return { data: 'Zone updeted!' }
   }
 
   async delete(zoneId: number) {
     const zone = await this.prismaService.zone.findUnique({
       where: { id: zoneId },
-    });
-    if (!zone) throw new NotFoundException('Post not found');
-    await this.prismaService.zone.delete({ where: { id: zoneId } });
-    return { data: 'Zone deleted' };
+    })
+    if (!zone) throw new NotFoundException('Post not found')
+    await this.prismaService.zone.delete({ where: { id: zoneId } })
+    return { data: 'Zone deleted' }
   }
 }

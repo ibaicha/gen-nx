@@ -1,0 +1,720 @@
+<div *ngIf="loading" class="overlay">
+  <p-progressSpinner
+    strokeWidth="5"
+    styleClass="custom-spinner"
+  ></p-progressSpinner>
+</div>
+
+<p-toast [style]="{ marginTop: '80px' }"></p-toast>
+<p-confirmDialog styleClass="custom-confirm-dialog">
+  <ng-template pTemplate="icon">
+    <i class="pi pi-question-circle animated-icon"></i>
+  </ng-template>
+</p-confirmDialog>
+
+<div class="card">
+  <p-accordion class="w-full">
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <div class="flex align-items-center">
+          <b
+            class="vertical-align-middle"
+            style="font-size: 1.2rem; color: blue"
+          >
+            CREDITS | FILTRAGE
+          </b>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="content">
+        <p-toolbar styleClass="mb-4 gap-2">
+          <ng-template pTemplate="left">
+            @if(loginService.UserConnexion.user.role.name === 'Agence'){
+            <p-button
+              (click)="showDialogAddCredit()"
+              icon="pi pi-plus"
+              label="Crédits"
+            ></p-button>
+            } @if(loginService.UserConnexion.user.role.name === 'Societe'){
+            <label class="text-lg w-24" for="agence-dropdown">Agences</label>
+            <p-multiSelect
+              [options]="agences"
+              class="flex-1 border border-gray-100 rounded-md shadow-sm focus:ring focus:ring-blue-100"
+              [(ngModel)]="selectedAgenceIds"
+              optionLabel="name"
+              optionValue="id"
+              display="chip"
+              [showClear]="true"
+              (onClear)="onAgencesClear()"
+              (onChange)="onAgencesChange()"
+              placeholder="Select Agences"
+              [maxSelectedLabels]="agences.length"
+              selectedItemsLabel="{0} items selected"
+            >
+            </p-multiSelect>
+
+            }
+          </ng-template>
+          <ng-template pTemplate="center">
+            <label class="text-lg w-24" for="variete-dropdown">PRODUIT</label>
+            <p-multiSelect
+              [options]="produitsBruit"
+              class="flex-1 border border-gray-100 rounded-md shadow-sm focus:ring focus:ring-blue-100"
+              [(ngModel)]="selectedProduitBruitIds"
+              optionLabel="name"
+              optionValue="id"
+              display="chip"
+              [showClear]="true"
+              (onClear)="onProduitsClear()"
+              (onChange)="onProduitsChange()"
+              placeholder="Select Produits"
+              [maxSelectedLabels]="produitsBruit.length"
+              selectedItemsLabel="{0} items selected"
+            >
+            </p-multiSelect>
+          </ng-template>
+
+          <ng-template pTemplate="right">
+            <label class="text-lg" for="annee-dropdown">C.A</label>
+
+            <p-dropdown
+              class="custom-dropdown min-w-[80px] max-w-[90px] w-full"
+              [options]="annees"
+              [(ngModel)]="selectedAnnee"
+              optionLabel="name"
+              placeholder="CHOISIR: ANNEE"
+              (onChange)="onAnneeChange($event)"
+            ></p-dropdown>
+
+            <p-dropdown
+              class="custom-dropdown min-w-[100px] max-w-[180px] w-full"
+              [options]="saisons"
+              [(ngModel)]="selectedSaison"
+              optionLabel="description"
+              placeholder="CHOISIR: SAISON"
+              (onChange)="onSaisonChange($event)"
+            ></p-dropdown>
+          </ng-template>
+        </p-toolbar>
+      </ng-template>
+    </p-accordionTab>
+  </p-accordion>
+</div>
+<br />
+
+<p-dialog
+  header="Header"
+  [resizable]="false"
+  [modal]="true"
+  [maximizable]="true"
+  appendTo="body"
+  [(visible)]="displayAddCredit"
+  [style]="{ width: '75vw' }"
+  [contentStyle]="{ height: '300px' }"
+>
+  <ng-template pTemplate="header">
+    <span class="p-inputgroup-addon">
+      <i class="pi pi-file-edit" style="font-size: 2.5rem; color: green"></i>
+    </span>
+    <span class="text-xl font-bold">AJOUTER CREDITS CAMPAGNE</span>
+  </ng-template>
+  <ng-template pTemplate="content">
+    <p-toolbar styleClass="mb-4 gap-2">
+      <ng-template pTemplate="left">
+        <label class="text-lg w-24" for="variete-dropdown">FILIERE</label>
+        <p-dropdown
+          [options]="selectItemGroupVarietes"
+          [(ngModel)]="selectedVarieteDialog"
+          class="custom-dropdown min-w-[80px] max-w-[120px] w-full"
+          placeholder="-- Variété --"
+          [group]="true"
+          (onChange)="onSelectGroupVarieteChange($event)"
+        >
+          <ng-template let-group pTemplate="group">
+            <div class="flex items-center">
+              <span>{{ group.label }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </ng-template>
+      <ng-template pTemplate="center">
+        <div class="p-inputgroup">
+          <p-calendar
+            [(ngModel)]="selectedDate"
+            inputId="dateCredit"
+            placeholder="Date de crédit"
+            dateFormat="dd/mm/yy"
+            [showIcon]="true"
+            class="w-full text-sm rounded-xl"
+            panelStyleClass="calendar-fun-panel"
+            inputStyleClass="calendar-fun-input"
+            [style]="{ borderRadius: '0.75rem' }"
+            [icon]="calendarIcon"
+            onselect="onSelectDateChange($event)"
+          ></p-calendar>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="right">
+        <label class="text-lg w-24" for="campagne-dropdown">C.A</label>
+        <p-dropdown
+          [options]="annees"
+          class="custom-dropdown min-w-[80px] max-w-[90px] w-full"
+          [(ngModel)]="selectedAnnee"
+          optionLabel="name"
+          placeholder="CHOISIR: ANNEE"
+          (onChange)="onAnneeChangeDialog($event)"
+        ></p-dropdown>
+
+        <p-dropdown
+          class="custom-dropdown min-w-[100px] max-w-[180px] w-full"
+          [options]="saisons"
+          [(ngModel)]="selectedSaison"
+          optionLabel="description"
+          placeholder="CHOISIR: SAISON"
+          (onChange)="onSaisonChangeDialog($event)"
+        ></p-dropdown>
+      </ng-template>
+    </p-toolbar>
+    <div class="card">
+      <p-table
+        #myTabClients
+        [columns]="colsOps"
+        [value]="this.opsAddRowsWithFilters"
+        dataKey="id"
+        sortMode="single"
+        rowExpandMode="single"
+        [rows]="50"
+        [paginator]="true"
+        [rowHover]="true"
+        [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[5, 10, 25, 50]"
+        [scrollable]="true"
+        scrollHeight="400px"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      >
+        <ng-template pTemplate="caption">
+          <div class="flex">
+            <button
+              type="button"
+              pButton
+              label="Clear"
+              class="p-button-outlined"
+              icon="pi pi-filter-slash"
+              (click)="clear(myTabClients)"
+              title="Clear filters"
+            >
+              Clear
+            </button>
+            <span class="p-input-icon-left ml-auto">
+              <i class="pi pi-search"></i>
+              <input
+                pInputText
+                type="text"
+                (input)="
+                  myTabClients.filterGlobal(
+                    $any($event.target).value,
+                    'contains'
+                  )
+                "
+                placeholder="Search keyword"
+              />
+            </span>
+          </div>
+        </ng-template>
+        <br />
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            @for (col of columns; track $index) {
+            <th [pSortableColumn]="col.field" style="background-color: aqua">
+              @if (col.filter) {
+              <p-columnFilter
+                type="text"
+                [field]="col.field"
+                display="menu"
+                class="ml-auto"
+              ></p-columnFilter>
+              }
+              {{ col.header }}
+              @if (col.sort) {
+              <p-sortIcon [field]="col.field"></p-sortIcon>
+              }
+            </th>
+            } @empty { Empty list of ops }
+          </tr></ng-template
+        >
+
+        <ng-template
+          pTemplate="body"
+          let-rowData
+          let-columns="columns"
+          let-expanded="expanded"
+        >
+          <tr [pSelectableRow]="rowData">
+            @for (col of columns; track $index) { @if (col.field === 'capital'
+            || col.field === 'interet' || col.field === 'moratoire' || col.field
+            === 'autres_engagements') {
+            <td
+              [ngClass]="{
+                'text-right': true,
+                'bg-positive': rowData[col.field] > 0,
+                'bg-zero': rowData[col.field] === 0,
+                'bg-negative': rowData[col.field] < 0,
+                'cell-animate': animateCell
+              }"
+              [pEditableColumn]="col.field"
+              style="vertical-align: middle; padding-right: 0.5rem"
+            >
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input
+                    type="text"
+                    inputmode="decimal"
+                    pattern="^\d+(\.\d{1,2})?$"
+                    title="Saisir uniquement un nombre"
+                    pInputText
+                    [(ngModel)]="rowData[col.field]"
+                    class="text-right"
+                    style="text-align: right"
+                  />
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData[col.field] | formatNumberSuffixe : 2 : '' }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+
+            } @else if (col.field === 'exigible') {
+            <td class="text-right" style="text-align: right">
+              <span [style]="{ 'font-weight': 'bold', color: 'green' }">
+                {{ getExigible(rowData) | formatNumberSuffixe : 2 : 'FCFA' }}
+              </span>
+            </td>
+            } @else {
+
+            <td>{{ rowData[col.field] }}</td>
+            } } @empty { Empty list of ops }
+          </tr></ng-template
+        >
+
+        <ng-template pTemplate="footer" let-columns>
+          <tr>
+            @for (col of columns; track $index) { @if (col.field === 'capital')
+            {
+            <td class="text-right">
+              {{ getTotal('capital') | formatNumberSuffixe : 2 : '' }}
+            </td>
+            }
+
+            <td class="text-right" *ngIf="col.field === 'interet'">
+              {{ getTotal('interet') | formatNumberSuffixe : 2 : '' }}
+            </td>
+            <td class="text-right" *ngIf="col.field === 'moratoire'">
+              {{ getTotal('moratoire') | formatNumberSuffixe : 2 : '' }}
+            </td>
+            <td class="text-right" *ngIf="col.field === 'autres_engagements'">
+              <strong>{{
+                getTotal('autres_engagements') | formatNumberSuffixe : 2 : ''
+              }}</strong>
+            </td>
+            <td class="text-right" *ngIf="col.field === 'exigible'">
+              <strong>{{
+                getTotal('exigible') | formatNumberSuffixe : 2 : 'FCFA'
+              }}</strong>
+            </td>
+            <td
+              *ngIf="
+                ![
+                  'capital',
+                  'interet',
+                  'moratoire',
+                  'autres_engagements',
+                  'exigible'
+                ].includes(col.field)
+              "
+            >
+              <!-- cellule vide ou nom de la colonne -->
+            </td>
+            }
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="summary">
+          <div class="p-d-flex p-ai-center p-jc-between">
+            Résultat(s) :
+            {{ filteredRows(myTabClients, opsAddRowsWithFilters) }}
+            /
+            {{ totalRows(opsAddRowsWithFilters) }}
+          </div>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <div class="p-grid p-fluid"></div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-between align-items-center w-full">
+      <p-button
+        label="Fermer"
+        icon="pi pi-times"
+        (onClick)="onDialogHideAddCredit()"
+        class="p-button-secondary"
+      ></p-button>
+
+      <p-button
+        label="Enregistrer"
+        icon="pi pi-check"
+        (onClick)="confirmValidation()"
+        [disabled]="!activeAddCredit"
+        class="p-button-success"
+      ></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+@defer (when loading) {
+<div class="card flex justify-content-center">
+  <p-accordion class="w-full">
+    @for (item of selectedAgences; track $index) {
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <div class="flex align-items-center">
+          <i
+            class="pi pi-folder-open mr-2"
+            style="font-size: 2rem; color: orange"
+          ></i>
+
+          <span
+            class="vertical-align-middle"
+            style="font-size: 1.3rem; color: blue"
+            >{{ item.id }} - {{ item.name }}
+            @if (this.creditSumGroupsAgence[item.id] &&
+            this.creditSumGroupsAgence[item.id].sumExigibles > 0) {
+            <span
+              [ngStyle]="{
+                'background-color': '#f0f0f0',
+                'font-size': '1.3rem',
+                'font-bold': 'bold',
+                color: 'blue',
+                'border-radius': '5px',
+                padding: '0.5rem',
+                'margin-left': '1rem'
+              }"
+            >
+              | Exigibles:
+              {{ this.creditSumGroupsAgence[item.id].sumExigiblesFormatString }}
+              | Remboursements:
+              {{
+                this.creditSumGroupsAgence[item.id]
+                  .sumRemboursementsFormatString
+              }}
+              |
+              <span
+                [ngStyle]="{
+                  'background-color': this.appService.backgroundColorCredit(
+                    this.creditSumGroupsAgence[item.id].sumTauxRemboursement
+                  ),
+                  'font-size': '1.3rem',
+                  'font-bold': 'bold',
+                  color: 'black',
+                  'border-radius': '5px',
+                  padding: '0.5rem',
+                  'margin-left': '1rem'
+                }"
+              >
+                Taux Remb.:
+                {{
+                  this.creditSumGroupsAgence[item.id]
+                    .sumtauxRemboursementFormatString
+                }}
+              </span>
+            </span>
+
+            }
+          </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <div id="mapElement" #mapElement></div>
+
+        <div class="card flex justify-content-center">
+          <p-accordion class="w-full">
+            @for (itemPoint of filteredPoints(item.id); track $index) {
+            <p-accordionTab>
+              <ng-template pTemplate="header">
+                <div class="flex align-items-center">
+                  <i
+                    class="pi pi-folder-open mr-2"
+                    style="font-size: 2rem; color: brown"
+                  ></i>
+
+                  <span
+                    class="vertical-align-middle"
+                    style="font-size: 1.3rem; color: brown"
+                    >{{ itemPoint.pointId}} - {{ itemPoint.point?.name }}
+                    @if (this.creditSumGroups[itemPoint.pointId].sumExigibles >
+                    0) {
+                    <span
+                      [ngStyle]="{
+                        'background-color': '#f0f0f0',
+                        'font-size': '1.3rem',
+                        'font-bold': 'bold',
+                        color: 'blue',
+                        'border-radius': '5px',
+                        padding: '0.5rem',
+                        'margin-left': '1rem'
+                      }"
+                    >
+                      | Exigibles:
+                      {{
+                        this.creditSumGroups[itemPoint.pointId]
+                          .sumExigiblesFormatString
+                      }}
+                      | Remboursements:
+                      {{
+                        this.creditSumGroups[itemPoint.pointId]
+                          .sumRemboursementsFormatString
+                      }}
+                      |
+                    </span>
+
+                    <span
+                      [ngStyle]="{
+                        'background-color':
+                          this.appService.backgroundColorCredit(
+                            this.creditSumGroups[itemPoint.pointId]
+                              .sumTauxRemboursement
+                          ),
+                        'font-size': '1.3rem',
+                        'font-bold': 'bold',
+                        color: 'black',
+                        'border-radius': '5px',
+                        padding: '0.5rem',
+                        'margin-left': '1rem'
+                      }"
+                    >
+                      Taux Remb.:
+                      {{
+                        this.creditSumGroups[itemPoint.pointId]
+                          .sumtauxRemboursementFormatString
+                      }}
+                    </span>
+                    }
+                  </span>
+                </div>
+              </ng-template>
+              <ng-template pTemplate="content">
+                <div id="mapElement" #mapElement></div>
+
+                @if (creditGroups[itemPoint.pointId].length > 0){
+                <div class="card">
+                  <p-table
+                    #myTabCredits
+                    [filters]="tableCreditsFilters"
+                    [columns]="colsCreditsAgences"
+                    [value]="creditGroups[itemPoint.pointId]"
+                    [tableStyle]="{ 'min-width': '50rem' }"
+                    styleClass="p-datatable-sm"
+                    [loading]="loading"
+                    dataKey="id"
+                    sortMode="single"
+                    rowExpandMode="single"
+                    [rows]="50"
+                    [paginator]="true"
+                    [rowHover]="true"
+                    [showCurrentPageReport]="true"
+                    [rowsPerPageOptions]="[5, 10, 25, 50]"
+                    [scrollable]="true"
+                    scrollHeight="600px"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                  >
+                    <ng-template pTemplate="caption">
+                      <div class="flex">
+                        <button
+                          type="button"
+                          pButton
+                          label="Clear"
+                          class="p-button-outlined"
+                          icon="pi pi-filter-slash"
+                          (click)="clear(myTabCredits)"
+                          title="Clear filters"
+                        >
+                          Clear
+                        </button>
+                        <span class="p-input-icon-left ml-auto">
+                          <i class="pi pi-search"></i>
+                          <input
+                            pInputText
+                            type="text"
+                            (input)="
+                              myTabCredits.filterGlobal(
+                                $any($event.target).value,
+                                'contains'
+                              )
+                            "
+                            placeholder="Search"
+                          />
+                        </span>
+                      </div>
+                    </ng-template>
+                    <br />
+                    <ng-template pTemplate="header" let-columns>
+                      <tr>
+                        <th style="width: 3rem; background-color: aqua">
+                          <i class="pi pi-eye-slash"></i>
+                        </th>
+                        @for (col of columns; track $index) {
+                        <th
+                          [pSortableColumn]="col.field"
+                          style="background-color: aqua"
+                        >
+                          @if (col.filter) {
+                          <p-columnFilter
+                            type="text"
+                            [field]="col.field"
+                            display="menu"
+                            class="ml-auto"
+                          ></p-columnFilter>
+                          }
+                          {{ col.header }}
+                          @if (col.sort) {
+                          <p-sortIcon [field]="col.field"></p-sortIcon>
+                          }
+                        </th>
+                        } @empty { Empty list of credits }
+                        <th
+                          colspan="2"
+                          style="
+                            text-align: center;
+                            vertical-align: middle;
+                            background-color: aqua;
+                          "
+                        >
+                          ACTIONS
+                        </th>
+                      </tr></ng-template
+                    >
+
+                    <ng-template
+                      pTemplate="body"
+                      let-rowData
+                      let-columns="columns"
+                      let-expanded="expanded"
+                    >
+                      <tr>
+                        <td>
+                          <p-button
+                            pRipple
+                            [pRowToggler]="rowData"
+                            class="p-button-text p-button-rounded p-button-plain"
+                            [icon]="
+                              expanded
+                                ? 'pi pi-chevron-down'
+                                : 'pi pi-chevron-right'
+                            "
+                            (click)="(null)"
+                          ></p-button>
+                        </td>
+                        @for (col of columns; track $index) { @switch (true) {
+                        @default { @if ( col.field === 'tauxRemboursement') {
+                        <td style="text-align: center">
+                          <span
+                            [ngStyle]="{
+                              'background-color':
+                                this.appService.backgroundColorCredit(
+                                  rowData[col.field]
+                                ),
+                              'font-size': '1.2rem',
+                              'font-weight': 'bold',
+                              color: 'black',
+                              'border-radius': '5px',
+                              padding: '0.5rem',
+                              display: 'inline-block',
+                              'text-align': 'center',
+                              'margin-left': 'auto',
+                              'margin-right': 'auto'
+                            }"
+                          >
+                            {{ rowData[col.field].toFixed(2) + ' %' }}
+                          </span>
+                        </td>
+
+                        } @else {
+                        <td
+                          [ngClass]="{
+                            'text-right': ![
+                              'dateFormat',
+                              'id',
+                              'nameOp',
+                              'speculation',
+                              'compte',
+                              'formeJuridique',
+                              'localite'
+                            ].includes(col.field)
+                          }"
+                        >
+                          <span>{{ rowData[col.field] }}</span>
+                        </td>
+
+                        } } } }
+
+                        <td>
+                          <p-button
+                            pRipple
+                            icon="pi pi-eye "
+                            class="p-button-rounded p-button-info p-mr-2"
+                            (click)="(null)"
+                          ></p-button>
+                        </td>
+                        <td>
+                          <p-button
+                            pRipple
+                            icon="pi pi-delete-left"
+                            class="p-button-rounded p-button-danger p-mr-2"
+                            (click)="(null)"
+                          ></p-button>
+                        </td>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="summary">
+                      <div class="p-d-flex p-ai-center p-jc-between">
+                        Résultat(s) :
+                        {{
+                          filteredRows(
+                            myTabCredits,
+                            creditGroups[itemPoint.pointId]
+                          )
+                        }}
+                        /
+                        {{ totalRows(creditGroups[itemPoint.pointId]) }}
+                      </div>
+                    </ng-template>
+                  </p-table>
+                </div>
+                } @else { LA LISTE DES CREDITS EST VIDE POUR
+                {{ itemPoint.point?.name }}
+
+                }
+              </ng-template>
+            </p-accordionTab>
+            } @empty { LA LISTE DES POINTS DE COLLECTE EST VIDE }
+          </p-accordion>
+        </div>
+      </ng-template>
+    </p-accordionTab>
+
+    } @empty { LA LISTE DES AGENCES EST VIDE }
+  </p-accordion>
+</div>
+<br />
+} @placeholder {
+<span>Chargement...</span>
+} @error {
+<span>Error</span>
+} @loading (minimum 2s) {
+
+<!--
+<div class="progress-bar-container">
+  <p-progressBar [value]="progress" [style]="{ width: '100%' }"></p-progressBar>
+</div>
+-->
+}

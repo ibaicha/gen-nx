@@ -1,24 +1,23 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from 'class-validator'
 
 export class CreateProfileDto {
-    @IsNotEmpty()
-    readonly firstName!: string;
-    @IsNotEmpty()
-    readonly lastName!: string;
-    readonly address!: string;
-    readonly phone!: string;
-    @IsNotEmpty()
-    readonly userId!: number;
+  @IsNotEmpty()
+  readonly firstName!: string
+  @IsNotEmpty()
+  readonly lastName!: string
+  readonly address!: string
+  readonly phone!: string
+  @IsNotEmpty()
+  readonly userId!: number
 }
-
 
 export class UpdateProfileDto {
   @IsNotEmpty()
-  readonly firstName!: string;
+  readonly firstName!: string
   @IsNotEmpty()
-  readonly lastName!: string;
-  readonly address!: string;
-  readonly phone!: string;
+  readonly lastName!: string
+  readonly address!: string
+  readonly phone!: string
   @IsNotEmpty()
-  readonly userId!: number;
+  readonly userId!: number
 }

@@ -2,9 +2,9 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { CreateEmplacementDto, UpdateEmplacementDto } from './emplacement.dto';
+} from '@nestjs/common'
+import { PrismaService } from '../../prisma/prisma.service'
+import { CreateEmplacementDto, UpdateEmplacementDto } from './emplacement.dto'
 
 @Injectable()
 export class EmplacementService {
@@ -31,48 +31,48 @@ export class EmplacementService {
           },
         },
       },
-    });
+    })
   }
 
   async getOne(emplacementId: number) {
     const emplacement = await this.prismaService.emplacement.findUnique({
       where: { id: emplacementId },
-    });
-    if (!emplacement) throw new NotFoundException('Post not found');
-    return emplacement;
+    })
+    if (!emplacement) throw new NotFoundException('Post not found')
+    return emplacement
   }
   async create(createEmplacementDto: CreateEmplacementDto) {
     const { name, code, capacite, entrepotId, familleEmplacementId } =
-      createEmplacementDto;
+      createEmplacementDto
     await this.prismaService.emplacement.create({
       data: { name, code, capacite, entrepotId, familleEmplacementId },
-    });
-    return { data: 'Emplacement created' };
+    })
+    return { data: 'Emplacement created' }
   }
 
   async update(
     emplacementId: number,
-    updateEmplacementDto: UpdateEmplacementDto
+    updateEmplacementDto: UpdateEmplacementDto,
   ) {
     const emplacement = await this.prismaService.emplacement.findUnique({
       where: { id: emplacementId },
-    });
-    if (!emplacement) throw new NotFoundException('Emplacement not found');
+    })
+    if (!emplacement) throw new NotFoundException('Emplacement not found')
     await this.prismaService.emplacement.update({
       where: { id: emplacementId },
       data: { ...updateEmplacementDto },
-    });
-    return { data: 'Emplacement updeted!' };
+    })
+    return { data: 'Emplacement updeted!' }
   }
 
   async delete(emplacementId: number) {
     const emplacement = await this.prismaService.emplacement.findUnique({
       where: { id: emplacementId },
-    });
-    if (!emplacement) throw new NotFoundException('Post not found');
+    })
+    if (!emplacement) throw new NotFoundException('Post not found')
     await this.prismaService.emplacement.delete({
       where: { id: emplacementId },
-    });
-    return { data: 'Emplacement deleted' };
+    })
+    return { data: 'Emplacement deleted' }
   }
 }

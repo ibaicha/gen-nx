@@ -8,19 +8,19 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { CreditService } from './credit.service';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { CreditService } from './credit.service'
+import { AuthGuard } from '@nestjs/passport'
 import {
   CreateCreditDto,
   CreateExploitationCreditDto,
   UpdateCreditDto,
-} from './credit.dto';
+} from './credit.dto'
 
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { UpdateAgenceDto } from '../../structures/agence/agence.dto';
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+
 
 @ApiTags('Credit')
 @Controller('credits')
@@ -29,84 +29,84 @@ export class CreditController {
 
   @Get('/all')
   getAll() {
-    return this.creditService.getAll();
+    return this.creditService.getAll()
   }
 
   @Get('/custom')
   getAllCustom() {
-    return this.creditService.getAllCustom();
+    return this.creditService.getAllCustom()
   }
 
   @Get('/exploitationId/:id')
   getAllCreditsFromExploitation(
-    @Param('id', ParseIntPipe) exploitationId: number
+    @Param('id', ParseIntPipe) exploitationId: number,
   ) {
-    return this.creditService.getAllCreditsFromExploitation(exploitationId);
+    return this.creditService.getAllCreditsFromExploitation(exploitationId)
   }
 
   @Get('/custom/clientId/:id')
   getAllCustomCreditToOp(@Param('id', ParseIntPipe) opId: number) {
-    return this.creditService.getAllCustomCreditToOp(opId);
+    return this.creditService.getAllCustomCreditToOp(opId)
   }
 
   @Get(
-    '/custom/agenceEtablissementId/:agenceEtablissementId/produitId/:produitId/anneeId/:anneeId/saisonId/:saisonId'
+    '/custom/agenceEtablissementId/:agenceEtablissementId/produitId/:produitId/anneeId/:anneeId/saisonId/:saisonId',
   )
   getAllCustomCreditAgenceEtablissementVarieteAnneeSaison(
     @Param('agenceEtablissementId', ParseIntPipe) agenceEtablissementId: number,
     @Param('produitId', ParseIntPipe) produitId: number,
     @Param('anneeId', ParseIntPipe) anneeId: number,
-    @Param('saisonId', ParseIntPipe) saisonId: number
+    @Param('saisonId', ParseIntPipe) saisonId: number,
   ) {
     return this.creditService.getAllCustomCreditAgenceEtablissementVarieteAnneeSaison(
       agenceEtablissementId,
       produitId,
       anneeId,
-      saisonId
-    );
+      saisonId,
+    )
   }
 
   @Get(
-    '/custom/etablissementId/:etablissementId/produitId/:produitId/anneeId/:anneeId/saisonId/:saisonId'
+    '/custom/etablissementId/:etablissementId/produitId/:produitId/anneeId/:anneeId/saisonId/:saisonId',
   )
   getAllCustomCreditEtablissementVarieteAnneeSaison(
     @Param('etablissementId', ParseIntPipe) etablissementId: number,
     @Param('produitId', ParseIntPipe) produitId: number,
     @Param('anneeId', ParseIntPipe) anneeId: number,
-    @Param('saisonId', ParseIntPipe) saisonId: number
+    @Param('saisonId', ParseIntPipe) saisonId: number,
   ) {
     return this.creditService.getAllCustomCreditEtablissementVarieteAnneeSaison(
       etablissementId,
       produitId,
       anneeId,
-      saisonId
-    );
+      saisonId,
+    )
   }
 
   @Get('/:id')
   get(
     @Param('id', ParseIntPipe) creditId: number,
-    createCreditDto: CreateCreditDto
+    createCreditDto: CreateCreditDto,
   ) {
-    return this.creditService.getOne(creditId);
+    return this.creditService.getOne(creditId)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(@Body() createCreditDto: CreateCreditDto) {
-    return this.creditService.create(createCreditDto);
+    return this.creditService.create(createCreditDto)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('createExploitationCredit')
   createExploitationCredit(
-    @Body() createExploitationCreditDto: CreateExploitationCreditDto
+    @Body() createExploitationCreditDto: CreateExploitationCreditDto,
   ) {
     return this.creditService.createExploitationCredit(
-      createExploitationCreditDto
-    );
+      createExploitationCreditDto,
+    )
   }
 
   @ApiBearerAuth()
@@ -115,9 +115,9 @@ export class CreditController {
   delete(
     @Param('id', ParseIntPipe) creditId: number,
     createCreditDto: CreateCreditDto,
-    @Req() request: Request
+    @Req() request: Request,
   ) {
-    return this.creditService.delete(creditId);
+    return this.creditService.delete(creditId)
   }
 
   @ApiBearerAuth()
@@ -125,8 +125,8 @@ export class CreditController {
   @Put('update/:id')
   update(
     @Param('id', ParseIntPipe) creditId: number,
-    @Body() updateCreditDto: UpdateCreditDto
+    @Body() updateCreditDto: UpdateCreditDto,
   ) {
-    return this.creditService.update(creditId, updateCreditDto);
+    return this.creditService.update(creditId, updateCreditDto)
   }
 }

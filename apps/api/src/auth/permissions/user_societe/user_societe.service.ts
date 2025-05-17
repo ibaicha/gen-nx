@@ -2,9 +2,9 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service';
-import { CreateUserSocieteDto, UpdateUserSocieteDto } from './user_societe.dto';
+} from '@nestjs/common'
+import { PrismaService } from '../../../prisma/prisma.service'
+import { CreateUserSocieteDto, UpdateUserSocieteDto } from './user_societe.dto'
 
 @Injectable()
 export class UserSocieteService {
@@ -23,22 +23,22 @@ export class UserSocieteService {
           },
         },
       },
-    });
+    })
   }
 
   async getOne(userSocieteId: number) {
     const userSociete = await this.prismaService.userSociete.findUnique({
       where: { id: userSocieteId },
-    });
-    if (!userSociete) throw new NotFoundException('Post not found');
-    return userSociete;
+    })
+    if (!userSociete) throw new NotFoundException('Post not found')
+    return userSociete
   }
   async create(createUserSocieteDto: CreateUserSocieteDto) {
-    const { userId, societeId } = createUserSocieteDto;
+    const { userId, societeId } = createUserSocieteDto
     await this.prismaService.userSociete.create({
       data: { userId, societeId },
-    });
-    return { data: 'UserSociete created' };
+    })
+    return { data: 'UserSociete created' }
   }
 
   async update(
@@ -47,23 +47,23 @@ export class UserSocieteService {
   ) {
     const userSociete = await this.prismaService.userSociete.findUnique({
       where: { id: userSocieteId },
-    });
-    if (!userSociete) throw new NotFoundException('UserSociete not found');
+    })
+    if (!userSociete) throw new NotFoundException('UserSociete not found')
     await this.prismaService.userSociete.update({
       where: { id: userSocieteId },
       data: { ...updateUserSocieteDto },
-    });
-    return { data: 'UserSociete updeted!' };
+    })
+    return { data: 'UserSociete updeted!' }
   }
 
   async delete(userSocieteId: number) {
     const userSociete = await this.prismaService.userSociete.findUnique({
       where: { id: userSocieteId },
-    });
-    if (!userSociete) throw new NotFoundException('Post not found');
+    })
+    if (!userSociete) throw new NotFoundException('Post not found')
     await this.prismaService.userSociete.delete({
       where: { id: userSocieteId },
-    });
-    return { data: 'UserSociete deleted' };
+    })
+    return { data: 'UserSociete deleted' }
   }
 }

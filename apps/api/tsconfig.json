@@ -11,6 +11,11 @@
     }
   ],
   "compilerOptions": {
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "paths": {
+      "@shared-models": ["libs/shared-models/src/index.ts"]
+    }
   }
 }

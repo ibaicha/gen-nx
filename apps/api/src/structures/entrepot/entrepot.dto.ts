@@ -1,9 +1,9 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from 'class-validator'
 
 export class CreateEntrepotDto {
-    @IsNotEmpty()
-  readonly name!: string;
-    readonly adresse!: string;
-    @IsNotEmpty()
-  readonly pointId!: number;
+  @IsNotEmpty()
+  readonly name!: string
+  readonly adresse!: string
+  @IsNotEmpty()
+  readonly pointId!: number
 }

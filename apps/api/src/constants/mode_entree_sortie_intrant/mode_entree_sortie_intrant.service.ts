@@ -2,12 +2,12 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+} from '@nestjs/common'
+import { PrismaService } from '../../prisma/prisma.service'
 import {
   CreateModeEntreeSortieIntrantDto,
   UpdateModeEntreeSortieIntrantDto,
-} from './mode_entree_sortie_intrant.dto';
+} from './mode_entree_sortie_intrant.dto'
 
 @Injectable()
 export class ModeEntreeSortieIntrantService {
@@ -26,54 +26,54 @@ export class ModeEntreeSortieIntrantService {
           },
         },
       },
-    });
+    })
   }
 
   async getOne(modeEntreeSortieIntrantId: number) {
     const modeEntreeSortieIntrant =
       await this.prismaService.modeEntreeSortieIntrant.findUnique({
         where: { id: modeEntreeSortieIntrantId },
-      });
-    if (!modeEntreeSortieIntrant) throw new NotFoundException('Post not found');
-    return modeEntreeSortieIntrant;
+      })
+    if (!modeEntreeSortieIntrant) throw new NotFoundException('Post not found')
+    return modeEntreeSortieIntrant
   }
   async create(
-    createModeEntreeSortieIntrantDto: CreateModeEntreeSortieIntrantDto
+    createModeEntreeSortieIntrantDto: CreateModeEntreeSortieIntrantDto,
   ) {
     const { code, name, typeMouvementIntrantId } =
-      createModeEntreeSortieIntrantDto;
+      createModeEntreeSortieIntrantDto
     await this.prismaService.modeEntreeSortieIntrant.create({
       data: { code, name, typeMouvementIntrantId },
-    });
-    return { data: 'ModeEntreeSortieIntrant created' };
+    })
+    return { data: 'ModeEntreeSortieIntrant created' }
   }
 
   async update(
     modeEntreeSortieIntrantId: number,
-    updateModeEntreeSortieIntrantDto: UpdateModeEntreeSortieIntrantDto
+    updateModeEntreeSortieIntrantDto: UpdateModeEntreeSortieIntrantDto,
   ) {
     const modeEntreeSortieIntrant =
       await this.prismaService.modeEntreeSortieIntrant.findUnique({
         where: { id: modeEntreeSortieIntrantId },
-      });
+      })
     if (!modeEntreeSortieIntrant)
-      throw new NotFoundException('ModeEntreeSortieIntrant not found');
+      throw new NotFoundException('ModeEntreeSortieIntrant not found')
     await this.prismaService.modeEntreeSortieIntrant.update({
       where: { id: modeEntreeSortieIntrantId },
       data: { ...updateModeEntreeSortieIntrantDto },
-    });
-    return { data: 'ModeEntreeSortieIntrant updeted!' };
+    })
+    return { data: 'ModeEntreeSortieIntrant updeted!' }
   }
 
   async delete(modeEntreeSortieIntrantId: number) {
     const modeEntreeSortieIntrant =
       await this.prismaService.modeEntreeSortieIntrant.findUnique({
         where: { id: modeEntreeSortieIntrantId },
-      });
-    if (!modeEntreeSortieIntrant) throw new NotFoundException('Post not found');
+      })
+    if (!modeEntreeSortieIntrant) throw new NotFoundException('Post not found')
     await this.prismaService.modeEntreeSortieIntrant.delete({
       where: { id: modeEntreeSortieIntrantId },
-    });
-    return { data: 'ModeEntreeSortieIntrant deleted' };
+    })
+    return { data: 'ModeEntreeSortieIntrant deleted' }
   }
 }
