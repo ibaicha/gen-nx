@@ -1,13 +1,7 @@
 import { isDevMode } from '@angular/core'
-import {
-  ActionReducer,
-  ActionReducerMap,
-  createFeatureSelector,
-  createSelector,
-  MetaReducer,
-} from '@ngrx/store'
+import { ActionReducerMap, MetaReducer } from '@ngrx/store'
 
-export interface State {}
+export type State = object
 
 export const reducers: ActionReducerMap<State> = {}
 
