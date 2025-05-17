@@ -17,7 +17,8 @@
     "docker:restart:mysql": "./docker-nx-restart-cible.sh mysql-db",
     "docker:restart:phpmyadmin": "./docker-nx-restart-cible.sh phpmyadmin",
     "docker:restart:studio": "./docker-nx-restart-cible.sh prisma-studio",
-    "backup": "./backup.sh"
+    "backup": "./backup.sh",
+    "git_push_main": "./git_push_main.sh"
   },
   "private": true,
   "dependencies": {
