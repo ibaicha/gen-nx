@@ -1,143 +1,109 @@
-name: CI # Nom du workflow GitHub Actions
+name: CI
 
 on:
   push:
     branches:
-      - master # Déclencheur sur push vers master
-  pull_request: # Déclencheur aussi sur les pull requests
-  workflow_dispatch: # Déclenchement manuel via l'interface GitHub
+      - master
+  pull_request:
+  workflow_dispatch:
 
 permissions:
-  actions: read # Accès en lecture seule aux métadonnées des actions
-  contents: read # Accès en lecture seule aux contenus du dépôt
-  pull-requests: write # 🔁 Autorise la publication de commentaires dans les PR
+  actions: read
+  contents: read
+  pull-requests: write
 
 jobs:
-  main:
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 90
-    env:
-      NX_CLOUD_AUTH_TOKEN: ${{ secrets.NX_CLOUD_AUTH_TOKEN }} # Exécute dynamiquement sur les OS définis ci-dessous
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
 
-    strategy:
-      matrix:
-        os: [ubuntu-latest] #[ubuntu-latest, macos-latest, windows-latest] # Matrice des OS
-      max-parallel: 3 # Limite le nombre de jobs simultanés à 3
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: mydb
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    env:
+      NODE_ENV: test
+      DATABASE_URL: mysql://user:password@localhost:3306/mydb
+      NX_CLOUD_AUTH_TOKEN: ${{ secrets.NX_CLOUD_AUTH_TOKEN }}
 
     steps:
-      - name: Récupération du dépôt
+      - name: 📥 Checkout du dépôt
         uses: actions/checkout@v4
-        with:
-          filter: tree:0
-          fetch-depth: 0
 
-      - name: Configuration de Node.js
+      - name: ⚙️ Configuration de Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
 
-      - name: Mise en cache de node_modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-
+      - name: 📦 Installation des dépendances
+        run: npm ci --legacy-peer-deps
 
-      - name: Installation des dépendances
+      - name: 🔍 Lint des projets affectés
+        run: npx nx affected --target=lint
+
+      - name: 🧪 Tests unitaires
+        run: npx nx affected --target=test
+
+      - name: 🏗️ Build Angular + API
         run: |
-          echo "📦 Installation des dépendances..."
-          npm ci --legacy-peer-deps
-          echo "✅ Dépendances installées"
+          npx nx build angular --configuration production
+          npx nx build api
 
-      - name: Définir les SHAs Nx
-        uses: nrwl/nx-set-shas@v4
+      - name: 📈 Couverture de test
+        run: npx nx affected --target=test --coverage
 
-      - name: Exécuter le Lint
+      - name: 📊 Génération du graphe de dépendances
+        run: npx nx dep-graph --file=dist/graph.html
+
+      - name: 🐳 Build des images Docker Angular + NestJS
         run: |
-          echo "🔍 Lint des projets affectés..."
-          npx nx affected --target=lint
-          echo "✅ Lint terminé"
+          docker build -f apps/angular/Dockerfile -t angular-app .
+          docker build -f apps/api/Dockerfile -t nestjs-app .
 
-      - name: Tests unitaires
-        run: |
-          echo "🧪 Lancement des tests unitaires..."
-          npx nx affected --target=test
-          echo "✅ Tests terminés"
-
-      - name: Compilation des projets affectés
-        run: |
-          echo "🏗️ Compilation des projets..."
-          npx nx affected --target=build
-          echo "✅ Build terminé"
-        timeout-minutes: 30
-
-      - name: Génération du graphe de dépendances
-        run: |
-          echo "📊 Génération du graphe des dépendances..."
-          npx nx dep-graph --file=dist/graph.html
-          echo "✅ Graphe généré"
-
-      - name: Applications affectées
-        run: |
-          echo "📦 Liste des applications affectées :"
-          npx nx show projects --affected --type=app
-
-      - name: Librairies affectées
-        run: |
-          echo "📚 Liste des librairies affectées :"
-          npx nx show projects --affected --type=lib
-
-      - name: Déploiement des projets affectés
-        run: |
-          echo "🚀 Déploiement en cours..."
-          npx nx affected --target=deploy
-          echo "✅ Déploiement terminé"
-
-      - name: Tests avec couverture
-        run: |
-          echo "📈 Tests avec génération de couverture..."
-          npx nx affected --target=test --coverage
-
-      - name: Compilation d'un projet spécifique
-        run: |
-          echo "🔧 Build du projet spécifique..."
-          npx nx build angular
-
-      - name: Génération du timestamp
-        run: echo "timestamp=$(date +%s)" >> "$GITHUB_ENV"
-
-      - name: Téléverser l'artefact de build
+      - name: 🗂️ Upload artefacts de build Angular
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifact-${{ env.timestamp }}
-          path: dist/apps/angular   # apps/angular/dist
+          name: angular-dist
+          path: dist/apps/angular/browser
 
-      - name: Téléverser le graphe de dépendances
-        if: success()
+      - name: 🗂️ Upload artefacts du graphe de dépendances
         uses: actions/upload-artifact@v4
         with:
-          name: dependency-graph-${{ env.timestamp }}
-          path: dist/**/*
+          name: nx-dep-graph
+          path: dist/graph.html
 
-      - name: Résumé Markdown visuel
+      - name: ✅ Résumé
         run: |
-          echo "## ✅ Résumé de l'exécution du workflow" >> $GITHUB_STEP_SUMMARY
-          echo "- 📦 Dépendances installées" >> $GITHUB_STEP_SUMMARY
-          echo "- 🔍 Lint terminé" >> $GITHUB_STEP_SUMMARY
-          echo "- 🧪 Tests OK" >> $GITHUB_STEP_SUMMARY
-          echo "- 🏗️ Build effectué" >> $GITHUB_STEP_SUMMARY
-          echo "- 📈 Couverture générée" >> $GITHUB_STEP_SUMMARY
-          echo "- 📊 Graphe de dépendances prêt" >> $GITHUB_STEP_SUMMARY
+          echo "## Résumé CI" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Lint OK" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Tests OK" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Builds OK" >> $GITHUB_STEP_SUMMARY
+          echo "- 🐳 Images Docker créées" >> $GITHUB_STEP_SUMMARY
 
-      - name: Commentaire automatique dans la PR
+      - name: 💬 Commentaire dans la PR
         if: github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ## 🔁 Résultats CI
-            ✅ Lint, build et tests passés avec succès.
-            📊 [Télécharger le graphe de dépendances](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) dans les artefacts.
+            ✅ CI réussie
+            - Lint ✔️
+            - Tests ✔️
+            - Builds ✔️
+            - Docker ✔️
+            - [Graphe des dépendances](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
