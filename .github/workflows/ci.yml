@@ -112,7 +112,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-artifact-${{ env.timestamp }}
-          path: apps/angular/dist
+          path: dist/apps/angular   # apps/angular/dist
 
       - name: Téléverser le graphe de dépendances
         if: success()
