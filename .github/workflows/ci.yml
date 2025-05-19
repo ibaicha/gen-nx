@@ -14,9 +14,9 @@ jobs:
         image: mysql:latest
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: mydb
-          MYSQL_USER: myuser
-          MYSQL_PASSWORD: mypass
+          MYSQL_DATABASE: nest_db
+          MYSQL_USER: nest_user
+          MYSQL_PASSWORD: password
         ports:
           - 3307:3306
         options: >-
