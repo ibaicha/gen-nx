@@ -1,0 +1,1170 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/**
+ * generator nestjsDto {
+ * provider                        = "prisma-generator-nestjs-dto"
+ * output                          = "../src/generated/nestjs-dto"
+ * outputToNestJsResourceStructure = "false"
+ * flatResourceStructure           = "false"
+ * exportRelationModifierClasses   = "true"
+ * reExport                        = "false"
+ * generateFileTypes               = "all"
+ * createDtoPrefix                 = "Create"
+ * updateDtoPrefix                 = "Update"
+ * dtoSuffix                       = "Dto"
+ * entityPrefix                    = ""
+ * entitySuffix                    = ""
+ * classValidation                 = "false"
+ * fileNamingStyle                 = "camel"
+ * noDependencies                  = "false"
+ * outputType                      = "class"
+ * definiteAssignmentAssertion     = "false"
+ * requiredResponseApiProperty     = "true"
+ * prettier                        = "false"
+ * wrapRelationsAsType             = "false"
+ * showDefaultValues               = "false"
+ * }
+ */
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  username  String
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  roleId    Int?
+  role      Role?    @relation(fields: [roleId], references: [id])
+
+  profile Profile?
+
+  UserAgence UserAgence[]
+
+  UserSociete UserSociete[]
+
+  UserOp UserOp[]
+
+  UserPoint UserPoint[]
+
+  UserLocalite UserLocalite[]
+
+  UserZone UserZone[]
+
+  UserProducteur UserProducteur[]
+
+  UserSousZone UserSousZone[]
+
+  UserVillage UserVillage[]
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  users User[]
+}
+
+model Profile {
+  id        Int    @id @default(autoincrement())
+  firstName String
+  lastName  String
+  phone     String @default("")
+  address   String @default("")
+  userId    Int?   @unique
+  user      User?  @relation(fields: [userId], references: [id])
+}
+
+model Genre {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  Producteur Producteur[]
+}
+
+model Annee {
+  id     Int    @id @default(autoincrement())
+  name   String @unique
+  valeur Int
+
+  Campagne         Campagne[]
+  Exploitation     Exploitation[]
+  MouvementStock   MouvementStock[]
+  MouvementIntrant MouvementIntrant[]
+  Demande          Demande[]
+
+  CreditAgence CreditAgence[]
+}
+
+model Saison {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  description String
+
+  Campagne         Campagne[]
+  Exploitation     Exploitation[]
+  MouvementStock   MouvementStock[]
+  MouvementIntrant MouvementIntrant[]
+  Demande          Demande[]
+
+  CreditAgence CreditAgence[]
+}
+
+model Campagne {
+  id       Int    @id @default(autoincrement())
+  anneeId  Int
+  annee    Annee  @relation(fields: [anneeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  saisonId Int
+  saison   Saison @relation(fields: [saisonId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model FormeJuridique {
+  // GIE, SV, SARL, SAS, etc.
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  Op   Op[]
+
+  Societe Societe[]
+}
+
+model Activite {
+  // Agriculture, Elevage, Transformation, Distribution, Autres
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  Filiere Filiere[]
+
+  Service Service[]
+
+  FamilleTypeService FamilleTypeService[]
+  OpActivite         OpActivite[]
+
+  PointActivite PointActivite[]
+  Demande       Demande[]
+
+  ProducteurActivite ProducteurActivite[]
+}
+
+model Pays {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  sigle String?
+
+  Zone Zone[]
+
+  Region Region[]
+}
+
+model Zone {
+  id     Int    @id @default(autoincrement())
+  name   String
+  paysId Int
+  pays   Pays   @relation(fields: [paysId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  //Localite Localite[]
+
+  UserZone UserZone[]
+
+  SousZone SousZone[]
+}
+
+model Localite {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  sousZoneId Int?
+  sousZone   SousZone? @relation(fields: [sousZoneId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  departementId Int?
+  departement   Departement? @relation(fields: [departementId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  Point Point[]
+  Op    Op[]
+
+  UserLocalite UserLocalite[]
+
+  Producteur Producteur[]
+
+  Village Village[]
+}
+
+model Region {
+  id     Int    @id @default(autoincrement())
+  name   String
+  paysId Int
+  pays   Pays   @relation(fields: [paysId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  Departement Departement[]
+}
+
+model Departement {
+  id       Int    @id @default(autoincrement())
+  name     String
+  regionId Int
+  region   Region @relation(fields: [regionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  Localite Localite[]
+
+  Commune Commune[]
+}
+
+model Point {
+  id               Int     @id @default(autoincrement())
+  name             String
+  adresse          String?
+  telephone        String?
+  email            String?
+  latitude         Float?
+  longitude        Float?
+  isActive         Boolean @default(true)
+  isService        Boolean @default(false)
+  isCollecte       Boolean @default(false)
+  isTransformation Boolean @default(false)
+
+  isProduit Boolean @default(false)
+  isIntrant Boolean @default(false)
+  isVirtuel Boolean @default(false)
+
+  societeId           Int?
+  societe             Societe?              @relation(fields: [societeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  localiteId          Int?
+  localite            Localite?             @relation(fields: [localiteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  UniteTransformation UniteTransformation[]
+  Entrepot            Entrepot[]
+  Op                  Op[]
+
+  PointActivite PointActivite[]
+
+  PointAgence PointAgence[]
+
+  UserPoint UserPoint[]
+
+  PointService PointService[]
+  Demande      Demande[]
+
+  AgenceOp AgenceOp[]
+}
+
+model PointActivite {
+  id         Int      @id @default(autoincrement())
+  pointId    Int
+  point      Point    @relation(fields: [pointId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  activiteId Int
+  activite   Activite @relation(fields: [activiteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model TypeSociete {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  Societe Societe[]
+}
+
+model Societe {
+  id        Int    @id @default(autoincrement())
+  name      String @unique
+  sigle     String @unique
+  email     String
+  adresse   String
+  telephone String
+
+  latitude         Float
+  longitude        Float
+  prenomContact    String
+  nomContact       String
+  emailContact     String
+  telephoneContact String
+
+  typeSocieteId    Int
+  typeSociete      TypeSociete        @relation(fields: [typeSocieteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  formeJuridiqueId Int?
+  formeJuridique   FormeJuridique?    @relation(fields: [formeJuridiqueId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  Point            Point[]
+  Agence           Agence[]
+  MouvementIntrant MouvementIntrant[]
+
+  UserSociete UserSociete[]
+
+  SocieteOp SocieteOp[]
+}
+
+model SocieteOp {
+  id          Int    @id @default(autoincrement())
+  compte      String
+  numRegistre String
+  ninea       String
+
+  societeId Int
+  societe   Societe @relation(fields: [societeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  opId      Int
+  op        Op      @relation(fields: [opId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model Agence {
+  id        Int    @id @default(autoincrement())
+  name      String @unique
+  sigle     String @unique
+  email     String
+  adresse   String
+  telephone String
+
+  latitude         Float
+  longitude        Float
+  prenomContact    String
+  nomContact       String
+  emailContact     String
+  telephoneContact String
+  societeId        Int
+  societe          Societe @relation(fields: [societeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  PointAgence  PointAgence[]
+  Exploitation Exploitation[]
+
+  UserAgence UserAgence[]
+
+  // CreditAgence CreditAgence[]
+
+  Credit Credit[]
+
+  AgenceOp     AgenceOp[]
+  CreditAgence CreditAgence[]
+}
+
+model AgenceOp {
+  id           Int            @id @default(autoincrement())
+  agenceId     Int
+  agence       Agence         @relation(fields: [agenceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  opId         Int
+  op           Op             @relation(fields: [opId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  pointId      Int?
+  point        Point?         @relation(fields: [pointId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  CreditAgence CreditAgence[]
+}
+
+model PointAgence {
+  id       Int    @id @default(autoincrement())
+  pointId  Int
+  point    Point  @relation(fields: [pointId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  agenceId Int
+  agence   Agence @relation(fields: [agenceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model TypeRemboursement {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  Remboursement Remboursement[]
+
+  RemboursementAgence RemboursementAgence[]
+}
+
+model Remboursement {
+  id                  Int               @id @default(autoincrement())
+  date                DateTime
+  pu                  Float?
+  nombre_unite        Float
+  nombre_emballage    Float
+  valeur              Float             @default(0)
+  typeRemboursementId Int
+  typeRemboursement   TypeRemboursement @relation(fields: [typeRemboursementId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  creditId            Int?
+  credit              Credit?           @relation(fields: [creditId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  emballageId         Int?
+  emballage           Emballage?        @relation(fields: [emballageId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  //pointId             Int?
+  //point               Point?            @relation(fields: [pointId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  emplacementId       Int?
+  emplacement         Emplacement?      @relation(fields: [emplacementId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  // Exploitation        Exploitation?     @relation(fields: [exploitationId], references: [id])
+  // exploitationId      Int?
+}
+
+// Remboursements enregistrés par le magasinier
+model RemboursementAgence {
+  id                  Int               @id @default(autoincrement())
+  date                DateTime
+  pu                  Float?
+  nombre_unite        Float
+  nombre_emballage    Float
+  valeur              Float             @default(0)
+  typeRemboursementId Int
+  typeRemboursement   TypeRemboursement @relation(fields: [typeRemboursementId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  creditAgenceId      Int?
+  creditAgence        CreditAgence?     @relation(fields: [creditAgenceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  emballageId         Int?
+  emballage           Emballage?        @relation(fields: [emballageId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  emplacementId       Int?
+  emplacement         Emplacement?      @relation(fields: [emplacementId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  Exploitation        Exploitation?     @relation(fields: [exploitationId], references: [id])
+  exploitationId      Int?
+}
+
+model UniteTransformation {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  pointId        Int
+  point          Point            @relation(fields: [pointId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  MouvementStock MouvementStock[]
+}
+
+model Entrepot {
+  id      Int    @id @default(autoincrement())
+  name    String
+  adresse String
+  pointId Int
+  point   Point  @relation(fields: [pointId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  Emplacement Emplacement[]
+}
+
+model Emplacement {
+  id       Int    @id @default(autoincrement())
+  name     String
+  code     Int?
+  capacite Float
+
+  familleEmplacementId        Int
+  familleEmplacement          FamilleEmplacement @relation(fields: [familleEmplacementId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  entrepotId                  Int
+  entrepot                    Entrepot           @relation(fields: [entrepotId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  MouvementStock              MouvementStock[]
+  MouvementIntrant            MouvementIntrant[] @relation("emplacement_mouvement_intrant")
+  MouvementIntrantSource      MouvementIntrant[] @relation("emplacement_mouvement_intrant_source")
+  MouvementIntrantDestination MouvementIntrant[] @relation("emplacement_mouvement_intrant_destination")
+
+  Remboursement Remboursement[]
+
+  RemboursementAgence RemboursementAgence[]
+}
+
+model FamilleEmplacement {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  Emplacement Emplacement[]
+
+  Produit Produit[]
+}
+
+model TypeEmplacement {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+}
+
+model Filiere {
+  id         Int       @id @default(autoincrement())
+  name       String
+  activiteId Int
+  activite   Activite  @relation(fields: [activiteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  Produit    Produit[]
+}
+
+model Produit {
+  id          Int     @id @default(autoincrement())
+  name        String
+  isDerive    Boolean
+  isEnsachage Boolean
+  isActive    Boolean @default(true)
+
+  filiereId            Int
+  filiere              Filiere             @relation(fields: [filiereId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  familleEmplacementId Int?
+  familleEmplacement   FamilleEmplacement? @relation(fields: [familleEmplacementId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  Variete              Variete[]
+
+  ProduitChargeExploitation ProduitChargeExploitation[]
+}
+
+model Variete {
+  id              Int               @id @default(autoincrement())
+  name            String
+  surface_unite   String
+  quantite_unite  String
+  pu_unite        Float
+  rendement_unite Float
+  isActive        Boolean           @default(true)
+  produitId       Int
+  produit         Produit           @relation(fields: [produitId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  VarianteService VarianteService[]
+  Exploitation    Exploitation[]
+
+  Recolte        Recolte[]
+  MouvementStock MouvementStock[]
+
+  CreditAgence CreditAgence[]
+}
+
+model FamilleTypeService {
+  // Stockage  
+  // Intrant
+  // Equipement
+  // Autres
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  activiteId Int
+  activite   Activite @relation(fields: [activiteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  TypeService TypeService[]
+}
+
+model TypeService {
+  // Stockage -- Entrepot, Autres 
+  // Intrant -- Semence, Engrais, Pesticide, Autres
+  // Equipement -- Tracteur, Moissonneuse, Autres
+  // Autres -- Formation, Conseil, Autres
+
+  id                   Int                @id @default(autoincrement())
+  name                 String             @unique
+  familleTypeServiceId Int
+  familleTypeService   FamilleTypeService @relation(fields: [familleTypeServiceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  Service Service[]
+}
+
+model Service {
+  // Stockage -- Entrepot -- Entrepot de stockage(Emplacement simple, Emplacement chambre froide, Autres)
+  // Stockage -- Entrepot -- Entrepot de transformation(Emplacement simple, Emplacement chambre froide, Autres)
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  typeServiceId Int
+  typeService   TypeService @relation(fields: [typeServiceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  activiteId      Int
+  activite        Activite          @relation(fields: [activiteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  VarianteService VarianteService[]
+}
+
+model VarianteService {
+  id              Int     @id @default(autoincrement())
+  name            String  @unique
+  conditionnement String
+  quantite        Float   @default(0)
+  pu              Float   @default(0)
+  valeur          Float   @default(0)
+  isActive        Boolean @default(true)
+  isDefault       Boolean @default(false)
+
+  serviceId Int
+  service   Service @relation(fields: [serviceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  typeEmballageId Int
+  typeEmballage   TypeEmballage @relation(fields: [typeEmballageId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  uniteGrandeurId Int
+  uniteGrandeur   UniteGrandeur @relation(fields: [uniteGrandeurId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  varieteId    Int?
+  variete      Variete?       @relation(fields: [varieteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  PointService PointService[]
+}
+
+model PointService {
+  id            Int    @id @default(autoincrement())
+  reference     String
+  pu            Float  @default(0)
+  quantiteStock Float  @default(0)
+
+  pointId Int
+  point   Point @relation(fields: [pointId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  varianteServiceId Int
+  varianteService   VarianteService @relation(fields: [varianteServiceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  DemandeDetail DemandeDetail[]
+}
+
+model Demande {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  date      DateTime? @db.Date
+
+  activiteId   Int
+  activite     Activite    @relation(fields: [activiteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  anneeId      Int
+  annee        Annee       @relation(fields: [anneeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  saisonId     Int
+  saison       Saison      @relation(fields: [saisonId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  producteurId Int?
+  producteur   Producteur? @relation(fields: [producteurId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  opId         Int?
+  op           Op?         @relation(fields: [opId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  pointId      Int
+  point        Point       @relation(fields: [pointId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  DemandeDetail DemandeDetail[]
+}
+
+model DemandeDetail {
+  id               Int      @id @default(autoincrement())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now())
+  pu               Float    @default(0)
+  quantiteDemandee Float    @default(0)
+  quantiteLivree   Float    @default(0)
+  quantiteRecue    Float    @default(0)
+  valeurDemandee   Float    @default(0)
+  valeurLivree     Float    @default(0)
+  valeurRecue      Float    @default(0)
+  unite            String
+  observation      String
+
+  pointServiceId Int
+  pointService   PointService @relation(fields: [pointServiceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  demandeId Int
+  demande   Demande @relation(fields: [demandeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model TypeUniteGrandeur {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  UniteGrandeur UniteGrandeur[]
+}
+
+model UniteGrandeur {
+  id                  Int                @id @default(autoincrement())
+  name                String             @unique
+  sigle               String             @unique
+  typeUniteGrandeurId Int
+  typeUniteGrandeur   TypeUniteGrandeur  @relation(fields: [typeUniteGrandeurId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  VarianteService     VarianteService[]
+  SurUniteGrandeur    SurUniteGrandeur[]
+  Emballage           Emballage[]
+
+  ChargeExploitation ChargeExploitation[]
+}
+
+model SurUniteGrandeur {
+  id               Int           @id @default(autoincrement())
+  name             String        @unique
+  valeur_reference Float
+  uniteGrandeurId  Int
+  uniteGrandeur    UniteGrandeur @relation(fields: [uniteGrandeurId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model TypeEmballage {
+  id              Int               @id @default(autoincrement())
+  name            String            @unique
+  VarianteService VarianteService[]
+  Emballage       Emballage[]
+
+  EmballageIntrant EmballageIntrant[]
+}
+
+model Emballage {
+  id              Int     @id @default(autoincrement())
+  name            String
+  conditionnement String
+  quantite        Float
+  pu              Float
+  valeur          Float
+  isActive        Boolean @default(true)
+  isDefault       Boolean
+
+  typeEmballageId Int
+  typeEmballage   TypeEmballage @relation(fields: [typeEmballageId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  uniteGrandeurId Int
+  uniteGrandeur   UniteGrandeur @relation(fields: [uniteGrandeurId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  Recolte        Recolte[]
+  MouvementStock MouvementStock[]
+
+  Remboursement Remboursement[]
+
+  RemboursementAgence RemboursementAgence[]
+}
+
+model EmballageIntrant {
+  id              Int     @id @default(autoincrement())
+  name            String
+  conditionnement String
+  quantite        Float
+  pu              Float
+  valeur          Float
+  isActive        Boolean
+  isDefault       Boolean
+
+  chargeExploitationId Int
+  chargeExploitation   ChargeExploitation @relation(fields: [chargeExploitationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  typeEmballageId  Int
+  typeEmballage    TypeEmballage      @relation(fields: [typeEmballageId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  MouvementIntrant MouvementIntrant[]
+}
+
+model TypeMouvementIntrant {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  ModeEntreeSortieIntrant ModeEntreeSortieIntrant[]
+}
+
+model ModeEntreeSortieIntrant {
+  id   Int    @id @default(autoincrement())
+  code String @unique
+  name String @unique
+
+  typeMouvementIntrantId Int
+  typeMouvementIntrant   TypeMouvementIntrant @relation(fields: [typeMouvementIntrantId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  MouvementIntrant       MouvementIntrant[]
+}
+
+model MouvementIntrant {
+  id                      Int      @id @default(autoincrement())
+  date                    DateTime
+  pu                      Float
+  quantiteEntreeEmballage Float
+  quantiteSortieEmballage Float
+  nombreUnite             Float
+  valeur                  Float
+  lot                     String   @default("")
+
+  modeEntreeSortieIntrantId Int
+  modeEntreeSortieIntrant   ModeEntreeSortieIntrant @relation(fields: [modeEntreeSortieIntrantId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  anneeId              Int
+  annee                Annee               @relation(fields: [anneeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  saisonId             Int
+  saison               Saison              @relation(fields: [saisonId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  chargeExploitationId Int?
+  chargeExploitation   ChargeExploitation? @relation(fields: [chargeExploitationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  emplacementId Int?
+  emplacement   Emplacement? @relation("emplacement_mouvement_intrant", fields: [emplacementId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  emplacementSourceId Int?
+  emplacementSource   Emplacement? @relation("emplacement_mouvement_intrant_source", fields: [emplacementSourceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  emplacementDestinationId Int?
+  emplacementDestination   Emplacement? @relation("emplacement_mouvement_intrant_destination", fields: [emplacementDestinationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  opId Int?
+  op   Op?  @relation(fields: [opId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  societeId Int?
+  societe   Societe? @relation(fields: [societeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  emballageIntrantId Int
+  emballageIntrant   EmballageIntrant @relation(fields: [emballageIntrantId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model TypeMouvementStock {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  ModeEntreeSortieStock ModeEntreeSortieStock[]
+}
+
+model ModeEntreeSortieStock {
+  id   Int    @id @default(autoincrement())
+  code String @unique
+  name String @unique
+
+  typeMouvementStockId Int
+  typeMouvementStock   TypeMouvementStock @relation(fields: [typeMouvementStockId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  MouvementStock MouvementStock[]
+}
+
+model MouvementStock {
+  id                      Int      @id @default(autoincrement())
+  date                    DateTime
+  pu                      Float
+  quantiteEntreeEmballage Float
+  quantiteSortieEmballage Float
+  nombreUnite             Float
+  valeur                  Float
+  lot                     String   @default("")
+
+  opId                  Int?
+  op                    Op?                  @relation(fields: [opId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  uniteTransformationId Int?
+  uniteTransformation   UniteTransformation? @relation(fields: [uniteTransformationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  varieteId             Int
+  variete               Variete              @relation(fields: [varieteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  modeEntreeSortieStockId Int
+  modeEntreeSortieStock   ModeEntreeSortieStock @relation(fields: [modeEntreeSortieStockId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  anneeId  Int
+  annee    Annee  @relation(fields: [anneeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  saisonId Int
+  saison   Saison @relation(fields: [saisonId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  emplacementId Int
+  emplacement   Emplacement @relation(fields: [emplacementId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  emballageId   Int
+  emballage     Emballage?  @relation(fields: [emballageId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model Producteur {
+  id        Int     @id @default(autoincrement())
+  compte    Int
+  prenom    String
+  nom       String
+  cni       String
+  email     String
+  telephone String
+  adresse   String
+  latitude  Float
+  longitude Float
+  isActive  Boolean @default(true)
+
+  genreId Int
+  genre   Genre @relation(fields: [genreId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  localiteId Int
+  localite   Localite @relation(fields: [localiteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  ProducteurActivite ProducteurActivite[]
+
+  OpProducteur OpProducteur[]
+
+  Demande Demande[]
+
+  UserProducteur UserProducteur[]
+}
+
+model ProducteurActivite {
+  id           Int        @id @default(autoincrement())
+  producteurId Int
+  producteur   Producteur @relation(fields: [producteurId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  activiteId   Int
+  activite     Activite   @relation(fields: [activiteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model Op {
+  id               Int     @id @default(autoincrement())
+  name             String
+  sigle            String
+  email            String
+  telephone        String
+  adresse          String
+  latitude         Float
+  longitude        Float
+  prenomContact    String
+  nomContact       String
+  emailContact     String
+  telephoneContact String
+  isActive         Boolean @default(true)
+
+  formeJuridiqueId Int?
+  formeJuridique   FormeJuridique? @relation(fields: [formeJuridiqueId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  localiteId Int?
+  localite   Localite? @relation(fields: [localiteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  pointId    Int?
+  point      Point?    @relation(fields: [pointId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  OpActivite       OpActivite[]
+  Exploitation     Exploitation[]
+  MouvementStock   MouvementStock[]
+  MouvementIntrant MouvementIntrant[]
+
+  UserOp  UserOp[]
+  Demande Demande[]
+
+  OpProducteur OpProducteur[]
+
+  // CreditAgence CreditAgence[]
+
+  SocieteOp SocieteOp[]
+
+  AgenceOp     AgenceOp[]
+  CreditAgence CreditAgence[]
+}
+
+model OpProducteur {
+  id           Int        @id @default(autoincrement())
+  opId         Int
+  op           Op         @relation(fields: [opId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  producteurId Int
+  producteur   Producteur @relation(fields: [producteurId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model OpActivite {
+  id         Int      @id @default(autoincrement())
+  opId       Int
+  op         Op       @relation(fields: [opId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  activiteId Int
+  activite   Activite @relation(fields: [activiteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model Credit {
+  id                 Int          @id @default(autoincrement())
+  date               DateTime
+  capital            Float
+  interet            Float
+  moratoire          Float
+  autres_engagements Float
+  exploitationId     Int
+  exploitation       Exploitation @relation(fields: [exploitationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  agenceId           Int
+  agence             Agence       @relation(fields: [agenceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  Remboursement Remboursement[]
+}
+
+model CreditAgence {
+  id                 Int      @id @default(autoincrement())
+  date               DateTime
+  capital            Float
+  interet            Float
+  moratoire          Float
+  autres_engagements Float
+
+  varieteId           Int?
+  variete             Variete?              @relation(fields: [varieteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  anneeId             Int?
+  annee               Annee?                @relation(fields: [anneeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  saisonId            Int?
+  saison              Saison?               @relation(fields: [saisonId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  agenceOpId          Int?
+  agenceOp            AgenceOp?             @relation(fields: [agenceOpId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  agenceId            Int?
+  agence              Agence?               @relation(fields: [agenceId], references: [id])
+  opId                Int?
+  op                  Op?                   @relation(fields: [opId], references: [id])
+  RemboursementAgence RemboursementAgence[]
+  /**
+   * agenceId  Int
+   * agence    Agence   @relation(fields: [agenceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+   * opId Int?
+   * op   Op?  @relation(fields: [opId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+   */
+}
+
+model Exploitation {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  compte    Int       @unique
+  date      DateTime? @db.Date
+  unite     String
+  surface   Float
+  agenceId  Int
+  agence    Agence    @relation(fields: [agenceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  varieteId Int
+  variete   Variete @relation(fields: [varieteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  anneeId   Int
+  annee     Annee   @relation(fields: [anneeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  saisonId  Int
+  saison    Saison  @relation(fields: [saisonId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  //producteurId Int?
+  //producteur   Producteur? @relation("producteur_exploitations", fields: [producteurId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  opId      Int?
+  op        Op?     @relation(fields: [opId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  Recolte Recolte[]
+
+  Credit Credit[]
+
+  ExploitationChargeExploitation ExploitationChargeExploitation[]
+
+  RemboursementAgence RemboursementAgence[]
+}
+
+model ExploitationChargeExploitation {
+  id                   Int                @id @default(autoincrement())
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @default(now())
+  pu                   Float
+  quantite             Float
+  valeur               Float
+  unite                String
+  date                 DateTime
+  observation          String
+  exploitationId       Int
+  exploitation         Exploitation       @relation(fields: [exploitationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  chargeExploitationId Int
+  chargeExploitation   ChargeExploitation @relation(fields: [chargeExploitationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model FamilleTypeChargeExploitation {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  TypeChargeExploitation TypeChargeExploitation[]
+}
+
+model TypeChargeExploitation {
+  id                              Int                           @id @default(autoincrement())
+  name                            String                        @unique
+  familleTypeChargeExploitationId Int
+  familleTypeChargeExploitation   FamilleTypeChargeExploitation @relation(fields: [familleTypeChargeExploitationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  ChargeExploitation ChargeExploitation[]
+}
+
+model FamilleChargeExploitation {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  ChargeExploitation ChargeExploitation[]
+}
+
+model ChargeExploitation {
+  id                        Int     @id @default(autoincrement())
+  name                      String
+  unite                     String
+  pu                        Float
+  quantite_unite_superficie Float
+  isAchat                   Boolean @default(false)
+  isProduit                 Boolean @default(false)
+  isIntrant                 Boolean @default(false)
+
+  uniteGrandeurId Int?
+  uniteGrandeur   UniteGrandeur? @relation(fields: [uniteGrandeurId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  typeChargeExploitationId Int
+  typeChargeExploitation   TypeChargeExploitation @relation(fields: [typeChargeExploitationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  familleChargeExploitationId Int
+  familleChargeExploitation   FamilleChargeExploitation @relation(fields: [familleChargeExploitationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  ProduitChargeExploitation ProduitChargeExploitation[]
+
+  EmballageIntrant EmballageIntrant[]
+  MouvementIntrant MouvementIntrant[]
+
+  ExploitationChargeExploitation ExploitationChargeExploitation[]
+}
+
+model ProduitChargeExploitation {
+  id                   Int                @id @default(autoincrement())
+  produitId            Int
+  produit              Produit            @relation(fields: [produitId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  chargeExploitationId Int
+  chargeExploitation   ChargeExploitation @relation(fields: [chargeExploitationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model Recolte {
+  id               Int          @id @default(autoincrement())
+  date             DateTime
+  pu               Float
+  nombre_unite     Float
+  nombre_emballage Float
+  valeur           Float
+  exploitationId   Int
+  exploitation     Exploitation @relation(fields: [exploitationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  varieteId        Int
+  variete          Variete      @relation(fields: [varieteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  emballageId      Int
+  emballage        Emballage    @relation(fields: [emballageId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model UserZone {
+  id     Int  @id @default(autoincrement())
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  zoneId Int
+  zone   Zone @relation(fields: [zoneId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model UserLocalite {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  localiteId Int
+  localite   Localite @relation(fields: [localiteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model UserPoint {
+  id      Int   @id @default(autoincrement())
+  userId  Int
+  user    User  @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  pointId Int
+  point   Point @relation(fields: [pointId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model UserOp {
+  id     Int  @id @default(autoincrement())
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  opId   Int
+  op     Op   @relation(fields: [opId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model UserAgence {
+  id       Int    @id @default(autoincrement())
+  userId   Int
+  user     User   @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  agenceId Int
+  agence   Agence @relation(fields: [agenceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model UserSociete {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  societeId Int
+  societe   Societe @relation(fields: [societeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model UserProducteur {
+  id           Int        @id @default(autoincrement())
+  userId       Int
+  user         User       @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  producteurId Int
+  producteur   Producteur @relation(fields: [producteurId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model SousZone {
+  id     Int    @id @default(autoincrement())
+  name   String
+  zoneId Int
+  zone   Zone   @relation(fields: [zoneId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  UserSousZone UserSousZone[]
+
+  Localite Localite[]
+}
+
+model Commune {
+  id            Int         @id @default(autoincrement())
+  name          String
+  departementId Int
+  departement   Departement @relation(fields: [departementId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  Village Village[]
+}
+
+model Village {
+  id         Int       @id @default(autoincrement())
+  name       String
+  communeId  Int?
+  commune    Commune?  @relation(fields: [communeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  localiteId Int?
+  localite   Localite? @relation(fields: [localiteId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  UserVillage UserVillage[]
+}
+
+model UserSousZone {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  sousZoneId Int
+  sousZone   SousZone @relation(fields: [sousZoneId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model UserVillage {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  villageId Int
+  village   Village @relation(fields: [villageId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
