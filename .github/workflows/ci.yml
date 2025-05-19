@@ -52,7 +52,7 @@ jobs:
             -e MYSQL_DATABASE=${{ env.MYSQL_DATABASE }} \
             -e MYSQL_USER=${{ env.MYSQL_USER }} \
             -e MYSQL_PASSWORD=${{ env.MYSQL_PASSWORD }} \
-            -p 3307:3306 \
+            -p 3308:3306 \
             mysql:8.0
 
       - name: 🐳 Start phpMyAdmin container
