@@ -5,6 +5,13 @@
   "projectType": "application",
   "tags": [],
   "targets": {
+    "prisma-generate": {
+      "executor": "@nx/run-commands:run-commands",
+      "options": {
+        "command": "prisma generate --schema=apps/api/prisma/schema.prisma",
+        "cwd": "apps/api"
+      }
+    },
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
