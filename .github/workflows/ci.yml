@@ -2,9 +2,9 @@ name: CI/CD - Build Angular & NestJS with MySQL (using .env)
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
 
 env:
   TZ: UTC
