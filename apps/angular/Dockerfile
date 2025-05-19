@@ -25,7 +25,7 @@ RUN npx nx build angular --configuration production
 # ----------------------------
 # Étape 2 : Serveur Nginx pour héberger le frontend
 # ----------------------------
-FROM nginx:latest AS nginx  # ← ici tu ajoutes "AS nginx"
+FROM nginx:latest AS nginx
 
 # (Optionnel, en commentaire) : Surcharger la configuration Nginx par défaut
 # COPY apps/angular/config/nginx.conf  /etc/nginx/conf.d/default.conf
