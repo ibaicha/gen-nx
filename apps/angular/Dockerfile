@@ -40,8 +40,14 @@ COPY dist/apps/angular/browser /usr/share/nginx/html
 # Copier une configuration Nginx personnalisée (utile pour les routes Angular)
 COPY apps/angular/config/nginx.conf  /etc/nginx/conf.d/default.conf
 
+
 # Exposer le port 80 pour accéder à l'app via HTTP
 EXPOSE 80
 
 # Démarrer Nginx en mode "foreground" (nécessaire pour Docker)
 CMD ["nginx", "-g", "daemon off;"]
+
+
+
+
+
