@@ -1,4 +1,4 @@
-import { Localite } from "@prisma/client"
+//import { Localite } from "@prisma/client"
 import { CreateLocaliteDto, LocaliteDto } from "../dtos/localite.dto"
 import { ILocalite } from "@shared-models"
 

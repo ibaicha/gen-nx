@@ -1,4 +1,4 @@
-import { SocieteOp } from '@prisma/client'
+//import { SocieteOp } from '@prisma/client'
 import { CreateSocieteOpDto, SocieteOpDto } from '../dtos/societe_op.dto'
 import { ISocieteOp } from '@shared-models'
 
