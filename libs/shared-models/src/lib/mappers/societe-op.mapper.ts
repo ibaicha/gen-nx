@@ -3,7 +3,7 @@ import { CreateSocieteOpDto, SocieteOpDto } from '../dtos/societe_op.dto'
 import { ISocieteOp } from '@shared-models'
 
 export class SocieteOpMapper {
-  static toDto(societeOp: ISocieteOp): ISocieteOp {
+  static toDto(societeOp: ISocieteOp): SocieteOpDto {
     const { id, compte, numRegistre, ninea, societeId, opId } = societeOp
 
     return {

@@ -7,7 +7,7 @@ import {
 //import { CreditAgence } from '@prisma/client'
 
 export class CreditAgenceMapper {
-  static toDto(creditAgence: ICreditAgence):ICreditAgence {
+  static toDto(creditAgence: ICreditAgence):CreditAgenceDto {
     const {
       id,
       date,
