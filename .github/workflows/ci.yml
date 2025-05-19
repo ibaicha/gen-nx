@@ -1,10 +1,12 @@
-name: CI/CD - Build Angular & NestJS with MySQL
+name: CI/CD - Build Angular & NestJS with MySQL (using .env)
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+
+
 
 jobs:
   build-and-deploy:
