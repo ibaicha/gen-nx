@@ -77,11 +77,11 @@ RUN npm install --production
 RUN npx prisma generate
 
 # Copier et rendre le script `wait-for-db.sh` exécutable
-COPY /wait-for-db.sh /wait-for-db.sh
+COPY wait-for-db.sh /wait-for-db.sh
 RUN chmod +x /wait-for-db.sh
 
 # Copier le fichier `.env` et lui attribuer les droits d'exécution
-COPY /apps/api/.env /.env
+COPY ./apps/api/.env /.env
 RUN chmod +x /.env
 
 # Installer des dépendances de développement pour Typescript (si nécessaire à l'exécution)
