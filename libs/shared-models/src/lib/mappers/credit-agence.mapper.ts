@@ -1,13 +1,12 @@
  
-import { ICreditAgence } from '@shared-models'
 import {
   CreateCreditAgenceDto,
   CreditAgenceDto,
 } from '../dtos/credit_agence.dto'
-//import { CreditAgence } from '@prisma/client'
+import { CreditAgence } from '@prisma/client'
 
 export class CreditAgenceMapper {
-  static toDto(creditAgence: ICreditAgence): CreditAgenceDto {
+  static toDto(creditAgence: CreditAgence): CreditAgenceDto {
     const {
       id,
       date,

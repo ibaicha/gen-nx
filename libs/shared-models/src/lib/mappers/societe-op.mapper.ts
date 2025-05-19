@@ -1,11 +1,8 @@
-
-//import { SocieteOp } from '@prisma/client'
-import { ISocieteOp } from '@shared-models'
+import { SocieteOp } from '@prisma/client'
 import { CreateSocieteOpDto, SocieteOpDto } from '../dtos/societe_op.dto'
- 
 
 export class SocieteOpMapper {
-  static toDto(societeOp: ISocieteOp): SocieteOpDto {
+  static toDto(societeOp: SocieteOp): SocieteOpDto {
     const { id, compte, numRegistre, ninea, societeId, opId } = societeOp
 
     return {

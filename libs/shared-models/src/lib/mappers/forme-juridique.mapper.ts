@@ -1,13 +1,12 @@
  
-import { IFormeJuridique } from '@shared-models'
 import {
   CreateFormeJuridiqueDto,
   FormeJuridiqueDto,
 } from '../dtos/forme_juridique.dto'
-//import { FormeJuridique } from '@prisma/client'
+import { FormeJuridique } from '@prisma/client'
 
 export class FormeJuridiqueMapper {
-  static toDto(formeJuridique: IFormeJuridique): FormeJuridiqueDto {
+  static toDto(formeJuridique: FormeJuridique): FormeJuridiqueDto {
     const { id, name } = formeJuridique
 
     return {
