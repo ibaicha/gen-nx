@@ -20,6 +20,13 @@ COPY apps/api/prisma ./prisma
 
 COPY apps/api/src/prisma/seed.ts ./prisma
 
+# Copier les scripts SQL dans un répertoire spécifique
+# COPY apps/api/prisma/sql-scripts/exploitation_view.sql /docker-entrypoint-initdb.d/exploitation_view.sql
+# RUN chmod 644 /docker-entrypoint-initdb.d/exploitation_view.sql
+# COPY apps/api/prisma/sql-scripts/mouvement_intrant_view.sql /docker-entrypoint-initdb.d/mouvement_intrant_view.sql
+# RUN chmod 644 /docker-entrypoint-initdb.d/mouvement_intrant_view.sql
+# COPY apps/api/prisma/sql-scripts/op_view.sql /docker-entrypoint-initdb.d/op_view.sql
+# RUN chmod 644 /docker-entrypoint-initdb.d/op_view.sql
 
 # Configurer le registre npm
 RUN npm config set registry https://registry.npmmirror.com/
@@ -74,7 +81,7 @@ COPY wait-for-db.sh /wait-for-db.sh
 RUN chmod +x /wait-for-db.sh
 
 # Copier le fichier `.env` et lui attribuer les droits d'exécution
-COPY api/.env /.env
+COPY /apps/api/.env /.env
 RUN chmod +x /.env
 
 # Installer des dépendances de développement pour Typescript (si nécessaire à l'exécution)
