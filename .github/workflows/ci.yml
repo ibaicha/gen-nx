@@ -15,13 +15,19 @@ jobs:
     services:
       mysql:
         image: mysql:latest
+  
+
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: mydb
-          MYSQL_USER: myuser
-          MYSQL_PASSWORD: mypass
+          MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+          MYSQL_DATABASE: ${MYSQL_DATABASE}
+          MYSQL_USER: ${MYSQL_USER}
+          MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+          TZ: ${TZ}
         ports:
-          - 3307:3306
+            - '3307:${MYSQL_PORT}'
+
+
+
         options: >-
           --health-cmd="mysqladmin ping"
           --health-interval=10s
