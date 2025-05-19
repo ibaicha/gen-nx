@@ -6,46 +6,71 @@ on:
   pull_request:
     branches: [main]
 
-
+env:
+  TZ: UTC
+  MYSQL_HOST: localhost
+  MYSQL_PORT: 3306
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     services:
       mysql:
-        image: mysql:latest
+        image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: mydb
-          MYSQL_USER: myuser
-          MYSQL_PASSWORD: mypass
+          MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ env.MYSQL_DATABASE }}
+          MYSQL_USER: ${{ env.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ env.MYSQL_PASSWORD }}
         ports:
-          - 3307:3306
+          - ${{ env.MYSQL_PORT }}:3306
         options: >-
-          --health-cmd="mysqladmin ping"
+          --health-cmd="mysqladmin ping -h localhost -u root --password=$$MYSQL_ROOT_PASSWORD"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
-
-    env:
-      DATABASE_URL: mysql://myuser:mypass@localhost:3307/mydb
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: mydb
-      MYSQL_USER: myuser
-      MYSQL_PASSWORD: mypass
-      TZ: UTC
+        volumes:
+          - mysql-data:/var/lib/mysql
 
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: 🔍 Load .env file
+        id: dotenv
+        uses: falti/dotenv-action@v2
+        with:
+          path: ./apps/api/.env  # Chemin vers votre fichier .env
+          system-var: true      # Charge les variables dans l'environnement système
 
       - name: ⚙️ Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
+          cache: 'npm'
 
       - name: 📦 Install dependencies
         run: npm ci
+
+      - name: 🧪 Wait for MySQL to be ready
+        run: |
+          for i in {1..10}; do
+            if mysqladmin ping -h"$MYSQL_HOST" -P"$MYSQL_PORT" \
+               -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" --silent; then
+              echo "✅ MySQL is ready!"
+              break
+            else
+              echo "⌛ Waiting for MySQL ($i/10)..."
+              sleep 5
+            fi
+          done
+
+      - name: 🏗️ Run database migrations
+        working-directory: ./apps/api
+        run: |
+          npx prisma migrate dev --name init
+          npx prisma generate
 
       - name: 🧱 Build Angular App
         run: npx nx build angular --configuration=production
@@ -54,7 +79,7 @@ jobs:
         run: |
           docker build \
             -f apps/angular/Dockerfile \
-            -t my-angular-app:ci .
+            -t my-angular-app:$GITHUB_SHA .
 
       - name: 🧱 Build NestJS API
         run: npx nx build api
@@ -63,30 +88,41 @@ jobs:
         run: |
           docker build \
             -f apps/api/Dockerfile \
-            -t my-nestjs-app:ci .
+            -t my-nestjs-api:$GITHUB_SHA \
+            --build-arg DATABASE_URL="$DATABASE_URL" .
 
-      - name: 🐳 Build Prisma Studio Image
-        run: |
-          docker build \
-            -f apps/api/Dockerfile \
-            -t prisma-studio:ci .
+      - name: 🧪 Run tests
+        run: npx nx affected:test
 
-      - name: 🐳 Run phpMyAdmin (test container)
-        run: |
-          docker run -d \
-            --name phpmyadmin-ci \
-            --link mysql:db \
-            -e PMA_HOST=localhost \
-            -e MYSQL_ROOT_PASSWORD=root \
-            -p 8081:80 \
-            phpmyadmin/phpmyadmin
-
-      - name: 🧪 Optional Test Step (example)
-        run: echo "✅ Build complete. Ready for deploy or further testing."
-
-      - name: 🧹 Cleanup Docker (optional)
+      - name: 📊 Upload test results
+        uses: actions/upload-artifact@v4
         if: always()
-        run: docker rm -f $(docker ps -aq) || true
+        with:
+          name: test-results
+          path: |
+            coverage/
+            junit.xml
+
+      - name: 🐳 Start containers for testing
+        run: |
+          docker-compose -f docker-compose.ci.yml up -d
+          sleep 10  # Attendre que les containers soient prêts
+
+      - name: 🧪 Run integration tests
+        run: npx nx e2e api-e2e
+
+      - name: 🚢 Push to Docker Registry (on main)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker push my-angular-app:$GITHUB_SHA
+          docker push my-nestjs-api:$GITHUB_SHA
+
+      - name: 🧹 Cleanup
+        if: always()
+        run: |
+          docker-compose -f docker-compose.ci.yml down
+          docker system prune -f
 
 
       # (Optionnel) Login + Push vers Docker Hub
