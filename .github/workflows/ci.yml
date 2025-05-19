@@ -1,127 +1,25 @@
-name: Build & Push Docker Stack
+# This workflow will build and test the application
 
+name: Build and Publish image to Docker Hub
 on:
   push:
     branches: [main]
-  workflow_dispatch:
-
-env:
-  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-  VERSION_TAG: ${{ github.sha }}
-  LATEST_TAG: latest
+    paths:
+      - 'apps/api/Dockerfile'
+      - 'apps/angular/Dockerfile'
 
 jobs:
-  build-and-push:
+  publish_images:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-          MYSQL_USER: ${{ secrets.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -uroot -p$$MYSQL_ROOT_PASSWORD"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
-      - name: 📥 Checkout code
+      - name: checkout
         uses: actions/checkout@v4
-
-      - name: 🔐 Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ env.DOCKERHUB_USERNAME }}
-          password: ${{ env.DOCKERHUB_TOKEN }}
-
-      - name: 🏗️ Build Angular App
-        working-directory: apps/angular
+      - name: build image
         run: |
-          docker build \
-            -t ${{ env.DOCKERHUB_USERNAME }}/angular-app:${{ env.VERSION_TAG }} \
-            -t ${{ env.DOCKERHUB_USERNAME }}/angular-app:${{ env.LATEST_TAG }} \
-            -f Dockerfile \
-            .
-
-      - name: 🏗️ Build NestJS API
-        working-directory: apps/api
-        env:
-          DATABASE_URL: mysql://${{ secrets.MYSQL_USER }}:${{ secrets.MYSQL_PASSWORD }}@mysql:3306/${{ secrets.MYSQL_DATABASE }}
+          docker build ./api/ -t ibaicha/gen_nex_hub:latest
+          docker build ./angular/ -t ibaicha/gen_nex_hub:latest
+      - name: push image to docker hub
         run: |
-          docker build \
-            -t ${{ env.DOCKERHUB_USERNAME }}/nestjs-api:${{ env.VERSION_TAG }} \
-            -t ${{ env.DOCKERHUB_USERNAME }}/nestjs-api:${{ env.LATEST_TAG }} \
-            -f Dockerfile \
-            --build-arg DATABASE_URL=$DATABASE_URL \
-            .
-
-      - name: 🏗️ Build Prisma Studio
-        working-directory: apps/api
-        run: |
-          docker build \
-            -t ${{ env.DOCKERHUB_USERNAME }}/prisma-studio:${{ env.VERSION_TAG }} \
-            -t ${{ env.DOCKERHUB_USERNAME }}/prisma-studio:${{ env.LATEST_TAG }} \
-            -f Dockerfile \
-            .
-
-      - name: 🏷️ Tag MySQL Image
-        run: |
-          docker pull mysql:8.0
-          docker tag mysql:8.0 ${{ env.DOCKERHUB_USERNAME }}/mysql-db:${{ env.VERSION_TAG }}
-          docker tag mysql:8.0 ${{ env.DOCKERHUB_USERNAME }}/mysql-db:${{ env.LATEST_TAG }}
-
-      - name: 🏷️ Tag phpMyAdmin Image
-        run: |
-          docker pull phpmyadmin/phpmyadmin:latest
-          docker tag phpmyadmin/phpmyadmin:latest ${{ env.DOCKERHUB_USERNAME }}/phpmyadmin:${{ env.VERSION_TAG }}
-          docker tag phpmyadmin/phpmyadmin:latest ${{ env.DOCKERHUB_USERNAME }}/phpmyadmin:${{ env.LATEST_TAG }}
-
-      - name: 🚀 Push Images to DockerHub
-        run: |
-          docker push ${{ env.DOCKERHUB_USERNAME }}/angular-app:${{ env.VERSION_TAG }}
-          docker push ${{ env.DOCKERHUB_USERNAME }}/angular-app:${{ env.LATEST_TAG }}
-          docker push ${{ env.DOCKERHUB_USERNAME }}/nestjs-api:${{ env.VERSION_TAG }}
-          docker push ${{ env.DOCKERHUB_USERNAME }}/nestjs-api:${{ env.LATEST_TAG }}
-          docker push ${{ env.DOCKERHUB_USERNAME }}/prisma-studio:${{ env.VERSION_TAG }}
-          docker push ${{ env.DOCKERHUB_USERNAME }}/prisma-studio:${{ env.LATEST_TAG }}
-          docker push ${{ env.DOCKERHUB_USERNAME }}/mysql-db:${{ env.VERSION_TAG }}
-          docker push ${{ env.DOCKERHUB_USERNAME }}/mysql-db:${{ env.LATEST_TAG }}
-          docker push ${{ env.DOCKERHUB_USERNAME }}/phpmyadmin:${{ env.VERSION_TAG }}
-          docker push ${{ env.DOCKERHUB_USERNAME }}/phpmyadmin:${{ env.LATEST_TAG }}
-
-      - name: 📝 Generate Deployment Summary
-        run: |
-          echo "### 🐳 Docker Images Published" >> $GITHUB_STEP_SUMMARY
-          echo "| Service | Version | Latest |" >> $GITHUB_STEP_SUMMARY
-          echo "|---------|---------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Angular App | \`${{ env.VERSION_TAG }}\` | ✅ |" >> $GITHUB_STEP_SUMMARY
-          echo "| NestJS API | \`${{ env.VERSION_TAG }}\` | ✅ |" >> $GITHUB_STEP_SUMMARY
-          echo "| Prisma Studio | \`${{ env.VERSION_TAG }}\` | ✅ |" >> $GITHUB_STEP_SUMMARY
-          echo "| MySQL | \`${{ env.VERSION_TAG }}\` | ✅ |" >> $GITHUB_STEP_SUMMARY
-          echo "| phpMyAdmin | \`${{ env.VERSION_TAG }}\` | ✅ |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "🔗 [DockerHub Profile](https://hub.docker.com/u/${{ env.DOCKERHUB_USERNAME }})" >> $GITHUB_STEP_SUMMARY
-      # (Optionnel) Login + Push vers Docker Hub
-      # - name: 🔑 Login to Docker Hub
-      #   uses: docker/login-action@v3
-      #   with:
-      #     username: ${{ secrets.DOCKER_USERNAME }}
-      #     password: ${{ secrets.DOCKER_PASSWORD }}
-
-      # - name: 📤 Push Angular Image
-      #   run: docker tag my-angular-app:ci yourdockerhubuser/angular-app:latest && docker push yourdockerhubuser/angular-app:latest
-
-      # - name: 📤 Push NestJS Image
-      #   run: docker tag my-nestjs-app:ci yourdockerhubuser/nestjs-app:latest && docker push yourdockerhubuser/nestjs-app:latest
-
-      # - name: 📤 Push Prisma Studio Image
-      #   run: docker tag prisma-studio:ci yourdockerhubuser/prisma-studio:latest && docker push yourdockerhubuser/prisma-studio:latest
-
-      # - name: 📤 Push phpMyAdmin Image
-      #   run: docker tag phpmyadmin:ci yourdockerhubuser/phpmyadmin:latest && docker push yourdockerhubuser/phpmyadmin:latest
+          docker login -u ibaicha -p ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker push ibaicha/gen_nex_hub:latest
+          docker push ibaicha/gen_nex_hub:latest
