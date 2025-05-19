@@ -8,23 +8,54 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
-    paths:
-      - 'apps/api/Dockerfile'
-      - 'apps/angular/Dockerfile'
+env:
+  REGISTRY: docker.io
+  FRONTEND_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/gen-nx-frontend
+  BACKEND_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/gen-nx-api
 
 jobs:
-  publish_images:
+  build-and-push:
+    name: Build and Push Docker Images
     runs-on: ubuntu-latest
+
     steps:
-      - name: checkout
-        uses: actions/checkout@v4
-      - name: build image
-        run: |
-          docker build ./apps/api/ -t ibaicha/gen_nex_hub:latest
-          docker build ./apps/angular/ -t ibaicha/gen_nex_hub:latest
-      - name: push image to docker hub
-        run: |
-          docker login -u ibaicha -p ${{ secrets.DOCKER_HUB_TOKEN }}
-          docker push ibaicha/gen_nex_hub:latest
-          docker push ibaicha/gen_nex_hub:latest
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      # --------------------------
+      # Build & Push Angular (NGINX) image
+      # --------------------------
+      - name: Build and push Angular image (with NGINX)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          target: nginx
+          tags: ${{ env.FRONTEND_IMAGE }}:latest
+
+      # --------------------------
+      # Build & Push NestJS API image
+      # --------------------------
+      - name: Build and push NestJS API image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          target: production
+          tags: ${{ env.BACKEND_IMAGE }}:latest
+          build-args: |
+            APP_ENV=production
