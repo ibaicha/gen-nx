@@ -1525,7 +1525,12 @@ export class CreditAgenceComponent implements OnInit {
     return parseFloat(value as string) || 0
   }
 
-  getExigible(rowData: { capital: string | number; interet: string | number; moratoire: string | number; autres_engagements: string | number }): number {
+  getExigible(rowData: {
+    capital: string | number
+    interet: string | number
+    moratoire: string | number
+    autres_engagements: string | number
+  }): number {
     return (
       this.sanitizeAmount(rowData.capital) +
       this.sanitizeAmount(rowData.interet) +

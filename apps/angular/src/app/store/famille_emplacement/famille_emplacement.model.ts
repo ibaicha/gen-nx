@@ -1,5 +1,4 @@
-import { IFamilleEmplacement } from "@shared-models"
-
+import { IFamilleEmplacement } from '@shared-models'
 
 /**
  * Interface définissant l'état du store pour les familles d'emplacements

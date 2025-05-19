@@ -17,8 +17,6 @@ export class CreditAgenceService {
     return CreditAgenceMapper.toDto(created)
   }
 
-
-
   async findAll() {
     const all = await this.prisma.creditAgence.findMany()
     return all.map(CreditAgenceMapper.toDto)

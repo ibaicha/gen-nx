@@ -4,7 +4,8 @@ import { IVarieteState } from './variete.model'
 /**
  * Sélecteur de base pour accéder à l'état des variétés
  */
-export const selectVarieteState = createFeatureSelector<IVarieteState>('variete')
+export const selectVarieteState =
+  createFeatureSelector<IVarieteState>('variete')
 
 /**
  * Sélecteurs dérivés pour les différentes parties de l'état
@@ -16,7 +17,7 @@ export const selectVarieteState = createFeatureSelector<IVarieteState>('variete'
  */
 export const selectVarietesList = createSelector(
   selectVarieteState,
-  (state) => state.varietes
+  (state) => state.varietes,
 )
 
 /**
@@ -25,7 +26,7 @@ export const selectVarietesList = createSelector(
  */
 export const selectVarieteIsLoading = createSelector(
   selectVarieteState,
-  (state) => state.isLoading
+  (state) => state.isLoading,
 )
 
 /**
@@ -33,7 +34,7 @@ export const selectVarieteIsLoading = createSelector(
  * @param {number} itemId - ID de la variété recherchée
  * @returns {IVariete | undefined} Variété correspondante ou undefined si non trouvée
  */
-export const selectVarieteById = (itemId: number) => createSelector(
-  selectVarieteState,
-  (state) => state.varietes.find(item => item.id === itemId)
-)
+export const selectVarieteById = (itemId: number) =>
+  createSelector(selectVarieteState, (state) =>
+    state.varietes.find((item) => item.id === itemId),
+  )

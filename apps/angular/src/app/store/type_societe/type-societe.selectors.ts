@@ -4,7 +4,7 @@ import { ITypeSocieteState } from './type-societe.model'
 /**
  * Sélecteur de base pour accéder à l'état des types de sociétés
  */
-export const selectTypeSocieteState = 
+export const selectTypeSocieteState =
   createFeatureSelector<ITypeSocieteState>('typeSociete')
 
 /**
@@ -17,7 +17,7 @@ export const selectTypeSocieteState =
  */
 export const selectTypeSocietesList = createSelector(
   selectTypeSocieteState,
-  (state) => state.typeSocietes
+  (state) => state.typeSocietes,
 )
 
 /**
@@ -26,7 +26,7 @@ export const selectTypeSocietesList = createSelector(
  */
 export const selectTypeSocieteIsLoading = createSelector(
   selectTypeSocieteState,
-  (state) => state.isLoading
+  (state) => state.isLoading,
 )
 
 /**
@@ -34,7 +34,7 @@ export const selectTypeSocieteIsLoading = createSelector(
  * @param {number} itemId - ID du type de société recherché
  * @returns {ITypeSociete | undefined} Type de société correspondant ou undefined si non trouvé
  */
-export const selectTypeSocieteById = (itemId: number) => createSelector(
-  selectTypeSocieteState,
-  (state) => state.typeSocietes.find(item => item.id === itemId)
-)
+export const selectTypeSocieteById = (itemId: number) =>
+  createSelector(selectTypeSocieteState, (state) =>
+    state.typeSocietes.find((item) => item.id === itemId),
+  )

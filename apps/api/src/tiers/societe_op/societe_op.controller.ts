@@ -16,7 +16,6 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 import { SocieteOpService } from './societe_op.service'
 import { CreateSocieteOpDto, UpdateSocieteOpDto } from '@shared-models'
 
-
 @ApiTags('SocieteOp')
 @Controller('societeOps')
 export class SocieteOpController {

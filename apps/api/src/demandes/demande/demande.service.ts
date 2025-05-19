@@ -115,11 +115,8 @@ export class DemandeService {
     params: GetDemandeParamsDTO,
   ): Promise<IDemande[]> {
     try {
-     
-
       const demandes: IDemande[] = []
 
-    
       return demandes
     } catch (error) {
       throw new ForbiddenException(error)
@@ -127,7 +124,7 @@ export class DemandeService {
       await this.prismaService.$disconnect()
     }
   }
-/*
+  /*
   async getAllDemandesWithFiltersXX(
     params: GetDemandeParamsDTO,
   ): Promise<IDemande[]> {

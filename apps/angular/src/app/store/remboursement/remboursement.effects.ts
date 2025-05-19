@@ -25,9 +25,9 @@ export class RemboursementEffects {
       ofType(fromRemboursements.getRemboursements.type),
       switchMap(() => this.remboursementService.getRemboursements()),
       map((remboursements: IRemboursement[]) =>
-        fromRemboursements.getRemboursementsSuccess({ remboursements })
-      )
-    )
+        fromRemboursements.getRemboursementsSuccess({ remboursements }),
+      ),
+    ),
   )
 
   /**
@@ -37,11 +37,13 @@ export class RemboursementEffects {
   createRemboursement$ = createEffect(() =>
     this.actions$.pipe(
       ofType(fromRemboursements.createRemboursement),
-      switchMap(({ remboursement }) => this.remboursementService.create(remboursement)),
+      switchMap(({ remboursement }) =>
+        this.remboursementService.create(remboursement),
+      ),
       map((remboursement: IRemboursement) =>
-        fromRemboursements.createRemboursementSuccess({ remboursement })
-      )
-    )
+        fromRemboursements.createRemboursementSuccess({ remboursement }),
+      ),
+    ),
   )
 
   /**
@@ -51,11 +53,13 @@ export class RemboursementEffects {
   updateRemboursement$ = createEffect(() =>
     this.actions$.pipe(
       ofType(fromRemboursements.updateRemboursement),
-      switchMap(({ remboursement }) => this.remboursementService.update(remboursement)),
+      switchMap(({ remboursement }) =>
+        this.remboursementService.update(remboursement),
+      ),
       map((remboursement: IRemboursement) =>
-        fromRemboursements.updateRemboursementSuccess({ remboursement })
-      )
-    )
+        fromRemboursements.updateRemboursementSuccess({ remboursement }),
+      ),
+    ),
   )
 
   /**
@@ -65,10 +69,12 @@ export class RemboursementEffects {
   deleteRemboursement$ = createEffect(() =>
     this.actions$.pipe(
       ofType(fromRemboursements.deleteRemboursement),
-      switchMap(({ remboursement }) => this.remboursementService.delete(remboursement)),
+      switchMap(({ remboursement }) =>
+        this.remboursementService.delete(remboursement),
+      ),
       map((remboursement: IRemboursement) =>
-        fromRemboursements.deleteRemboursementSuccess({ remboursement })
-      )
-    )
+        fromRemboursements.deleteRemboursementSuccess({ remboursement }),
+      ),
+    ),
   )
 }

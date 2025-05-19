@@ -24,8 +24,6 @@ export class CreditAgenceController {
     return this.creditAgenceService.create(dto)
   }
 
-
-
   @Get('/all')
   findAll() {
     return this.creditAgenceService.findAll()

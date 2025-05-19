@@ -5,7 +5,6 @@ import * as fromPoints from './index'
 import { PointService } from '../../services/point.service'
 import { IPoint } from '@shared-models'
 
-
 /**
  * Effets pour la gestion des points
  * Gère les effets secondaires des actions liées aux points
@@ -47,7 +46,7 @@ export class PointEffects {
    */
   updatePoint$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(fromPoints.updatePoint), 
+      ofType(fromPoints.updatePoint),
       switchMap(({ point }) => this.pointService.update(point)),
       map((point: IPoint) => fromPoints.updatePointSuccess({ point })),
     ),

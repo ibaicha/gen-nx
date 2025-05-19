@@ -69,7 +69,7 @@ const reducer = createReducer<IPointAgenceState>(
   on(fromPointAgences.updatePointAgenceSuccess, (state, { pointAgence }) => ({
     ...state,
     pointAgences: state.pointAgences.map((item) =>
-      item.id === pointAgence.id ? pointAgence : item
+      item.id === pointAgence.id ? pointAgence : item,
     ),
     isLoading: false,
   })),
@@ -84,7 +84,9 @@ const reducer = createReducer<IPointAgenceState>(
 
   on(fromPointAgences.deletePointAgenceSuccess, (state, { pointAgence }) => ({
     ...state,
-    pointAgences: state.pointAgences.filter((item) => item.id !== pointAgence.id),
+    pointAgences: state.pointAgences.filter(
+      (item) => item.id !== pointAgence.id,
+    ),
     isLoading: false,
   })),
 )

@@ -407,8 +407,8 @@ export class ClientComponent implements OnInit {
 
   onClicked(event: Event) {
     // If the event target is an input element, access its value safely
-    const target = event.target as HTMLInputElement;
-    console.log(target.value);
+    const target = event.target as HTMLInputElement
+    console.log(target.value)
   }
 
   getValue($event: Event): string {
@@ -430,7 +430,9 @@ export class ClientComponent implements OnInit {
     console.log('event.data --- ', event.data.name)
   }
 
-  onRowExpandRetournePersonne(event: { data: { id: number; name: string; typeClient: { name: string } } }): void {
+  onRowExpandRetournePersonne(event: {
+    data: { id: number; name: string; typeClient: { name: string } }
+  }): void {
     console.log('event   --- ', event.data)
     console.log('event.data --- ', event.data.id)
     console.log('event.data --- ', event.data.name)
@@ -440,7 +442,9 @@ export class ClientComponent implements OnInit {
     }
   }
 
-  onChangeTypeClient(event: { value: { id: number; [key: string]: unknown } }): void {
+  onChangeTypeClient(event: {
+    value: { id: number; [key: string]: unknown }
+  }): void {
     console.log(event.value)
     console.log('event_id :' + event.value['id'])
   }

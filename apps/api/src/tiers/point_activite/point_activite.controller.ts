@@ -8,16 +8,16 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { PointActiviteService } from './point_activite.service';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { PointActiviteService } from './point_activite.service'
+import { AuthGuard } from '@nestjs/passport'
 import {
   CreatePointActiviteDto,
   UpdatePointActiviteDto,
-} from './dto/point_activite.dto';
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+} from './dto/point_activite.dto'
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('PointActivite')
 @Controller('pointActivites')
@@ -26,7 +26,7 @@ export class PointActiviteController {
 
   @Get()
   getAll() {
-    return this.pointActiviteService.getAll();
+    return this.pointActiviteService.getAll()
   }
 
   @Get('/:id')
@@ -34,14 +34,14 @@ export class PointActiviteController {
     @Param('id', ParseIntPipe) pointActiviteId: number,
     createPointActiviteDto: CreatePointActiviteDto,
   ) {
-    return this.pointActiviteService.getOne(pointActiviteId);
+    return this.pointActiviteService.getOne(pointActiviteId)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(@Body() createPointActiviteDto: CreatePointActiviteDto) {
-    return this.pointActiviteService.create(createPointActiviteDto);
+    return this.pointActiviteService.create(createPointActiviteDto)
   }
 
   @ApiBearerAuth()
@@ -52,7 +52,7 @@ export class PointActiviteController {
     createPointActiviteDto: CreatePointActiviteDto,
     @Req() request: Request,
   ) {
-    return this.pointActiviteService.delete(pointActiviteId);
+    return this.pointActiviteService.delete(pointActiviteId)
   }
 
   @ApiBearerAuth()
@@ -65,6 +65,6 @@ export class PointActiviteController {
     return this.pointActiviteService.update(
       pointActiviteId,
       updatePointActiviteDto,
-    );
+    )
   }
 }

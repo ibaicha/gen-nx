@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common'
 import {
   CreateTypeServiceDto,
   UpdateTypeServiceDto,
-} from './dto/type_service.dto';
-import { PrismaService } from '../../prisma/prisma.service';
+} from './dto/type_service.dto'
+import { PrismaService } from '../../prisma/prisma.service'
 
 @Injectable()
 export class TypeServiceService {
@@ -21,22 +21,22 @@ export class TypeServiceService {
           },
         },
       },
-    });
+    })
   }
 
   async getOne(typeServiceId: number) {
     const typeService = await this.prismaService.typeService.findUnique({
       where: { id: typeServiceId },
-    });
-    if (!typeService) throw new NotFoundException('Post not found');
-    return typeService;
+    })
+    if (!typeService) throw new NotFoundException('Post not found')
+    return typeService
   }
   async create(createTypeServiceDto: CreateTypeServiceDto) {
-    const { name, familleTypeServiceId } = createTypeServiceDto;
+    const { name, familleTypeServiceId } = createTypeServiceDto
     await this.prismaService.typeService.create({
       data: { name, familleTypeServiceId },
-    });
-    return { data: 'TypeService created' };
+    })
+    return { data: 'TypeService created' }
   }
 
   async update(
@@ -45,23 +45,23 @@ export class TypeServiceService {
   ) {
     const typeService = await this.prismaService.typeService.findUnique({
       where: { id: typeServiceId },
-    });
-    if (!typeService) throw new NotFoundException('TypeService not found');
+    })
+    if (!typeService) throw new NotFoundException('TypeService not found')
     await this.prismaService.typeService.update({
       where: { id: typeServiceId },
       data: { ...updateTypeServiceDto },
-    });
-    return { data: 'TypeService updeted!' };
+    })
+    return { data: 'TypeService updeted!' }
   }
 
   async delete(typeServiceId: number) {
     const typeService = await this.prismaService.typeService.findUnique({
       where: { id: typeServiceId },
-    });
-    if (!typeService) throw new NotFoundException('Post not found');
+    })
+    if (!typeService) throw new NotFoundException('Post not found')
     await this.prismaService.typeService.delete({
       where: { id: typeServiceId },
-    });
-    return { data: 'TypeService deleted' };
+    })
+    return { data: 'TypeService deleted' }
   }
 }

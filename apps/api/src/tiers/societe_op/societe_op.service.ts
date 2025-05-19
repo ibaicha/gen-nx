@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '../../prisma/prisma.service'
 import { CreateSocieteOpDto, UpdateSocieteOpDto } from '@shared-models'
 
-
 @Injectable()
 export class SocieteOpService {
   constructor(private readonly prismaService: PrismaService) {}

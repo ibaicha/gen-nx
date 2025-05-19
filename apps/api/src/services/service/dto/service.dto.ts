@@ -1,12 +1,12 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator'
 
 export class CreateServiceDto {
   @IsNotEmpty()
-  readonly name!: string;
+  readonly name!: string
   @IsNotEmpty()
-  readonly typeServiceId!: number;
+  readonly typeServiceId!: number
   @IsNotEmpty()
-  readonly activiteId!: number;
+  readonly activiteId!: number
 }
 
 export class UpdateServiceDto {

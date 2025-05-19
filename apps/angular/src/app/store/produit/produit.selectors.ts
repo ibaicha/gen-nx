@@ -4,7 +4,8 @@ import { IProduitState } from './produit.model'
 /**
  * Sélecteur de base pour l'état des produits
  */
-export const selectProduitState = createFeatureSelector<IProduitState>('produit')
+export const selectProduitState =
+  createFeatureSelector<IProduitState>('produit')
 
 /**
  * Sélecteurs dérivés pour les différentes parties de l'état
@@ -15,7 +16,7 @@ export const selectProduitState = createFeatureSelector<IProduitState>('produit'
  */
 export const selectProduitsList = createSelector(
   selectProduitState,
-  (state) => state.produits
+  (state) => state.produits,
 )
 
 /**
@@ -23,14 +24,14 @@ export const selectProduitsList = createSelector(
  */
 export const selectProduitIsLoading = createSelector(
   selectProduitState,
-  (state) => state.isLoading
+  (state) => state.isLoading,
 )
 
 /**
  * Sélecteur pour obtenir un produit par son ID
  * @param itemId - ID du produit à rechercher
  */
-export const selectProduitById = (itemId: number) => createSelector(
-  selectProduitState,
-  (state) => state.produits.find((item) => item.id === itemId)
-)
+export const selectProduitById = (itemId: number) =>
+  createSelector(selectProduitState, (state) =>
+    state.produits.find((item) => item.id === itemId),
+  )

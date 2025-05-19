@@ -4,7 +4,6 @@ import { map, switchMap } from 'rxjs/operators'
 import * as fromCampagnes from './index'
 import { CampagneService } from '../../services/campagne.service'
 import { ICampagne } from '@shared-models'
- 
 
 /**
  * Effets pour la gestion des campagnes
@@ -65,7 +64,7 @@ export class CampagneEffects {
    */
   deleteCampagne$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(fromCampagnes.deleteCampagne), 
+      ofType(fromCampagnes.deleteCampagne),
       switchMap(({ campagne }) => this.campagneService.delete(campagne)),
       map((campagne: ICampagne) =>
         fromCampagnes.deleteCampagneSuccess({ campagne }),

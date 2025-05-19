@@ -31,9 +31,7 @@ export class TypeMouvementStockController {
   }
 
   @Get('/:id')
-  get(
-    @Param('id', ParseIntPipe) typeMouvementStockId: number,
-  ) {
+  get(@Param('id', ParseIntPipe) typeMouvementStockId: number) {
     return this.typeMouvementStockService.getOne(typeMouvementStockId)
   }
 
@@ -47,9 +45,7 @@ export class TypeMouvementStockController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Delete('delete/:id')
-  delete(
-    @Param('id', ParseIntPipe) typeMouvementStockId: number,
-  ) {
+  delete(@Param('id', ParseIntPipe) typeMouvementStockId: number) {
     return this.typeMouvementStockService.delete(typeMouvementStockId)
   }
 

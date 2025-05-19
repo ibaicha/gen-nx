@@ -8,16 +8,16 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { DepartementService } from './departement.service';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { DepartementService } from './departement.service'
+import { AuthGuard } from '@nestjs/passport'
 import {
   CreateDepartementDto,
   UpdateDepartementDto,
-} from './dto/departement.dto';
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+} from './dto/departement.dto'
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('Departement')
 @Controller('departements')
@@ -26,7 +26,7 @@ export class DepartementController {
 
   @Get()
   getAll() {
-    return this.departementService.getAll();
+    return this.departementService.getAll()
   }
 
   @Get('/:id')
@@ -34,14 +34,14 @@ export class DepartementController {
     @Param('id', ParseIntPipe) departementId: number,
     createDepartementDto: CreateDepartementDto,
   ) {
-    return this.departementService.getOne(departementId);
+    return this.departementService.getOne(departementId)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(@Body() createDepartementDto: CreateDepartementDto) {
-    return this.departementService.create(createDepartementDto);
+    return this.departementService.create(createDepartementDto)
   }
 
   @ApiBearerAuth()
@@ -52,7 +52,7 @@ export class DepartementController {
     createDepartementDto: CreateDepartementDto,
     @Req() request: Request,
   ) {
-    return this.departementService.delete(departementId);
+    return this.departementService.delete(departementId)
   }
 
   @ApiBearerAuth()
@@ -62,6 +62,6 @@ export class DepartementController {
     @Param('id', ParseIntPipe) departementId: number,
     @Body() updateDepartementDto: UpdateDepartementDto,
   ) {
-    return this.departementService.update(departementId, updateDepartementDto);
+    return this.departementService.update(departementId, updateDepartementDto)
   }
 }

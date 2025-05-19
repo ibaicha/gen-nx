@@ -1,6 +1,5 @@
 import { createAction, props } from '@ngrx/store'
 import { IBobo } from '../../interfaces/bobo.interface'
- 
 
 /**
  * Préfixe pour toutes les actions liées aux bobos
@@ -12,24 +11,22 @@ const prefix = '[Bobos]'
  */
 export const getBobo = createAction(
   `${prefix} Get Single Bobo`,
-  props<{ id: number }>()
+  props<{ id: number }>(),
 )
 
 export const getBoboSuccess = createAction(
   `${getBobo.type} Success`,
-  props<{ oneBobo: IBobo }>()
+  props<{ oneBobo: IBobo }>(),
 )
 
 /**
  * Actions pour la récupération de tous les bobos
  */
-export const getBobos = createAction(
-  `${prefix} Get All Bobos`
-)
+export const getBobos = createAction(`${prefix} Get All Bobos`)
 
 export const getBobosSuccess = createAction(
   `${getBobos.type} Success`,
-  props<{ bobos: IBobo[] }>()
+  props<{ bobos: IBobo[] }>(),
 )
 
 /**
@@ -37,12 +34,12 @@ export const getBobosSuccess = createAction(
  */
 export const createBobo = createAction(
   `${prefix} Create Bobo`,
-  props<{ bobo: IBobo }>()
+  props<{ bobo: IBobo }>(),
 )
 
 export const createBoboSuccess = createAction(
   `${createBobo.type} Success`,
-  props<{ bobo: IBobo }>()
+  props<{ bobo: IBobo }>(),
 )
 
 /**
@@ -50,12 +47,12 @@ export const createBoboSuccess = createAction(
  */
 export const updateBobo = createAction(
   `${prefix} Update Bobo`,
-  props<{ bobo: IBobo }>()
+  props<{ bobo: IBobo }>(),
 )
 
 export const updateBoboSuccess = createAction(
   `${updateBobo.type} Success`,
-  props<{ bobo: IBobo }>()
+  props<{ bobo: IBobo }>(),
 )
 
 /**
@@ -63,10 +60,10 @@ export const updateBoboSuccess = createAction(
  */
 export const deleteBobo = createAction(
   `${prefix} Delete Bobo`,
-  props<{ bobo: IBobo }>()
+  props<{ bobo: IBobo }>(),
 )
 
 export const deleteBoboSuccess = createAction(
   `${deleteBobo.type} Success`,
-  props<{ bobo: IBobo }>()
+  props<{ bobo: IBobo }>(),
 )

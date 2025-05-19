@@ -8,14 +8,14 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { RegionService } from './region.service';
-import { AuthGuard } from '@nestjs/passport';
-import { CreateRegionDto, UpdateRegionDto } from './dto/region.dto';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { RegionService } from './region.service'
+import { AuthGuard } from '@nestjs/passport'
+import { CreateRegionDto, UpdateRegionDto } from './dto/region.dto'
 
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('Region')
 @Controller('regions')
@@ -24,7 +24,7 @@ export class RegionController {
 
   @Get()
   getAll() {
-    return this.regionService.getAll();
+    return this.regionService.getAll()
   }
 
   @Get('/:id')
@@ -32,14 +32,14 @@ export class RegionController {
     @Param('id', ParseIntPipe) regionId: number,
     createRegionDto: CreateRegionDto,
   ) {
-    return this.regionService.getOne(regionId);
+    return this.regionService.getOne(regionId)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(@Body() createRegionDto: CreateRegionDto) {
-    return this.regionService.create(createRegionDto);
+    return this.regionService.create(createRegionDto)
   }
 
   @ApiBearerAuth()
@@ -50,7 +50,7 @@ export class RegionController {
     createRegionDto: CreateRegionDto,
     @Req() request: Request,
   ) {
-    return this.regionService.delete(regionId);
+    return this.regionService.delete(regionId)
   }
 
   @ApiBearerAuth()
@@ -60,6 +60,6 @@ export class RegionController {
     @Param('id', ParseIntPipe) regionId: number,
     @Body() updateRegionDto: UpdateRegionDto,
   ) {
-    return this.regionService.update(regionId, updateRegionDto);
+    return this.regionService.update(regionId, updateRegionDto)
   }
 }

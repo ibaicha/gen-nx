@@ -177,7 +177,9 @@ export class OpComponent implements OnInit {
   loading = false
 
   selectedLocaliteAutocomplete: ILocalite | null = null
-  filteredLocaliteAutocompletes: { label: string; items: ILocalite[] }[] | undefined
+  filteredLocaliteAutocompletes:
+    | { label: string; items: ILocalite[] }[]
+    | undefined
 
   // Valeur par défaut pour le select
   selectedValue = 1
@@ -453,7 +455,9 @@ export class OpComponent implements OnInit {
       this.onSelectLocalite(uniqueLocalite)
     }
   }
-  private groupLocalites(localites: ILocalite[]): { label: string; items: ILocalite[] }[] {
+  private groupLocalites(
+    localites: ILocalite[],
+  ): { label: string; items: ILocalite[] }[] {
     const grouped: { [departementName: string]: ILocalite[] } = {}
 
     for (const loc of localites) {
@@ -839,7 +843,7 @@ export class OpComponent implements OnInit {
 
   editOp(op: IOp) {
     this.op = { ...op }
- 
+
     console.log(' this.op    --- ', op)
     this.titleHeader = 'Update Op'
     this.opDialogDisplay = true
@@ -848,7 +852,6 @@ export class OpComponent implements OnInit {
   saveOp() {
     this.submitted = true
 
- 
     console.log(' this.op    --- ', this.op)
 
     if (this.op.id) {
@@ -918,10 +921,8 @@ export class OpComponent implements OnInit {
       formeJuridiqueId: 0,
       localiteId: 0,
       pointId: 0,
-      
     }
 
- 
     this.chargerOp()
   }
 
@@ -985,8 +986,6 @@ export class OpComponent implements OnInit {
       return
     }
   }
- 
- 
 
   onClearTypeOp(): void {
     this.isPersonne = false

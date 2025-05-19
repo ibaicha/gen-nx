@@ -1,7 +1,6 @@
 import { createAction, props } from '@ngrx/store'
 import { ILocalite } from '@shared-models'
 
-
 // ========== CONSTANTES ==========
 
 /**
@@ -23,12 +22,12 @@ const SUCCESS = 'Success'
  */
 export const getLocalite = createAction(
   `${prefix} ${GET} Single Localite`,
-  props<{ id: number }>()
+  props<{ id: number }>(),
 )
 
 export const getLocaliteSuccess = createAction(
   `${prefix} ${GET} Single Localite ${SUCCESS}`,
-  props<{ oneLocalite: ILocalite }>()
+  props<{ oneLocalite: ILocalite }>(),
 )
 
 /**
@@ -38,7 +37,7 @@ export const getLocalites = createAction(`${prefix} ${GET} All Localites`)
 
 export const getLocalitesSuccess = createAction(
   `${prefix} ${GET} All Localites ${SUCCESS}`,
-  props<{ localites: ILocalite[] }>()
+  props<{ localites: ILocalite[] }>(),
 )
 
 // ========== ACTIONS DE MODIFICATION ==========
@@ -48,12 +47,12 @@ export const getLocalitesSuccess = createAction(
  */
 export const createLocalite = createAction(
   `${prefix} ${CREATE} Localite`,
-  props<{ localite: ILocalite }>()
+  props<{ localite: ILocalite }>(),
 )
 
 export const createLocaliteSuccess = createAction(
   `${prefix} ${CREATE} Localite ${SUCCESS}`,
-  props<{ localite: ILocalite }>()
+  props<{ localite: ILocalite }>(),
 )
 
 /**
@@ -61,12 +60,12 @@ export const createLocaliteSuccess = createAction(
  */
 export const updateLocalite = createAction(
   `${prefix} ${UPDATE} Localite`,
-  props<{ localite: ILocalite }>()
+  props<{ localite: ILocalite }>(),
 )
 
 export const updateLocaliteSuccess = createAction(
   `${prefix} ${UPDATE} Localite ${SUCCESS}`,
-  props<{ localite: ILocalite }>()
+  props<{ localite: ILocalite }>(),
 )
 
 /**
@@ -74,10 +73,10 @@ export const updateLocaliteSuccess = createAction(
  */
 export const deleteLocalite = createAction(
   `${prefix} ${DELETE} Localite`,
-  props<{ localite: ILocalite }>()
+  props<{ localite: ILocalite }>(),
 )
 
 export const deleteLocaliteSuccess = createAction(
   `${prefix} ${DELETE} Localite ${SUCCESS}`,
-  props<{ localite: ILocalite }>()
+  props<{ localite: ILocalite }>(),
 )

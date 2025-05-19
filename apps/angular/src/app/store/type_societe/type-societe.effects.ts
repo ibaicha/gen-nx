@@ -4,7 +4,6 @@ import { map, switchMap } from 'rxjs/operators'
 import * as fromTypeSocietes from './index'
 import { TypeSocieteService } from '../../services/type-societe.service'
 import { ITypeSociete } from '@shared-models'
- 
 
 /**
  * Effets pour la gestion des types de sociétés
@@ -25,8 +24,9 @@ export class TypeSocieteEffects {
     this.actions$.pipe(
       ofType(fromTypeSocietes.getTypeSocietes.type),
       switchMap(() => this.typeSocieteService.getTypeSocietes()),
-      map((typeSocietes: ITypeSociete[]) => 
-        fromTypeSocietes.getTypeSocietesSuccess({ typeSocietes })),
+      map((typeSocietes: ITypeSociete[]) =>
+        fromTypeSocietes.getTypeSocietesSuccess({ typeSocietes }),
+      ),
     ),
   )
 
@@ -37,9 +37,12 @@ export class TypeSocieteEffects {
   createTypeSociete$ = createEffect(() =>
     this.actions$.pipe(
       ofType(fromTypeSocietes.createTypeSociete),
-      switchMap(({ typeSociete }) => this.typeSocieteService.create(typeSociete)),
+      switchMap(({ typeSociete }) =>
+        this.typeSocieteService.create(typeSociete),
+      ),
       map((typeSociete: ITypeSociete) =>
-        fromTypeSocietes.createTypeSocieteSuccess({ typeSociete })),
+        fromTypeSocietes.createTypeSocieteSuccess({ typeSociete }),
+      ),
     ),
   )
 
@@ -50,9 +53,12 @@ export class TypeSocieteEffects {
   updateTypeSociete$ = createEffect(() =>
     this.actions$.pipe(
       ofType(fromTypeSocietes.updateTypeSociete),
-      switchMap(({ typeSociete }) => this.typeSocieteService.update(typeSociete)),
+      switchMap(({ typeSociete }) =>
+        this.typeSocieteService.update(typeSociete),
+      ),
       map((typeSociete: ITypeSociete) =>
-        fromTypeSocietes.updateTypeSocieteSuccess({ typeSociete })),
+        fromTypeSocietes.updateTypeSocieteSuccess({ typeSociete }),
+      ),
     ),
   )
 
@@ -63,9 +69,12 @@ export class TypeSocieteEffects {
   deleteTypeSociete$ = createEffect(() =>
     this.actions$.pipe(
       ofType(fromTypeSocietes.deleteTypeSociete),
-      switchMap(({ typeSociete }) => this.typeSocieteService.delete(typeSociete)),
+      switchMap(({ typeSociete }) =>
+        this.typeSocieteService.delete(typeSociete),
+      ),
       map((typeSociete: ITypeSociete) =>
-        fromTypeSocietes.deleteTypeSocieteSuccess({ typeSociete })),
+        fromTypeSocietes.deleteTypeSocieteSuccess({ typeSociete }),
+      ),
     ),
   )
 }

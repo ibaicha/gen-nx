@@ -1,6 +1,5 @@
 import { createAction, props } from '@ngrx/store'
 import { ISociete } from '@shared-models'
- 
 
 // ========== CONSTANTES ==========
 
@@ -23,12 +22,12 @@ const SUCCESS = 'Success'
  */
 export const getSociete = createAction(
   `${prefix} ${GET} Single Societe`,
-  props<{ id: number }>()
+  props<{ id: number }>(),
 )
 
 export const getSocieteSuccess = createAction(
   `${prefix} ${GET} Single Societe ${SUCCESS}`,
-  props<{ oneSociete: ISociete }>()
+  props<{ oneSociete: ISociete }>(),
 )
 
 /**
@@ -38,7 +37,7 @@ export const getSocietes = createAction(`${prefix} ${GET} All Societes`)
 
 export const getSocietesSuccess = createAction(
   `${prefix} ${GET} All Societes ${SUCCESS}`,
-  props<{ societes: ISociete[] }>()
+  props<{ societes: ISociete[] }>(),
 )
 
 // ========== ACTIONS DE MODIFICATION ==========
@@ -48,12 +47,12 @@ export const getSocietesSuccess = createAction(
  */
 export const createSociete = createAction(
   `${prefix} ${CREATE} Societe`,
-  props<{ societe: ISociete }>()
+  props<{ societe: ISociete }>(),
 )
 
 export const createSocieteSuccess = createAction(
   `${prefix} ${CREATE} Societe ${SUCCESS}`,
-  props<{ societe: ISociete }>()
+  props<{ societe: ISociete }>(),
 )
 
 /**
@@ -61,12 +60,12 @@ export const createSocieteSuccess = createAction(
  */
 export const updateSociete = createAction(
   `${prefix} ${UPDATE} Societe`,
-  props<{ societe: ISociete }>()
+  props<{ societe: ISociete }>(),
 )
 
 export const updateSocieteSuccess = createAction(
   `${prefix} ${UPDATE} Societe ${SUCCESS}`,
-  props<{ societe: ISociete }>()
+  props<{ societe: ISociete }>(),
 )
 
 /**
@@ -74,10 +73,10 @@ export const updateSocieteSuccess = createAction(
  */
 export const deleteSociete = createAction(
   `${prefix} ${DELETE} Societe`,
-  props<{ societe: ISociete }>()
+  props<{ societe: ISociete }>(),
 )
 
 export const deleteSocieteSuccess = createAction(
   `${prefix} ${DELETE} Societe ${SUCCESS}`,
-  props<{ societe: ISociete }>()
+  props<{ societe: ISociete }>(),
 )

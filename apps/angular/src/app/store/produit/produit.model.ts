@@ -2,9 +2,7 @@
  * Import de l'interface IProduit depuis le fichier filiere.interface
  */
 
-import { IProduit } from "@shared-models"
-
- 
+import { IProduit } from '@shared-models'
 
 /**
  * Interface définissant l'état des produits dans le store

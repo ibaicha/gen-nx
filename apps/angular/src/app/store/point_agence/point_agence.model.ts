@@ -2,8 +2,7 @@
  * Import de l'interface IPointAgence depuis le fichier point-agence.interface
  */
 
-import { IPointAgence } from "@shared-models"
-
+import { IPointAgence } from '@shared-models'
 
 /**
  * Interface définissant l'état des points d'agence dans le store

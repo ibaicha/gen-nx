@@ -519,8 +519,6 @@ export class MouvementIntrantService {
     }
   }
 
-
-
   async getOne(mouvementIntrantId: number) {
     return this.prismaService.mouvementIntrant.findMany({
       select: {

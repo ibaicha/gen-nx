@@ -1,9 +1,6 @@
 import { IAnnee, IEmplacement, IOp, ISaison } from '@shared-models'
- 
+
 import { IChargeExploitation } from './exploitation.interface'
-
-
- 
 
 /**
  * Interface représentant un mouvement d'intrant

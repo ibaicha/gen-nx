@@ -24,11 +24,14 @@ const reducer = createReducer<ICreditCustomState>(
     isLoading: true,
   })),
 
-  on(fromCreditCustoms.getCreditCustomSuccess, (state, { oneCreditCustom }) => ({
-    ...state,
-    isLoading: false,
-    oneCreditCustom,
-  })),
+  on(
+    fromCreditCustoms.getCreditCustomSuccess,
+    (state, { oneCreditCustom }) => ({
+      ...state,
+      isLoading: false,
+      oneCreditCustom,
+    }),
+  ),
 
   /**
    * Gestion des actions de récupération de tous les crédits personnalisés

@@ -1,6 +1,5 @@
 import { createAction, props } from '@ngrx/store'
 import { ISaison } from '@shared-models'
- 
 
 // ========== CONSTANTES ==========
 
@@ -23,12 +22,12 @@ const SUCCESS = 'Success'
  */
 export const getSaison = createAction(
   `${prefix} ${GET} Single Saison`,
-  props<{ id: number }>()
+  props<{ id: number }>(),
 )
 
 export const getSaisonSuccess = createAction(
   `${prefix} ${GET} Single Saison ${SUCCESS}`,
-  props<{ oneSaison: ISaison }>()
+  props<{ oneSaison: ISaison }>(),
 )
 
 /**
@@ -38,7 +37,7 @@ export const getSaisons = createAction(`${prefix} ${GET} All Saisons`)
 
 export const getSaisonsSuccess = createAction(
   `${prefix} ${GET} All Saisons ${SUCCESS}`,
-  props<{ saisons: ISaison[] }>()
+  props<{ saisons: ISaison[] }>(),
 )
 
 // ========== ACTIONS DE MODIFICATION ==========
@@ -48,12 +47,12 @@ export const getSaisonsSuccess = createAction(
  */
 export const createSaison = createAction(
   `${prefix} ${CREATE} Saison`,
-  props<{ saison: ISaison }>()
+  props<{ saison: ISaison }>(),
 )
 
 export const createSaisonSuccess = createAction(
   `${prefix} ${CREATE} Saison ${SUCCESS}`,
-  props<{ saison: ISaison }>()
+  props<{ saison: ISaison }>(),
 )
 
 /**
@@ -61,12 +60,12 @@ export const createSaisonSuccess = createAction(
  */
 export const updateSaison = createAction(
   `${prefix} ${UPDATE} Saison`,
-  props<{ saison: ISaison }>()
+  props<{ saison: ISaison }>(),
 )
 
 export const updateSaisonSuccess = createAction(
   `${prefix} ${UPDATE} Saison ${SUCCESS}`,
-  props<{ saison: ISaison }>()
+  props<{ saison: ISaison }>(),
 )
 
 /**
@@ -74,10 +73,10 @@ export const updateSaisonSuccess = createAction(
  */
 export const deleteSaison = createAction(
   `${prefix} ${DELETE} Saison`,
-  props<{ saison: ISaison }>()
+  props<{ saison: ISaison }>(),
 )
 
 export const deleteSaisonSuccess = createAction(
   `${prefix} ${DELETE} Saison ${SUCCESS}`,
-  props<{ saison: ISaison }>()
+  props<{ saison: ISaison }>(),
 )

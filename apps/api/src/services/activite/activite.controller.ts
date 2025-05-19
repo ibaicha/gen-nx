@@ -6,13 +6,13 @@ import {
   ParseIntPipe,
   Post,
   Put,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { ActiviteService } from './activite.service';
-import { AuthGuard } from '@nestjs/passport';
-import { CreateActiviteDto, UpdateActiviteDto } from './dto/activite.dto';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { ActiviteService } from './activite.service'
+import { AuthGuard } from '@nestjs/passport'
+import { CreateActiviteDto, UpdateActiviteDto } from './dto/activite.dto'
 
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('Activite')
 @Controller('activites')
@@ -21,7 +21,7 @@ export class ActiviteController {
 
   @Get()
   getAll() {
-    return this.activiteService.getAll();
+    return this.activiteService.getAll()
   }
 
   @Get('/:id')
@@ -29,14 +29,14 @@ export class ActiviteController {
     @Param('id', ParseIntPipe) activiteId: number,
     createActiviteDto: CreateActiviteDto,
   ) {
-    return this.activiteService.getOne(activiteId);
+    return this.activiteService.getOne(activiteId)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(@Body() createActiviteDto: CreateActiviteDto) {
-    return this.activiteService.create(createActiviteDto);
+    return this.activiteService.create(createActiviteDto)
   }
 
   @ApiBearerAuth()
@@ -46,6 +46,6 @@ export class ActiviteController {
     @Param('id', ParseIntPipe) activiteId: number,
     @Body() updateActiviteDto: UpdateActiviteDto,
   ) {
-    return this.activiteService.update(activiteId, updateActiviteDto);
+    return this.activiteService.update(activiteId, updateActiviteDto)
   }
 }

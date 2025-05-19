@@ -1,6 +1,5 @@
 import { createAction, props } from '@ngrx/store'
 import { IAnnee } from '@shared-models'
- 
 
 /**
  * Préfixe pour toutes les actions liées aux années
@@ -12,24 +11,22 @@ const prefix = '[Annees]'
  */
 export const getAnnee = createAction(
   `${prefix} Get Single Annee`,
-  props<{ id: number }>()
+  props<{ id: number }>(),
 )
 
 export const getAnneeSuccess = createAction(
-  `${getAnnee.type} Success`, 
-  props<{ oneAnnee: IAnnee }>()
+  `${getAnnee.type} Success`,
+  props<{ oneAnnee: IAnnee }>(),
 )
 
 /**
  * Actions pour la récupération de toutes les années
  */
-export const getAnnees = createAction(
-  `${prefix} Get All Annees`
-)
+export const getAnnees = createAction(`${prefix} Get All Annees`)
 
 export const getAnneesSuccess = createAction(
   `${getAnnees.type} Success`,
-  props<{ annees: IAnnee[] }>()
+  props<{ annees: IAnnee[] }>(),
 )
 
 /**
@@ -37,12 +34,12 @@ export const getAnneesSuccess = createAction(
  */
 export const createAnnee = createAction(
   `${prefix} Create Annee`,
-  props<{ annee: IAnnee }>()
+  props<{ annee: IAnnee }>(),
 )
 
 export const createAnneeSuccess = createAction(
   `${createAnnee.type} Success`,
-  props<{ annee: IAnnee }>()
+  props<{ annee: IAnnee }>(),
 )
 
 /**
@@ -50,12 +47,12 @@ export const createAnneeSuccess = createAction(
  */
 export const updateAnnee = createAction(
   `${prefix} Update Annee`,
-  props<{ annee: IAnnee }>()
+  props<{ annee: IAnnee }>(),
 )
 
 export const updateAnneeSuccess = createAction(
   `${updateAnnee.type} Success`,
-  props<{ annee: IAnnee }>()
+  props<{ annee: IAnnee }>(),
 )
 
 /**
@@ -63,10 +60,10 @@ export const updateAnneeSuccess = createAction(
  */
 export const deleteAnnee = createAction(
   `${prefix} Delete Annee`,
-  props<{ annee: IAnnee }>()
+  props<{ annee: IAnnee }>(),
 )
 
 export const deleteAnneeSuccess = createAction(
   `${deleteAnnee.type} Success`,
-  props<{ annee: IAnnee }>()
+  props<{ annee: IAnnee }>(),
 )

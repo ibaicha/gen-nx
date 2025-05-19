@@ -24,11 +24,14 @@ const reducer = createReducer<IFamilleEmplacementState>(
     isLoading: true,
   })),
 
-  on(fromFamilleEmplacements.getFamilleEmplacementSuccess, (state, { oneFamilleEmplacement }) => ({
-    ...state,
-    isLoading: false,
-    oneFamilleEmplacement,
-  })),
+  on(
+    fromFamilleEmplacements.getFamilleEmplacementSuccess,
+    (state, { oneFamilleEmplacement }) => ({
+      ...state,
+      isLoading: false,
+      oneFamilleEmplacement,
+    }),
+  ),
 
   /**
    * Gestion des actions de récupération de toutes les familles d'emplacements
@@ -38,11 +41,14 @@ const reducer = createReducer<IFamilleEmplacementState>(
     isLoading: true,
   })),
 
-  on(fromFamilleEmplacements.getFamilleEmplacementsSuccess, (state, { familleEmplacements }) => ({
-    ...state,
-    isLoading: false,
-    familleEmplacements,
-  })),
+  on(
+    fromFamilleEmplacements.getFamilleEmplacementsSuccess,
+    (state, { familleEmplacements }) => ({
+      ...state,
+      isLoading: false,
+      familleEmplacements,
+    }),
+  ),
 
   /**
    * Gestion des actions de création d'une famille d'emplacement
@@ -52,11 +58,14 @@ const reducer = createReducer<IFamilleEmplacementState>(
     isLoading: true,
   })),
 
-  on(fromFamilleEmplacements.createFamilleEmplacementSuccess, (state, { familleEmplacement }) => ({
-    ...state,
-    familleEmplacements: [...state.familleEmplacements, familleEmplacement],
-    isLoading: false,
-  })),
+  on(
+    fromFamilleEmplacements.createFamilleEmplacementSuccess,
+    (state, { familleEmplacement }) => ({
+      ...state,
+      familleEmplacements: [...state.familleEmplacements, familleEmplacement],
+      isLoading: false,
+    }),
+  ),
 
   /**
    * Gestion des actions de mise à jour d'une famille d'emplacement
@@ -66,13 +75,16 @@ const reducer = createReducer<IFamilleEmplacementState>(
     isLoading: true,
   })),
 
-  on(fromFamilleEmplacements.updateFamilleEmplacementSuccess, (state, { familleEmplacement }) => ({
-    ...state,
-    familleEmplacements: state.familleEmplacements.map((item) =>
-      item.id === familleEmplacement.id ? familleEmplacement : item
-    ),
-    isLoading: false,
-  })),
+  on(
+    fromFamilleEmplacements.updateFamilleEmplacementSuccess,
+    (state, { familleEmplacement }) => ({
+      ...state,
+      familleEmplacements: state.familleEmplacements.map((item) =>
+        item.id === familleEmplacement.id ? familleEmplacement : item,
+      ),
+      isLoading: false,
+    }),
+  ),
 
   /**
    * Gestion des actions de suppression d'une famille d'emplacement
@@ -82,13 +94,16 @@ const reducer = createReducer<IFamilleEmplacementState>(
     isLoading: true,
   })),
 
-  on(fromFamilleEmplacements.deleteFamilleEmplacementSuccess, (state, { familleEmplacement }) => ({
-    ...state,
-    familleEmplacements: state.familleEmplacements.filter(
-      (item) => item.id !== familleEmplacement.id
-    ),
-    isLoading: false,
-  }))
+  on(
+    fromFamilleEmplacements.deleteFamilleEmplacementSuccess,
+    (state, { familleEmplacement }) => ({
+      ...state,
+      familleEmplacements: state.familleEmplacements.filter(
+        (item) => item.id !== familleEmplacement.id,
+      ),
+      isLoading: false,
+    }),
+  ),
 )
 
 /**
@@ -96,7 +111,7 @@ const reducer = createReducer<IFamilleEmplacementState>(
  */
 export function familleEmplacementReducer(
   state = initialFamilleEmplacementState,
-  actions: Action
+  actions: Action,
 ): IFamilleEmplacementState {
   return reducer(state, actions)
 }

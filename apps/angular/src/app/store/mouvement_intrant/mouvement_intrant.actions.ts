@@ -12,24 +12,24 @@ const prefix = '[MouvementIntrants]'
  */
 export const getMouvementIntrant = createAction(
   `${prefix} Get Single MouvementIntrant`,
-  props<{ id: number }>()
+  props<{ id: number }>(),
 )
 
 export const getMouvementIntrantSuccess = createAction(
   `${getMouvementIntrant.type} Success`,
-  props<{ oneMouvementIntrant: IMouvementIntrant }>()
+  props<{ oneMouvementIntrant: IMouvementIntrant }>(),
 )
 
 /**
  * Actions pour la récupération de tous les mouvements d'intrants
  */
 export const getMouvementIntrants = createAction(
-  `${prefix} Get All MouvementIntrants`
+  `${prefix} Get All MouvementIntrants`,
 )
 
 export const getMouvementIntrantsSuccess = createAction(
   `${getMouvementIntrants.type} Success`,
-  props<{ mouvementIntrants: IMouvementIntrant[] }>()
+  props<{ mouvementIntrants: IMouvementIntrant[] }>(),
 )
 
 /**
@@ -37,12 +37,12 @@ export const getMouvementIntrantsSuccess = createAction(
  */
 export const getAllMouvementIntrantWithFilters = createAction(
   `${prefix} Get MouvementIntrants With Filters`,
-  props<{ filter: any }>()
+  props<{ filter: any }>(),
 )
 
 export const getAllMouvementIntrantWithFiltersSuccess = createAction(
   `${getAllMouvementIntrantWithFilters.type} Success`,
-  props<{ mouvementIntrantWithFilters: IMouvementIntrant[] }>()
+  props<{ mouvementIntrantWithFilters: IMouvementIntrant[] }>(),
 )
 
 /**
@@ -50,12 +50,12 @@ export const getAllMouvementIntrantWithFiltersSuccess = createAction(
  */
 export const getAllIdentifiantsWithFilters = createAction(
   `${prefix} Get Identifiants With Filters`,
-  props<{ filter: any }>()
+  props<{ filter: any }>(),
 )
 
 export const getAllIdentifiantsWithFiltersSuccess = createAction(
   `${getAllIdentifiantsWithFilters.type} Success`,
-  props<{ identifiantsWithFilters: IIdentifiant[] }>()
+  props<{ identifiantsWithFilters: IIdentifiant[] }>(),
 )
 
 /**
@@ -63,12 +63,12 @@ export const getAllIdentifiantsWithFiltersSuccess = createAction(
  */
 export const createMouvementIntrant = createAction(
   `${prefix} Create MouvementIntrant`,
-  props<{ mouvementIntrant: IMouvementIntrant }>()
+  props<{ mouvementIntrant: IMouvementIntrant }>(),
 )
 
 export const createMouvementIntrantSuccess = createAction(
   `${createMouvementIntrant.type} Success`,
-  props<{ mouvementIntrant: IMouvementIntrant }>()
+  props<{ mouvementIntrant: IMouvementIntrant }>(),
 )
 
 /**
@@ -76,12 +76,12 @@ export const createMouvementIntrantSuccess = createAction(
  */
 export const updateMouvementIntrant = createAction(
   `${prefix} Update MouvementIntrant`,
-  props<{ mouvementIntrant: IMouvementIntrant }>()
+  props<{ mouvementIntrant: IMouvementIntrant }>(),
 )
 
 export const updateMouvementIntrantSuccess = createAction(
   `${updateMouvementIntrant.type} Success`,
-  props<{ mouvementIntrant: IMouvementIntrant }>()
+  props<{ mouvementIntrant: IMouvementIntrant }>(),
 )
 
 /**
@@ -89,10 +89,10 @@ export const updateMouvementIntrantSuccess = createAction(
  */
 export const deleteMouvementIntrant = createAction(
   `${prefix} Delete MouvementIntrant`,
-  props<{ mouvementIntrant: IMouvementIntrant }>()
+  props<{ mouvementIntrant: IMouvementIntrant }>(),
 )
 
 export const deleteMouvementIntrantSuccess = createAction(
   `${deleteMouvementIntrant.type} Success`,
-  props<{ mouvementIntrant: IMouvementIntrant }>()
+  props<{ mouvementIntrant: IMouvementIntrant }>(),
 )

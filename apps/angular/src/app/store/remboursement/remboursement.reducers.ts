@@ -24,11 +24,14 @@ const reducer = createReducer<IRemboursementState>(
     isLoading: true,
   })),
 
-  on(fromRemboursements.getRemboursementSuccess, (state, { oneRemboursement }) => ({
-    ...state,
-    isLoading: false,
-    oneRemboursement,
-  })),
+  on(
+    fromRemboursements.getRemboursementSuccess,
+    (state, { oneRemboursement }) => ({
+      ...state,
+      isLoading: false,
+      oneRemboursement,
+    }),
+  ),
 
   /**
    * Gestion des actions de récupération de tous les remboursements
@@ -38,11 +41,14 @@ const reducer = createReducer<IRemboursementState>(
     isLoading: true,
   })),
 
-  on(fromRemboursements.getRemboursementsSuccess, (state, { remboursements }) => ({
-    ...state,
-    isLoading: false,
-    remboursements,
-  })),
+  on(
+    fromRemboursements.getRemboursementsSuccess,
+    (state, { remboursements }) => ({
+      ...state,
+      isLoading: false,
+      remboursements,
+    }),
+  ),
 
   /**
    * Gestion des actions de création d'un remboursement
@@ -52,11 +58,14 @@ const reducer = createReducer<IRemboursementState>(
     isLoading: true,
   })),
 
-  on(fromRemboursements.createRemboursementSuccess, (state, { remboursement }) => ({
-    ...state,
-    remboursements: [...state.remboursements, remboursement],
-    isLoading: false,
-  })),
+  on(
+    fromRemboursements.createRemboursementSuccess,
+    (state, { remboursement }) => ({
+      ...state,
+      remboursements: [...state.remboursements, remboursement],
+      isLoading: false,
+    }),
+  ),
 
   /**
    * Gestion des actions de mise à jour d'un remboursement
@@ -66,13 +75,16 @@ const reducer = createReducer<IRemboursementState>(
     isLoading: true,
   })),
 
-  on(fromRemboursements.updateRemboursementSuccess, (state, { remboursement }) => ({
-    ...state,
-    remboursements: state.remboursements.map((item) =>
-      item.id === remboursement.id ? remboursement : item
-    ),
-    isLoading: false,
-  })),
+  on(
+    fromRemboursements.updateRemboursementSuccess,
+    (state, { remboursement }) => ({
+      ...state,
+      remboursements: state.remboursements.map((item) =>
+        item.id === remboursement.id ? remboursement : item,
+      ),
+      isLoading: false,
+    }),
+  ),
 
   /**
    * Gestion des actions de suppression d'un remboursement
@@ -82,11 +94,16 @@ const reducer = createReducer<IRemboursementState>(
     isLoading: true,
   })),
 
-  on(fromRemboursements.deleteRemboursementSuccess, (state, { remboursement }) => ({
-    ...state,
-    remboursements: state.remboursements.filter((item) => item.id !== remboursement.id),
-    isLoading: false,
-  }))
+  on(
+    fromRemboursements.deleteRemboursementSuccess,
+    (state, { remboursement }) => ({
+      ...state,
+      remboursements: state.remboursements.filter(
+        (item) => item.id !== remboursement.id,
+      ),
+      isLoading: false,
+    }),
+  ),
 )
 
 /**
@@ -94,7 +111,7 @@ const reducer = createReducer<IRemboursementState>(
  */
 export function remboursementReducer(
   state = initialRemboursementState,
-  actions: Action
+  actions: Action,
 ): IRemboursementState {
   return reducer(state, actions)
 }

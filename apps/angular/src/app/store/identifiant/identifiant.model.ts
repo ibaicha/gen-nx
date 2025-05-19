@@ -7,7 +7,7 @@ export interface IIdentifiantState {
   /** Liste complète des identifiants */
   identifiants: IIdentifiant[]
   /** Liste des identifiants filtrés */
-  identifiantWithFilters: IIdentifiant[] 
+  identifiantWithFilters: IIdentifiant[]
   /** Indicateur de chargement */
   isLoading: boolean
 }

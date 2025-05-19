@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common'
 
 import {
   CreatePointActiviteDto,
   UpdatePointActiviteDto,
-} from './dto/point_activite.dto';
-import { PrismaService } from '../../prisma/prisma.service';
+} from './dto/point_activite.dto'
+import { PrismaService } from '../../prisma/prisma.service'
 
 @Injectable()
 export class PointActiviteService {
@@ -21,22 +21,22 @@ export class PointActiviteService {
           include: {},
         },
       },
-    });
+    })
   }
 
   async getOne(pointActiviteId: number) {
     const pointActivite = await this.prismaService.pointActivite.findUnique({
       where: { id: pointActiviteId },
-    });
-    if (!pointActivite) throw new NotFoundException('Post not found');
-    return pointActivite;
+    })
+    if (!pointActivite) throw new NotFoundException('Post not found')
+    return pointActivite
   }
   async create(createPointActiviteDto: CreatePointActiviteDto) {
-    const { pointId, activiteId } = createPointActiviteDto;
+    const { pointId, activiteId } = createPointActiviteDto
     await this.prismaService.pointActivite.create({
       data: { pointId, activiteId },
-    });
-    return { data: 'PointActivite created' };
+    })
+    return { data: 'PointActivite created' }
   }
 
   async update(
@@ -45,23 +45,23 @@ export class PointActiviteService {
   ) {
     const pointActivite = await this.prismaService.pointActivite.findUnique({
       where: { id: pointActiviteId },
-    });
-    if (!pointActivite) throw new NotFoundException('PointActivite not found');
+    })
+    if (!pointActivite) throw new NotFoundException('PointActivite not found')
     await this.prismaService.pointActivite.update({
       where: { id: pointActiviteId },
       data: { ...updatePointActiviteDto },
-    });
-    return { data: 'PointActivite updeted!' };
+    })
+    return { data: 'PointActivite updeted!' }
   }
 
   async delete(pointActiviteId: number) {
     const pointActivite = await this.prismaService.pointActivite.findUnique({
       where: { id: pointActiviteId },
-    });
-    if (!pointActivite) throw new NotFoundException('Post not found');
+    })
+    if (!pointActivite) throw new NotFoundException('Post not found')
     await this.prismaService.pointActivite.delete({
       where: { id: pointActiviteId },
-    });
-    return { data: 'PointActivite deleted' };
+    })
+    return { data: 'PointActivite deleted' }
   }
 }

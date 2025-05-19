@@ -1,7 +1,6 @@
 import { createAction, props } from '@ngrx/store'
 import { ICampagne } from '@shared-models'
 
-
 /**
  * Préfixe pour toutes les actions liées aux campagnes
  */
@@ -12,24 +11,22 @@ const prefix = '[Campagnes]'
  */
 export const getCampagne = createAction(
   `${prefix} Get Single Campagne`,
-  props<{ id: number }>()
+  props<{ id: number }>(),
 )
 
 export const getCampagneSuccess = createAction(
   `${getCampagne.type} Success`,
-  props<{ oneCampagne: ICampagne }>()
+  props<{ oneCampagne: ICampagne }>(),
 )
 
 /**
  * Actions pour la récupération de toutes les campagnes
  */
-export const getCampagnes = createAction(
-  `${prefix} Get All Campagnes`
-)
+export const getCampagnes = createAction(`${prefix} Get All Campagnes`)
 
 export const getCampagnesSuccess = createAction(
   `${getCampagnes.type} Success`,
-  props<{ campagnes: ICampagne[] }>()
+  props<{ campagnes: ICampagne[] }>(),
 )
 
 /**
@@ -37,12 +34,12 @@ export const getCampagnesSuccess = createAction(
  */
 export const createCampagne = createAction(
   `${prefix} Create Campagne`,
-  props<{ campagne: ICampagne }>()
+  props<{ campagne: ICampagne }>(),
 )
 
 export const createCampagneSuccess = createAction(
   `${createCampagne.type} Success`,
-  props<{ campagne: ICampagne }>()
+  props<{ campagne: ICampagne }>(),
 )
 
 /**
@@ -50,12 +47,12 @@ export const createCampagneSuccess = createAction(
  */
 export const updateCampagne = createAction(
   `${prefix} Update Campagne`,
-  props<{ campagne: ICampagne }>()
+  props<{ campagne: ICampagne }>(),
 )
 
 export const updateCampagneSuccess = createAction(
   `${updateCampagne.type} Success`,
-  props<{ campagne: ICampagne }>()
+  props<{ campagne: ICampagne }>(),
 )
 
 /**
@@ -63,10 +60,10 @@ export const updateCampagneSuccess = createAction(
  */
 export const deleteCampagne = createAction(
   `${prefix} Delete Campagne`,
-  props<{ campagne: ICampagne }>()
+  props<{ campagne: ICampagne }>(),
 )
 
 export const deleteCampagneSuccess = createAction(
   `${deleteCampagne.type} Success`,
-  props<{ campagne: ICampagne }>()
+  props<{ campagne: ICampagne }>(),
 )

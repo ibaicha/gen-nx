@@ -62,7 +62,7 @@ const TIME_STORE_MODULES = [
 const ENTITY_STORE_MODULES = [
   SocieteStoreModule,
   AgenceStoreModule,
- 
+
   TypeSocieteStoreModule,
 ]
 

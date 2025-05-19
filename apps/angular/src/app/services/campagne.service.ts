@@ -4,7 +4,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Observable, of } from 'rxjs'
 import { ICampagne } from '@shared-models'
 
-
 @Injectable({
   providedIn: 'root',
 })

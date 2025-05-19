@@ -60,8 +60,8 @@ const reducer = createReducer<ISaisonState>(
 
   on(fromSaisons.updateSaisonSuccess, (state, { saison }) => ({
     ...state,
-    saisons: state.saisons.map((item) => 
-      item.id === saison.id ? saison : item
+    saisons: state.saisons.map((item) =>
+      item.id === saison.id ? saison : item,
     ),
     isLoading: false,
   })),

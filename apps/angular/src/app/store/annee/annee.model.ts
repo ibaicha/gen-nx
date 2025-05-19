@@ -1,6 +1,4 @@
-import { IAnnee } from "@shared-models"
-
- 
+import { IAnnee } from '@shared-models'
 
 export interface IAnneeState {
   annees: IAnnee[]

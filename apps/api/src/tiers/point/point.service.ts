@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreatePointDto, UpdatePointDto } from './dto/point.dto';
-import { PrismaService } from '../../prisma/prisma.service';
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { CreatePointDto, UpdatePointDto } from './dto/point.dto'
+import { PrismaService } from '../../prisma/prisma.service'
 
 @Injectable()
 export class PointService {
@@ -35,21 +35,20 @@ export class PointService {
                   include: {
                     pays: true,
                   },
-                }
-                
+                },
               },
             },
           },
         },
       },
-    });
+    })
   }
   async getOne(PointId: number) {
     const Point = await this.prismaService.point.findUnique({
       where: { id: PointId },
-    });
-    if (!Point) throw new NotFoundException('Post not found');
-    return Point;
+    })
+    if (!Point) throw new NotFoundException('Post not found')
+    return Point
   }
   async create(createPointDto: CreatePointDto) {
     const {
@@ -68,7 +67,7 @@ export class PointService {
       isVirtuel,
       localiteId,
       societeId,
-    } = createPointDto;
+    } = createPointDto
     await this.prismaService.point.create({
       data: {
         name,
@@ -87,30 +86,30 @@ export class PointService {
         localiteId,
         societeId,
       },
-    });
-    return { data: 'Point created' };
+    })
+    return { data: 'Point created' }
   }
 
   async update(PointId: number, updatePointDto: UpdatePointDto) {
     const Point = await this.prismaService.point.findUnique({
       where: { id: PointId },
-    });
-    if (!Point) throw new NotFoundException('Point not found');
+    })
+    if (!Point) throw new NotFoundException('Point not found')
     await this.prismaService.point.update({
       where: { id: PointId },
       data: { ...updatePointDto },
-    });
-    return { data: 'Point updeted!' };
+    })
+    return { data: 'Point updeted!' }
   }
 
   async delete(PointId: number) {
     const Point = await this.prismaService.point.findUnique({
       where: { id: PointId },
-    });
-    if (!Point) throw new NotFoundException('Post not found');
+    })
+    if (!Point) throw new NotFoundException('Post not found')
     await this.prismaService.point.delete({
       where: { id: PointId },
-    });
-    return { data: 'Point deleted' };
+    })
+    return { data: 'Point deleted' }
   }
 }

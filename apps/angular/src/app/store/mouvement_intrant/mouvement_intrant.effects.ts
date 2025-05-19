@@ -25,7 +25,9 @@ export class MouvementIntrantEffects {
       ofType(fromMouvementIntrants.getMouvementIntrants.type),
       switchMap(() => this.mouvementIntrantService.getMouvementIntrants()),
       map((mouvementIntrants: IMouvementIntrant[]) =>
-        fromMouvementIntrants.getMouvementIntrantsSuccess({ mouvementIntrants }),
+        fromMouvementIntrants.getMouvementIntrantsSuccess({
+          mouvementIntrants,
+        }),
       ),
     ),
   )
@@ -37,8 +39,8 @@ export class MouvementIntrantEffects {
   getAllMouvementIntrantWithFilters$ = createEffect(() =>
     this.actions$.pipe(
       ofType(fromMouvementIntrants.getAllMouvementIntrantWithFilters.type),
-      switchMap(({ filter }) => 
-        this.mouvementIntrantService.getAllMouvementIntrantWithFilters(filter)
+      switchMap(({ filter }) =>
+        this.mouvementIntrantService.getAllMouvementIntrantWithFilters(filter),
       ),
       map((mouvementIntrantWithFilters: IMouvementIntrant[]) =>
         fromMouvementIntrants.getAllMouvementIntrantWithFiltersSuccess({
@@ -59,7 +61,9 @@ export class MouvementIntrantEffects {
         this.mouvementIntrantService.create(mouvementIntrant),
       ),
       map((mouvementIntrant: IMouvementIntrant) =>
-        fromMouvementIntrants.createMouvementIntrantSuccess({ mouvementIntrant }),
+        fromMouvementIntrants.createMouvementIntrantSuccess({
+          mouvementIntrant,
+        }),
       ),
     ),
   )
@@ -75,7 +79,9 @@ export class MouvementIntrantEffects {
         this.mouvementIntrantService.update(mouvementIntrant),
       ),
       map((mouvementIntrant: IMouvementIntrant) =>
-        fromMouvementIntrants.updateMouvementIntrantSuccess({ mouvementIntrant }),
+        fromMouvementIntrants.updateMouvementIntrantSuccess({
+          mouvementIntrant,
+        }),
       ),
     ),
   )
@@ -91,7 +97,9 @@ export class MouvementIntrantEffects {
         this.mouvementIntrantService.delete(mouvementIntrant),
       ),
       map((mouvementIntrant: IMouvementIntrant) =>
-        fromMouvementIntrants.deleteMouvementIntrantSuccess({ mouvementIntrant }),
+        fromMouvementIntrants.deleteMouvementIntrantSuccess({
+          mouvementIntrant,
+        }),
       ),
     ),
   )

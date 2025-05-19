@@ -8,17 +8,17 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { TypeServiceService } from './type_service.service';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { TypeServiceService } from './type_service.service'
+import { AuthGuard } from '@nestjs/passport'
 import {
   CreateTypeServiceDto,
   UpdateTypeServiceDto,
-} from './dto/type_service.dto';
+} from './dto/type_service.dto'
 
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('TypeService')
 @Controller('typeServices')
@@ -27,7 +27,7 @@ export class TypeServiceController {
 
   @Get()
   getAll() {
-    return this.typeServiceService.getAll();
+    return this.typeServiceService.getAll()
   }
 
   @Get('/:id')
@@ -35,14 +35,14 @@ export class TypeServiceController {
     @Param('id', ParseIntPipe) typeServiceId: number,
     createTypeServiceDto: CreateTypeServiceDto,
   ) {
-    return this.typeServiceService.getOne(typeServiceId);
+    return this.typeServiceService.getOne(typeServiceId)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(@Body() createTypeServiceDto: CreateTypeServiceDto) {
-    return this.typeServiceService.create(createTypeServiceDto);
+    return this.typeServiceService.create(createTypeServiceDto)
   }
 
   @ApiBearerAuth()
@@ -53,7 +53,7 @@ export class TypeServiceController {
     createTypeServiceDto: CreateTypeServiceDto,
     @Req() request: Request,
   ) {
-    return this.typeServiceService.delete(typeServiceId);
+    return this.typeServiceService.delete(typeServiceId)
   }
 
   @ApiBearerAuth()
@@ -63,6 +63,6 @@ export class TypeServiceController {
     @Param('id', ParseIntPipe) typeServiceId: number,
     @Body() updateTypeServiceDto: UpdateTypeServiceDto,
   ) {
-    return this.typeServiceService.update(typeServiceId, updateTypeServiceDto);
+    return this.typeServiceService.update(typeServiceId, updateTypeServiceDto)
   }
 }

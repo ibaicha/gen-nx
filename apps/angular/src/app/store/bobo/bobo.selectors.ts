@@ -16,7 +16,7 @@ export const selectBoboState = createFeatureSelector<IBoboState>('bobo')
  */
 export const selectBobosList = createSelector(
   selectBoboState,
-  (state) => state.bobos
+  (state) => state.bobos,
 )
 
 /**
@@ -25,7 +25,7 @@ export const selectBobosList = createSelector(
  */
 export const selectBoboIsLoading = createSelector(
   selectBoboState,
-  (state) => state.isLoading
+  (state) => state.isLoading,
 )
 
 /**
@@ -33,7 +33,7 @@ export const selectBoboIsLoading = createSelector(
  * @param {number} itemId - ID du bobo recherché
  * @returns {IBobo | undefined} Bobo correspondant ou undefined si non trouvé
  */
-export const selectBoboById = (itemId: number) => createSelector(
-  selectBoboState,
-  (state) => state.bobos.find(item => item.id === itemId)
-)
+export const selectBoboById = (itemId: number) =>
+  createSelector(selectBoboState, (state) =>
+    state.bobos.find((item) => item.id === itemId),
+  )

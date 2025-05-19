@@ -13,24 +13,24 @@ const prefix = '[MouvementStockages]'
  */
 export const getMouvementStockage = createAction(
   `${prefix} Get Single MouvementStockage`,
-  props<{ id: number }>()
+  props<{ id: number }>(),
 )
 
 export const getMouvementStockageSuccess = createAction(
   `${getMouvementStockage.type} Success`,
-  props<{ oneMouvementStockage: IMouvementStockage }>()
+  props<{ oneMouvementStockage: IMouvementStockage }>(),
 )
 
 /**
  * Actions pour la récupération de la liste complète des mouvements de stockage
  */
 export const getMouvementStockages = createAction(
-  `${prefix} Get All MouvementStockages`
+  `${prefix} Get All MouvementStockages`,
 )
 
 export const getMouvementStockagesSuccess = createAction(
   `${getMouvementStockages.type} Success`,
-  props<{ mouvementStockages: IMouvementStockage[] }>()
+  props<{ mouvementStockages: IMouvementStockage[] }>(),
 )
 
 /**
@@ -42,12 +42,12 @@ export const getAllMouvementStockagesProduitCampagne = createAction(
     produitId: number
     anneeId: number
     saisonId: number
-  }>()
+  }>(),
 )
 
 export const getAllMouvementStockagesProduitCampagneSuccess = createAction(
   `${getAllMouvementStockagesProduitCampagne.type} Success`,
-  props<{ mouvementStockagesProduitCampagne: IMouvementStockage[] }>()
+  props<{ mouvementStockagesProduitCampagne: IMouvementStockage[] }>(),
 )
 
 /**
@@ -60,12 +60,12 @@ export const getAllMouvementStockagesOpProduitCampagne = createAction(
     produitId: number
     anneeId: number
     saisonId: number
-  }>()
+  }>(),
 )
 
 export const getAllMouvementStockagesOpProduitCampagneSuccess = createAction(
   `${getAllMouvementStockagesOpProduitCampagne.type} Success`,
-  props<{ mouvementStockagesOpProduitCampagne: IMouvementStockage[] }>()
+  props<{ mouvementStockagesOpProduitCampagne: IMouvementStockage[] }>(),
 )
 
 // ========== ACTIONS DE MODIFICATION ==========
@@ -75,12 +75,12 @@ export const getAllMouvementStockagesOpProduitCampagneSuccess = createAction(
  */
 export const createMouvementStockage = createAction(
   `${prefix} Create MouvementStockage`,
-  props<{ mouvementStockage: IMouvementStockage }>()
+  props<{ mouvementStockage: IMouvementStockage }>(),
 )
 
 export const createMouvementStockageSuccess = createAction(
   `${createMouvementStockage.type} Success`,
-  props<{ mouvementStockage: IMouvementStockage }>()
+  props<{ mouvementStockage: IMouvementStockage }>(),
 )
 
 /**
@@ -88,12 +88,12 @@ export const createMouvementStockageSuccess = createAction(
  */
 export const updateMouvementStockage = createAction(
   `${prefix} Update MouvementStockage`,
-  props<{ mouvementStockage: IMouvementStockage }>()
+  props<{ mouvementStockage: IMouvementStockage }>(),
 )
 
 export const updateMouvementStockageSuccess = createAction(
   `${updateMouvementStockage.type} Success`,
-  props<{ mouvementStockage: IMouvementStockage }>()
+  props<{ mouvementStockage: IMouvementStockage }>(),
 )
 
 /**
@@ -101,10 +101,10 @@ export const updateMouvementStockageSuccess = createAction(
  */
 export const deleteMouvementStockage = createAction(
   `${prefix} Delete MouvementStockage`,
-  props<{ mouvementStockage: IMouvementStockage }>()
+  props<{ mouvementStockage: IMouvementStockage }>(),
 )
 
 export const deleteMouvementStockageSuccess = createAction(
   `${deleteMouvementStockage.type} Success`,
-  props<{ mouvementStockage: IMouvementStockage }>()
+  props<{ mouvementStockage: IMouvementStockage }>(),
 )

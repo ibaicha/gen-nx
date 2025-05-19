@@ -3,7 +3,6 @@ import { AppService } from './app.service'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Observable, of } from 'rxjs'
 import { ISociete } from '@shared-models'
- 
 
 @Injectable({
   providedIn: 'root',

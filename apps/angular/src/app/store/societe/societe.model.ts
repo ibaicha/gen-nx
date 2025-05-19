@@ -2,9 +2,7 @@
  * Import de l'interface ISociete depuis le fichier societe.interface
  */
 
-import { ISociete } from "@shared-models"
-
- 
+import { ISociete } from '@shared-models'
 
 /**
  * Interface définissant l'état des sociétés dans le store

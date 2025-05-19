@@ -1,6 +1,4 @@
-import { IOp } from "@shared-models"
-
- 
+import { IOp } from '@shared-models'
 
 /**
  * Interface définissant l'état du store pour les clients

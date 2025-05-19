@@ -26,7 +26,9 @@ export class MouvementStockageEffects {
       ofType(fromMouvementStockages.getMouvementStockages.type),
       switchMap(() => this.mouvementStockageService.getMouvementStockages()),
       map((mouvementStockages: IMouvementStockage[]) =>
-        fromMouvementStockages.getMouvementStockagesSuccess({ mouvementStockages }),
+        fromMouvementStockages.getMouvementStockagesSuccess({
+          mouvementStockages,
+        }),
       ),
     ),
   )
@@ -37,7 +39,9 @@ export class MouvementStockageEffects {
    */
   getAllMouvementStockagesProduitCampagne$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(fromMouvementStockages.getAllMouvementStockagesProduitCampagne.type),
+      ofType(
+        fromMouvementStockages.getAllMouvementStockagesProduitCampagne.type,
+      ),
       switchMap(({ produitId, anneeId, saisonId }) =>
         this.mouvementStockageService.getAllMouvementStockProduitCampagne(
           produitId,
@@ -59,7 +63,9 @@ export class MouvementStockageEffects {
    */
   getAllMouvementStockagesOpProduitCampagne$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(fromMouvementStockages.getAllMouvementStockagesOpProduitCampagne.type),
+      ofType(
+        fromMouvementStockages.getAllMouvementStockagesOpProduitCampagne.type,
+      ),
       switchMap(({ opId, produitId, anneeId, saisonId }) =>
         this.mouvementStockageService.getAllMouvementStockOpProduitCampagne(
           opId,
@@ -69,9 +75,11 @@ export class MouvementStockageEffects {
         ),
       ),
       map((mouvementStockagesOpProduitCampagne: IMouvementStockage[]) =>
-        fromMouvementStockages.getAllMouvementStockagesOpProduitCampagneSuccess({
-          mouvementStockagesOpProduitCampagne,
-        }),
+        fromMouvementStockages.getAllMouvementStockagesOpProduitCampagneSuccess(
+          {
+            mouvementStockagesOpProduitCampagne,
+          },
+        ),
       ),
     ),
   )
@@ -87,7 +95,9 @@ export class MouvementStockageEffects {
         this.mouvementStockageService.create(mouvementStockage),
       ),
       map((mouvementStockage: IMouvementStockage) =>
-        fromMouvementStockages.createMouvementStockageSuccess({ mouvementStockage }),
+        fromMouvementStockages.createMouvementStockageSuccess({
+          mouvementStockage,
+        }),
       ),
     ),
   )
@@ -103,7 +113,9 @@ export class MouvementStockageEffects {
         this.mouvementStockageService.update(mouvementStockage),
       ),
       map((mouvementStockage: IMouvementStockage) =>
-        fromMouvementStockages.updateMouvementStockageSuccess({ mouvementStockage }),
+        fromMouvementStockages.updateMouvementStockageSuccess({
+          mouvementStockage,
+        }),
       ),
     ),
   )
@@ -119,7 +131,9 @@ export class MouvementStockageEffects {
         this.mouvementStockageService.delete(mouvementStockage),
       ),
       map((mouvementStockage: IMouvementStockage) =>
-        fromMouvementStockages.deleteMouvementStockageSuccess({ mouvementStockage }),
+        fromMouvementStockages.deleteMouvementStockageSuccess({
+          mouvementStockage,
+        }),
       ),
     ),
   )

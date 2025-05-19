@@ -3,7 +3,6 @@ import { PointAgenceController } from './point_agence.controller'
 import { PointAgenceService } from './point_agence.service'
 import { PrismaService } from '../../prisma/prisma.service'
 
-
 describe('PointAgenceController', () => {
   let controller: PointAgenceController
 

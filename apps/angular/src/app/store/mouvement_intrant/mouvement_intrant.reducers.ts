@@ -25,11 +25,14 @@ const reducer = createReducer<IMouvementIntrantState>(
     isLoading: true,
   })),
 
-  on(fromMouvementIntrants.getMouvementIntrantSuccess, (state, { oneMouvementIntrant }) => ({
-    ...state,
-    isLoading: false,
-    oneMouvementIntrant,
-  })),
+  on(
+    fromMouvementIntrants.getMouvementIntrantSuccess,
+    (state, { oneMouvementIntrant }) => ({
+      ...state,
+      isLoading: false,
+      oneMouvementIntrant,
+    }),
+  ),
 
   /**
    * Gestion des actions de récupération de tous les mouvements d'intrants
@@ -39,11 +42,14 @@ const reducer = createReducer<IMouvementIntrantState>(
     isLoading: true,
   })),
 
-  on(fromMouvementIntrants.getMouvementIntrantsSuccess, (state, { mouvementIntrants }) => ({
-    ...state,
-    isLoading: false,
-    mouvementIntrants,
-  })),
+  on(
+    fromMouvementIntrants.getMouvementIntrantsSuccess,
+    (state, { mouvementIntrants }) => ({
+      ...state,
+      isLoading: false,
+      mouvementIntrants,
+    }),
+  ),
 
   /**
    * Gestion des actions de récupération filtrée des mouvements d'intrants
@@ -53,11 +59,14 @@ const reducer = createReducer<IMouvementIntrantState>(
     isLoading: true,
   })),
 
-  on(fromMouvementIntrants.getAllMouvementIntrantWithFiltersSuccess, (state, { mouvementIntrantWithFilters }) => ({
-    ...state,
-    isLoading: false,
-    mouvementIntrantWithFilters,
-  })),
+  on(
+    fromMouvementIntrants.getAllMouvementIntrantWithFiltersSuccess,
+    (state, { mouvementIntrantWithFilters }) => ({
+      ...state,
+      isLoading: false,
+      mouvementIntrantWithFilters,
+    }),
+  ),
 
   /**
    * Gestion des actions de création d'un mouvement d'intrant
@@ -67,11 +76,14 @@ const reducer = createReducer<IMouvementIntrantState>(
     isLoading: true,
   })),
 
-  on(fromMouvementIntrants.createMouvementIntrantSuccess, (state, { mouvementIntrant }) => ({
-    ...state,
-    mouvementIntrants: [...state.mouvementIntrants, mouvementIntrant],
-    isLoading: false,
-  })),
+  on(
+    fromMouvementIntrants.createMouvementIntrantSuccess,
+    (state, { mouvementIntrant }) => ({
+      ...state,
+      mouvementIntrants: [...state.mouvementIntrants, mouvementIntrant],
+      isLoading: false,
+    }),
+  ),
 
   /**
    * Gestion des actions de mise à jour d'un mouvement d'intrant
@@ -81,13 +93,16 @@ const reducer = createReducer<IMouvementIntrantState>(
     isLoading: true,
   })),
 
-  on(fromMouvementIntrants.updateMouvementIntrantSuccess, (state, { mouvementIntrant }) => ({
-    ...state,
-    mouvementIntrants: state.mouvementIntrants.map((item) =>
-      item.id === mouvementIntrant.id ? mouvementIntrant : item
-    ),
-    isLoading: false,
-  })),
+  on(
+    fromMouvementIntrants.updateMouvementIntrantSuccess,
+    (state, { mouvementIntrant }) => ({
+      ...state,
+      mouvementIntrants: state.mouvementIntrants.map((item) =>
+        item.id === mouvementIntrant.id ? mouvementIntrant : item,
+      ),
+      isLoading: false,
+    }),
+  ),
 
   /**
    * Gestion des actions de suppression d'un mouvement d'intrant
@@ -97,11 +112,16 @@ const reducer = createReducer<IMouvementIntrantState>(
     isLoading: true,
   })),
 
-  on(fromMouvementIntrants.deleteMouvementIntrantSuccess, (state, { mouvementIntrant }) => ({
-    ...state,
-    mouvementIntrants: state.mouvementIntrants.filter((item) => item.id !== mouvementIntrant.id),
-    isLoading: false,
-  })),
+  on(
+    fromMouvementIntrants.deleteMouvementIntrantSuccess,
+    (state, { mouvementIntrant }) => ({
+      ...state,
+      mouvementIntrants: state.mouvementIntrants.filter(
+        (item) => item.id !== mouvementIntrant.id,
+      ),
+      isLoading: false,
+    }),
+  ),
 )
 
 /**

@@ -4,14 +4,15 @@ import { IFiliereState } from './filiere.model'
 /**
  * Sélecteur de base pour l'état des filières
  */
-export const selectFiliereState = createFeatureSelector<IFiliereState>('filiere')
+export const selectFiliereState =
+  createFeatureSelector<IFiliereState>('filiere')
 
 /**
  * Sélecteur pour obtenir la liste complète des filières
  */
 export const selectFilieresList = createSelector(
   selectFiliereState,
-  (state) => state.filieres
+  (state) => state.filieres,
 )
 
 /**
@@ -19,14 +20,14 @@ export const selectFilieresList = createSelector(
  */
 export const selectFiliereIsLoading = createSelector(
   selectFiliereState,
-  (state) => state.isLoading
+  (state) => state.isLoading,
 )
 
 /**
  * Sélecteur pour obtenir une filière par son ID
  * @param itemId - ID de la filière à rechercher
  */
-export const selectFiliereById = (itemId: number) => createSelector(
-  selectFiliereState,
-  (state) => state.filieres.find((item) => item.id === itemId)
-)
+export const selectFiliereById = (itemId: number) =>
+  createSelector(selectFiliereState, (state) =>
+    state.filieres.find((item) => item.id === itemId),
+  )

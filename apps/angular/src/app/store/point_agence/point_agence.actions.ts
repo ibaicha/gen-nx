@@ -1,7 +1,6 @@
 import { createAction, props } from '@ngrx/store'
 import { IPointAgence } from '@shared-models'
 
-
 // ========== CONSTANTES ==========
 
 /**
@@ -23,12 +22,12 @@ const SUCCESS = 'Success'
  */
 export const getPointAgence = createAction(
   `${prefix} ${GET} Single PointAgence`,
-  props<{ id: number }>()
+  props<{ id: number }>(),
 )
 
 export const getPointAgenceSuccess = createAction(
   `${prefix} ${GET} Single PointAgence ${SUCCESS}`,
-  props<{ onePointAgence: IPointAgence }>()
+  props<{ onePointAgence: IPointAgence }>(),
 )
 
 /**
@@ -38,7 +37,7 @@ export const getPointAgences = createAction(`${prefix} ${GET} All PointAgences`)
 
 export const getPointAgencesSuccess = createAction(
   `${prefix} ${GET} All PointAgences ${SUCCESS}`,
-  props<{ pointAgences: IPointAgence[] }>()
+  props<{ pointAgences: IPointAgence[] }>(),
 )
 
 // ========== ACTIONS DE MODIFICATION ==========
@@ -48,12 +47,12 @@ export const getPointAgencesSuccess = createAction(
  */
 export const createPointAgence = createAction(
   `${prefix} ${CREATE} PointAgence`,
-  props<{ pointAgence: IPointAgence }>()
+  props<{ pointAgence: IPointAgence }>(),
 )
 
 export const createPointAgenceSuccess = createAction(
   `${prefix} ${CREATE} PointAgence ${SUCCESS}`,
-  props<{ pointAgence: IPointAgence }>()
+  props<{ pointAgence: IPointAgence }>(),
 )
 
 /**
@@ -61,12 +60,12 @@ export const createPointAgenceSuccess = createAction(
  */
 export const updatePointAgence = createAction(
   `${prefix} ${UPDATE} PointAgence`,
-  props<{ pointAgence: IPointAgence }>()
+  props<{ pointAgence: IPointAgence }>(),
 )
 
 export const updatePointAgenceSuccess = createAction(
   `${prefix} ${UPDATE} PointAgence ${SUCCESS}`,
-  props<{ pointAgence: IPointAgence }>()
+  props<{ pointAgence: IPointAgence }>(),
 )
 
 /**
@@ -74,10 +73,10 @@ export const updatePointAgenceSuccess = createAction(
  */
 export const deletePointAgence = createAction(
   `${prefix} ${DELETE} PointAgence`,
-  props<{ pointAgence: IPointAgence }>()
+  props<{ pointAgence: IPointAgence }>(),
 )
 
 export const deletePointAgenceSuccess = createAction(
   `${prefix} ${DELETE} PointAgence ${SUCCESS}`,
-  props<{ pointAgence: IPointAgence }>()
+  props<{ pointAgence: IPointAgence }>(),
 )

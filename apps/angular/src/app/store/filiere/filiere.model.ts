@@ -1,6 +1,4 @@
-import { IFiliere } from "@shared-models"
-
- 
+import { IFiliere } from '@shared-models'
 
 /**
  * Interface définissant l'état du store pour les filières

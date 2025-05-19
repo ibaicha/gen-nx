@@ -2,9 +2,8 @@
  * Import de l'interface ITypeSociete depuis le fichier type-societe.interface
  */
 
-import { ITypeSociete } from "@shared-models"
+import { ITypeSociete } from '@shared-models'
 
- 
 /**
  * Interface définissant l'état des types de sociétés dans le store
  * @interface ITypeSocieteState

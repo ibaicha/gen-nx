@@ -7,7 +7,6 @@ import { map, switchMap } from 'rxjs/operators'
 import * as fromAnnees from './index'
 import { AnneeService } from '../../services/annee.service'
 import { IAnnee } from '@shared-models'
- 
 
 @Injectable()
 export class AnneeEffects {

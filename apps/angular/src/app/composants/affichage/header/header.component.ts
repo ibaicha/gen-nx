@@ -41,9 +41,12 @@ export class HeaderComponent implements OnInit {
 
   constructor(public router: Router, public loginService: LoginService) {}
 
- ngOnInit(): void {
-  console.log('this.loginService.UserConnexion -------- ', this.loginService.UserConnexion)
- }
+  ngOnInit(): void {
+    console.log(
+      'this.loginService.UserConnexion -------- ',
+      this.loginService.UserConnexion,
+    )
+  }
 
   openDialog() {
     this.opensweetalertmsg()

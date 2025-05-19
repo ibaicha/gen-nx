@@ -2,8 +2,7 @@
  * Import de l'interface IVariete depuis le fichier filiere.interface
  */
 
-import { IVariete } from "@shared-models"
-
+import { IVariete } from '@shared-models'
 
 /**
  * Interface définissant l'état des variétés dans le store

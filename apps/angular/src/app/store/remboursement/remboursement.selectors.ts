@@ -4,7 +4,8 @@ import { IRemboursementState } from './remboursement.model'
 /**
  * Sélecteur de base pour l'état des remboursements
  */
-export const selectRemboursementState = createFeatureSelector<IRemboursementState>('remboursement')
+export const selectRemboursementState =
+  createFeatureSelector<IRemboursementState>('remboursement')
 
 /**
  * Sélecteurs dérivés pour les différentes parties de l'état
@@ -15,7 +16,7 @@ export const selectRemboursementState = createFeatureSelector<IRemboursementStat
  */
 export const selectRemboursementsList = createSelector(
   selectRemboursementState,
-  (state) => state.remboursements
+  (state) => state.remboursements,
 )
 
 /**
@@ -23,25 +24,29 @@ export const selectRemboursementsList = createSelector(
  */
 export const selectRemboursementIsLoading = createSelector(
   selectRemboursementState,
-  (state) => state.isLoading
+  (state) => state.isLoading,
 )
 
 /**
  * Sélecteur pour obtenir un remboursement par son ID
  * @param itemId - ID du remboursement à rechercher
  */
-export const selectRemboursementById = (itemId: number) => createSelector(
-  selectRemboursementState,
-  (state) => state.remboursements?.find((item) => item.id === itemId)
-)
+export const selectRemboursementById = (itemId: number) =>
+  createSelector(selectRemboursementState, (state) =>
+    state.remboursements?.find((item) => item.id === itemId),
+  )
 
 /**
  * Sélecteur pour obtenir la liste des remboursements d'une exploitation
  * @param idExploitation - ID de l'exploitation
  */
-export const selectRemboursementsListFromExploitation = (idExploitation: number) => createSelector(
-  selectRemboursementState,
-  (state) => state?.remboursements?.filter(
-    (remboursement) => remboursement.exploitationId === idExploitation
-  ) || []
-)
+export const selectRemboursementsListFromExploitation = (
+  idExploitation: number,
+) =>
+  createSelector(
+    selectRemboursementState,
+    (state) =>
+      state?.remboursements?.filter(
+        (remboursement) => remboursement.exploitationId === idExploitation,
+      ) || [],
+  )

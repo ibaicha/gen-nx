@@ -2,7 +2,11 @@ import { Injectable } from '@angular/core'
 import { AppService } from './app.service'
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
 import { Observable, of } from 'rxjs'
-import { ICredit, ICreditCustom, IExploitationCredit } from '../interfaces/credit.interface'
+import {
+  ICredit,
+  ICreditCustom,
+  IExploitationCredit,
+} from '../interfaces/credit.interface'
 
 @Injectable({
   providedIn: 'root',
@@ -55,8 +59,8 @@ export class CreditService {
     })
   }
   //return this.http.get(fullUrl, this.option)
- getAllCreditsWithFilters(filter: any): Observable<ICreditCustom[]> {
-    let httpParams = new HttpParams();
+  getAllCreditsWithFilters(filter: any): Observable<ICreditCustom[]> {
+    let httpParams = new HttpParams()
 
     // Traitement des paramètres de filtrage
     for (const key in filter) {
@@ -64,17 +68,17 @@ export class CreditService {
         if (Array.isArray(filter[key])) {
           // Si c'est un tableau, ajouter chaque valeur séparément
           filter[key].forEach((value: any) => {
-            httpParams = httpParams.append(key, value);
-          });
+            httpParams = httpParams.append(key, value)
+          })
         } else {
           // Si c'est une valeur simple
-          httpParams = httpParams.set(key, filter[key]);
+          httpParams = httpParams.set(key, filter[key])
         }
       }
     }
 
-    const url = this.appService.getUrl('/exploitations');
-    return this.http.get<ICreditCustom[]>(url, { params: httpParams });
+    const url = this.appService.getUrl('/exploitations')
+    return this.http.get<ICreditCustom[]>(url, { params: httpParams })
   }
 
   getCredit(id: number): Observable<any> {

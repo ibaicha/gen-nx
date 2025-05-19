@@ -9,7 +9,7 @@ export const initialCreditState: ICreditState = {
   credits: [],
   creditsCustom: [],
   customCreditAgenceVarieteAnneeSaison: [],
-  customCreditSocieteVarieteAnneeSaison: [], 
+  customCreditSocieteVarieteAnneeSaison: [],
   exploitationCredits: [],
   creditWithFilters: [],
   isLoading: false,
@@ -68,11 +68,14 @@ const reducer = createReducer<ICreditState>(
     isLoading: true,
   })),
 
-  on(fromCredits.createExploitationCreditSuccess, (state, { exploitationCredit }) => ({
-    ...state,
-    exploitationCredits: [...state.exploitationCredits, exploitationCredit],
-    isLoading: false,
-  })),
+  on(
+    fromCredits.createExploitationCreditSuccess,
+    (state, { exploitationCredit }) => ({
+      ...state,
+      exploitationCredits: [...state.exploitationCredits, exploitationCredit],
+      isLoading: false,
+    }),
+  ),
 
   /**
    * Gestion des crédits personnalisés filtrés
@@ -82,24 +85,28 @@ const reducer = createReducer<ICreditState>(
     isLoading: true,
   })),
 
-  on(fromCredits.getAllCustomCreditAgenceVarieteAnneeSaisonSuccess, 
+  on(
+    fromCredits.getAllCustomCreditAgenceVarieteAnneeSaisonSuccess,
     (state, { customCreditAgenceVarieteAnneeSaison }) => ({
       ...state,
       isLoading: false,
       customCreditAgenceVarieteAnneeSaison,
-  })),
+    }),
+  ),
 
   on(fromCredits.getAllCustomCreditSocieteVarieteAnneeSaison, (state) => ({
     ...state,
     isLoading: true,
   })),
 
-  on(fromCredits.getAllCustomCreditSocieteVarieteAnneeSaisonSuccess,
+  on(
+    fromCredits.getAllCustomCreditSocieteVarieteAnneeSaisonSuccess,
     (state, { customCreditSocieteVarieteAnneeSaison }) => ({
       ...state,
       isLoading: false,
       customCreditSocieteVarieteAnneeSaison,
-  })),
+    }),
+  ),
 
   /**
    * Gestion des actions CRUD standards
@@ -120,11 +127,14 @@ const reducer = createReducer<ICreditState>(
     isLoading: true,
   })),
 
-  on(fromCredits.getAllCreditWithFiltersSuccess, (state, { creditWithFilters }) => ({
-    ...state,
-    isLoading: false,
-    creditWithFilters,
-  })),
+  on(
+    fromCredits.getAllCreditWithFiltersSuccess,
+    (state, { creditWithFilters }) => ({
+      ...state,
+      isLoading: false,
+      creditWithFilters,
+    }),
+  ),
 
   on(fromCredits.updateCredit, (state) => ({
     ...state,

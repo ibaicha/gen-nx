@@ -12,16 +12,21 @@ import { AppService } from '../../../services/app.service'
 @Component({
   selector: 'app-credit-campagne-titre',
   standalone: true,
-  imports: [ToastModule, ToolbarModule, SharedModule, NgIf, NgStyle, ChipModule],
+  imports: [
+    ToastModule,
+    ToolbarModule,
+    SharedModule,
+    NgIf,
+    NgStyle,
+    ChipModule,
+  ],
   templateUrl: './credit-campagne-titre.component.html',
   styleUrl: './credit-campagne-titre.component.css',
 })
-export class CreditCampagneTitreComponent  {
+export class CreditCampagneTitreComponent {
   constructor(
     public router: Router,
     public loginService: LoginService,
     public appService: AppService,
   ) {}
-
-  
 }

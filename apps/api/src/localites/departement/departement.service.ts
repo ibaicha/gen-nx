@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common'
 import {
   CreateDepartementDto,
   UpdateDepartementDto,
-} from './dto/departement.dto';
-import { PrismaService } from '../../prisma/prisma.service';
+} from './dto/departement.dto'
+import { PrismaService } from '../../prisma/prisma.service'
 
 @Injectable()
 export class DepartementService {
@@ -22,20 +22,20 @@ export class DepartementService {
           },
         },
       },
-    });
+    })
   }
 
   async getOne(departementId: number) {
     const departement = await this.prismaService.departement.findUnique({
       where: { id: departementId },
-    });
-    if (!departement) throw new NotFoundException('Post not found');
-    return departement;
+    })
+    if (!departement) throw new NotFoundException('Post not found')
+    return departement
   }
   async create(createDepartementDto: CreateDepartementDto) {
-    const { name, regionId } = createDepartementDto;
-    await this.prismaService.departement.create({ data: { name, regionId } });
-    return { data: 'Departement created' };
+    const { name, regionId } = createDepartementDto
+    await this.prismaService.departement.create({ data: { name, regionId } })
+    return { data: 'Departement created' }
   }
 
   async update(
@@ -44,23 +44,23 @@ export class DepartementService {
   ) {
     const departement = await this.prismaService.departement.findUnique({
       where: { id: departementId },
-    });
-    if (!departement) throw new NotFoundException('Departement not found');
+    })
+    if (!departement) throw new NotFoundException('Departement not found')
     await this.prismaService.departement.update({
       where: { id: departementId },
       data: { ...updateDepartementDto },
-    });
-    return { data: 'Departement updeted!' };
+    })
+    return { data: 'Departement updeted!' }
   }
 
   async delete(departementId: number) {
     const departement = await this.prismaService.departement.findUnique({
       where: { id: departementId },
-    });
-    if (!departement) throw new NotFoundException('Post not found');
+    })
+    if (!departement) throw new NotFoundException('Post not found')
     await this.prismaService.departement.delete({
       where: { id: departementId },
-    });
-    return { data: 'Departement deleted' };
+    })
+    return { data: 'Departement deleted' }
   }
 }

@@ -5,7 +5,6 @@ import * as fromFormeJuridiques from './index'
 import { IFormeJuridique } from '@shared-models'
 import { FormeJuridiqueService } from '../../services/forme-juridique.service'
 
-
 /**
  * Effets pour la gestion des formeJuridiques
  * Gère les effets secondaires des actions liées aux formeJuridiques
@@ -38,7 +37,9 @@ export class FormeJuridiqueEffects {
   createFormeJuridique$ = createEffect(() =>
     this.actions$.pipe(
       ofType(fromFormeJuridiques.createFormeJuridique),
-      switchMap(({ formeJuridique }) => this.formeJuridiqueService.create(formeJuridique)),
+      switchMap(({ formeJuridique }) =>
+        this.formeJuridiqueService.create(formeJuridique),
+      ),
       map((formeJuridique: IFormeJuridique) =>
         fromFormeJuridiques.createFormeJuridiqueSuccess({ formeJuridique }),
       ),
@@ -70,8 +71,8 @@ export class FormeJuridiqueEffects {
       ofType(fromFormeJuridiques.deleteFormeJuridique),
       switchMap(({ formeJuridique }) =>
         this.formeJuridiqueService.delete(formeJuridique).pipe(
-          map(() => formeJuridique) // Return the deleted formeJuridique
-        )
+          map(() => formeJuridique), // Return the deleted formeJuridique
+        ),
       ),
       map((formeJuridique: IFormeJuridique) =>
         fromFormeJuridiques.deleteFormeJuridiqueSuccess({ formeJuridique }),

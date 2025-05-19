@@ -1,6 +1,5 @@
 import { createAction, props } from '@ngrx/store'
 import { IOp } from '@shared-models'
- 
 
 /**
  * Préfixe pour toutes les actions liées aux clients

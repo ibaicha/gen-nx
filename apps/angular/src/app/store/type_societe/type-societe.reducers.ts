@@ -74,7 +74,7 @@ const reducer = createReducer<ITypeSocieteState>(
   on(fromTypeSocietes.updateTypeSocieteSuccess, (state, { typeSociete }) => ({
     ...state,
     typeSocietes: state.typeSocietes.map((item) =>
-      item.id === typeSociete.id ? typeSociete : item
+      item.id === typeSociete.id ? typeSociete : item,
     ),
     isLoading: false,
   })),
@@ -89,9 +89,11 @@ const reducer = createReducer<ITypeSocieteState>(
 
   on(fromTypeSocietes.deleteTypeSocieteSuccess, (state, { typeSociete }) => ({
     ...state,
-    typeSocietes: state.typeSocietes.filter((item) => item.id !== typeSociete.id),
+    typeSocietes: state.typeSocietes.filter(
+      (item) => item.id !== typeSociete.id,
+    ),
     isLoading: false,
-  }))
+  })),
 )
 
 /**
@@ -99,7 +101,7 @@ const reducer = createReducer<ITypeSocieteState>(
  */
 export function typeSocieteReducer(
   state = initialTypeSocieteState,
-  actions: Action
+  actions: Action,
 ): ITypeSocieteState {
   return reducer(state, actions)
 }

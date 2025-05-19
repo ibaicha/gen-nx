@@ -14,7 +14,7 @@ describe('HeaderComponent', () => {
       imports: [],
       providers: [
         provideMockStore({}),
-      
+
         AppService,
         MessageService,
         ConfirmationService,

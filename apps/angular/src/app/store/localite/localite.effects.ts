@@ -5,7 +5,6 @@ import * as fromLocalites from './index'
 import { LocaliteService } from '../../services/localite.service'
 import { ILocalite } from '@shared-models'
 
-
 /**
  * Effets pour la gestion des localites
  * Gère les effets secondaires des actions liées aux localites
@@ -70,8 +69,8 @@ export class LocaliteEffects {
       ofType(fromLocalites.deleteLocalite),
       switchMap(({ localite }) =>
         this.localiteService.delete(localite).pipe(
-          map(() => localite) // Return the deleted localite
-        )
+          map(() => localite), // Return the deleted localite
+        ),
       ),
       map((localite: ILocalite) =>
         fromLocalites.deleteLocaliteSuccess({ localite }),

@@ -89,7 +89,7 @@ const reducer = createReducer<IBoboState>(
     ...state,
     bobos: state.bobos.filter((item) => item.id !== bobo.id),
     isLoading: false,
-  }))
+  })),
 )
 
 /**

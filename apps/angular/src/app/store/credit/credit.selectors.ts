@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store'
 import { GetCreditParamsDTO, ICreditState } from './credit.model'
- 
+
 import { ICreditCustom } from '../../interfaces/credit.interface'
 import { IOp } from '@shared-models'
 

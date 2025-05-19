@@ -1,7 +1,6 @@
 import { createAction, props } from '@ngrx/store'
 import { IFormeJuridique } from '@shared-models'
 
-
 // ========== CONSTANTES ==========
 
 /**
@@ -23,22 +22,24 @@ const SUCCESS = 'Success'
  */
 export const getFormeJuridique = createAction(
   `${prefix} ${GET} Single FormeJuridique`,
-  props<{ id: number }>()
+  props<{ id: number }>(),
 )
 
 export const getFormeJuridiqueSuccess = createAction(
   `${prefix} ${GET} Single FormeJuridique ${SUCCESS}`,
-  props<{ oneFormeJuridique: IFormeJuridique }>()
+  props<{ oneFormeJuridique: IFormeJuridique }>(),
 )
 
 /**
  * Actions pour la récupération de la liste complète des formeJuridiques
  */
-export const getFormeJuridiques = createAction(`${prefix} ${GET} All FormeJuridiques`)
+export const getFormeJuridiques = createAction(
+  `${prefix} ${GET} All FormeJuridiques`,
+)
 
 export const getFormeJuridiquesSuccess = createAction(
   `${prefix} ${GET} All FormeJuridiques ${SUCCESS}`,
-  props<{ formeJuridiques: IFormeJuridique[] }>()
+  props<{ formeJuridiques: IFormeJuridique[] }>(),
 )
 
 // ========== ACTIONS DE MODIFICATION ==========
@@ -48,12 +49,12 @@ export const getFormeJuridiquesSuccess = createAction(
  */
 export const createFormeJuridique = createAction(
   `${prefix} ${CREATE} FormeJuridique`,
-  props<{ formeJuridique: IFormeJuridique }>()
+  props<{ formeJuridique: IFormeJuridique }>(),
 )
 
 export const createFormeJuridiqueSuccess = createAction(
   `${prefix} ${CREATE} FormeJuridique ${SUCCESS}`,
-  props<{ formeJuridique: IFormeJuridique }>()
+  props<{ formeJuridique: IFormeJuridique }>(),
 )
 
 /**
@@ -61,12 +62,12 @@ export const createFormeJuridiqueSuccess = createAction(
  */
 export const updateFormeJuridique = createAction(
   `${prefix} ${UPDATE} FormeJuridique`,
-  props<{ formeJuridique: IFormeJuridique }>()
+  props<{ formeJuridique: IFormeJuridique }>(),
 )
 
 export const updateFormeJuridiqueSuccess = createAction(
   `${prefix} ${UPDATE} FormeJuridique ${SUCCESS}`,
-  props<{ formeJuridique: IFormeJuridique }>()
+  props<{ formeJuridique: IFormeJuridique }>(),
 )
 
 /**
@@ -74,10 +75,10 @@ export const updateFormeJuridiqueSuccess = createAction(
  */
 export const deleteFormeJuridique = createAction(
   `${prefix} ${DELETE} FormeJuridique`,
-  props<{ formeJuridique: IFormeJuridique }>()
+  props<{ formeJuridique: IFormeJuridique }>(),
 )
 
 export const deleteFormeJuridiqueSuccess = createAction(
   `${prefix} ${DELETE} FormeJuridique ${SUCCESS}`,
-  props<{ formeJuridique: IFormeJuridique }>()
+  props<{ formeJuridique: IFormeJuridique }>(),
 )

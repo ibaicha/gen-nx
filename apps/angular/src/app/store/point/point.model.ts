@@ -2,8 +2,7 @@
  * Import de l'interface IPoint depuis le fichier pays.interface
  */
 
-import { IPoint } from "@shared-models"
-
+import { IPoint } from '@shared-models'
 
 /**
  * Interface définissant l'état des points dans le store

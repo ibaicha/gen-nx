@@ -53,11 +53,14 @@ const reducer = createReducer<IIdentifiantState>(
     isLoading: true,
   })),
 
-  on(fromIdentifiants.getAllIdentifiantsWithFiltersSuccess, (state, { identifiantWithFilters }) => ({
-    ...state,
-    isLoading: false,
-    identifiantWithFilters,
-  })),
+  on(
+    fromIdentifiants.getAllIdentifiantsWithFiltersSuccess,
+    (state, { identifiantWithFilters }) => ({
+      ...state,
+      isLoading: false,
+      identifiantWithFilters,
+    }),
+  ),
 
   /**
    * Gestion des actions de création d'un identifiant
@@ -84,7 +87,7 @@ const reducer = createReducer<IIdentifiantState>(
   on(fromIdentifiants.updateIdentifiantSuccess, (state, { identifiant }) => ({
     ...state,
     identifiants: state.identifiants.map((item) =>
-      item.id === identifiant.id ? identifiant : item
+      item.id === identifiant.id ? identifiant : item,
     ),
     isLoading: false,
   })),
@@ -99,7 +102,9 @@ const reducer = createReducer<IIdentifiantState>(
 
   on(fromIdentifiants.deleteIdentifiantSuccess, (state, { identifiant }) => ({
     ...state,
-    identifiants: state.identifiants.filter((item) => item.id !== identifiant.id),
+    identifiants: state.identifiants.filter(
+      (item) => item.id !== identifiant.id,
+    ),
     isLoading: false,
   })),
 )

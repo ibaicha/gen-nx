@@ -4,8 +4,6 @@ import { MenuItem } from 'primeng/api'
 import { Router } from '@angular/router'
 import { Location } from '@angular/common'
 
-
-
 import { IChargeExploitation } from '../interfaces/exploitation.interface'
 import {
   IAnnee,

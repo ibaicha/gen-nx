@@ -4,7 +4,6 @@ import { EffectsModule } from '@ngrx/effects'
 import { constanteReducer } from './constante.reducer'
 import { ConstanteEffects } from './constante.effects'
 
-
 /**
  * Module de store pour la gestion des constantes
  * Configure le reducer et les effets pour le feature state 'constante'

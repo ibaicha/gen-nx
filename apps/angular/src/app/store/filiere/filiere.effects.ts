@@ -4,7 +4,6 @@ import { map, switchMap } from 'rxjs/operators'
 import * as fromFilieres from './index'
 import { FiliereService } from '../../services/filiere.service'
 import { IFiliere } from '@shared-models'
- 
 
 /**
  * Effets pour la gestion des filières
@@ -25,8 +24,8 @@ export class FiliereEffects {
     this.actions$.pipe(
       ofType(fromFilieres.getFilieres.type),
       switchMap(() => this.filiereService.getFilieres()),
-      map((filieres: IFiliere[]) => 
-        fromFilieres.getFilieresSuccess({ filieres })
+      map((filieres: IFiliere[]) =>
+        fromFilieres.getFilieresSuccess({ filieres }),
       ),
     ),
   )
@@ -40,7 +39,7 @@ export class FiliereEffects {
       ofType(fromFilieres.createFiliere),
       switchMap(({ filiere }) => this.filiereService.create(filiere)),
       map((filiere: IFiliere) =>
-        fromFilieres.createFiliereSuccess({ filiere })
+        fromFilieres.createFiliereSuccess({ filiere }),
       ),
     ),
   )
@@ -51,10 +50,10 @@ export class FiliereEffects {
    */
   updateFiliere$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(fromFilieres.updateFiliere), 
+      ofType(fromFilieres.updateFiliere),
       switchMap(({ filiere }) => this.filiereService.update(filiere)),
       map((filiere: IFiliere) =>
-        fromFilieres.updateFiliereSuccess({ filiere })
+        fromFilieres.updateFiliereSuccess({ filiere }),
       ),
     ),
   )
@@ -68,7 +67,7 @@ export class FiliereEffects {
       ofType(fromFilieres.deleteFiliere),
       switchMap(({ filiere }) => this.filiereService.delete(filiere)),
       map((filiere: IFiliere) =>
-        fromFilieres.deleteFiliereSuccess({ filiere })
+        fromFilieres.deleteFiliereSuccess({ filiere }),
       ),
     ),
   )

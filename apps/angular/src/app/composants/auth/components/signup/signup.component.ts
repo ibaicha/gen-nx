@@ -15,7 +15,7 @@ import { Router } from '@angular/router'
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule],
 })
-export class SignupComponent  {
+export class SignupComponent {
   signupForm: FormGroup
 
   constructor(
@@ -30,8 +30,6 @@ export class SignupComponent  {
       password: [''],
     })
   }
-
-  
 
   registerUser() {
     this.authService.signUp(this.signupForm.value).subscribe((res) => {

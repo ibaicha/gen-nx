@@ -8,17 +8,17 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { FamilleTypeServiceService } from './famille_type_service.service';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { FamilleTypeServiceService } from './famille_type_service.service'
+import { AuthGuard } from '@nestjs/passport'
 import {
   CreateFamilleTypeServiceDto,
   UpdateFamilleTypeServiceDto,
-} from './dto/famille_type_service.dto';
+} from './dto/famille_type_service.dto'
 
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('FamilleTypeService')
 @Controller('familleTypeServices')
@@ -29,7 +29,7 @@ export class FamilleTypeServiceController {
 
   @Get()
   getAll() {
-    return this.familleTypeServiceService.getAll();
+    return this.familleTypeServiceService.getAll()
   }
 
   @Get('/:id')
@@ -37,14 +37,14 @@ export class FamilleTypeServiceController {
     @Param('id', ParseIntPipe) familleTypeServiceId: number,
     createFamilleTypeServiceDto: CreateFamilleTypeServiceDto,
   ) {
-    return this.familleTypeServiceService.getOne(familleTypeServiceId);
+    return this.familleTypeServiceService.getOne(familleTypeServiceId)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(@Body() createFamilleTypeServiceDto: CreateFamilleTypeServiceDto) {
-    return this.familleTypeServiceService.create(createFamilleTypeServiceDto);
+    return this.familleTypeServiceService.create(createFamilleTypeServiceDto)
   }
 
   @ApiBearerAuth()
@@ -55,7 +55,7 @@ export class FamilleTypeServiceController {
     createFamilleTypeServiceDto: CreateFamilleTypeServiceDto,
     @Req() request: Request,
   ) {
-    return this.familleTypeServiceService.delete(familleTypeServiceId);
+    return this.familleTypeServiceService.delete(familleTypeServiceId)
   }
 
   @ApiBearerAuth()
@@ -68,6 +68,6 @@ export class FamilleTypeServiceController {
     return this.familleTypeServiceService.update(
       familleTypeServiceId,
       updateFamilleTypeServiceDto,
-    );
+    )
   }
 }

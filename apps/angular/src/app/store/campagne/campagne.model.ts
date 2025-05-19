@@ -1,6 +1,4 @@
-import { ICampagne } from "@shared-models"
-
- 
+import { ICampagne } from '@shared-models'
 
 /**
  * Interface définissant l'état du store pour les campagnes

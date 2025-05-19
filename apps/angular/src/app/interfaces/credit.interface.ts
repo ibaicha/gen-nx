@@ -1,9 +1,13 @@
-import { IAnnee, IEmplacement, IExploitation, IOp, IProduit, ISaison, IUniteTransformation, IVariete } from '@shared-models'
- 
- 
- 
- 
- 
+import {
+  IAnnee,
+  IEmplacement,
+  IExploitation,
+  IOp,
+  IProduit,
+  ISaison,
+  IUniteTransformation,
+  IVariete,
+} from '@shared-models'
 
 /**
  * Interface de base pour un crédit

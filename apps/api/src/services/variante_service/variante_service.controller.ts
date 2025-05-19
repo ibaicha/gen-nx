@@ -8,17 +8,17 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { VarianteServiceService } from './variante_service.service';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { VarianteServiceService } from './variante_service.service'
+import { AuthGuard } from '@nestjs/passport'
 import {
   CreateVarianteServiceDto,
   UpdateVarianteServiceDto,
-} from './dto/variante_service.dto';
+} from './dto/variante_service.dto'
 
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('VarianteService')
 @Controller('varianteServices')
@@ -29,7 +29,7 @@ export class VarianteServiceController {
 
   @Get()
   getAll() {
-    return this.varianteServiceService.getAll();
+    return this.varianteServiceService.getAll()
   }
 
   @Get('/:id')
@@ -37,14 +37,14 @@ export class VarianteServiceController {
     @Param('id', ParseIntPipe) varianteServiceId: number,
     createVarianteServiceDto: CreateVarianteServiceDto,
   ) {
-    return this.varianteServiceService.getOne(varianteServiceId);
+    return this.varianteServiceService.getOne(varianteServiceId)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(@Body() createVarianteServiceDto: CreateVarianteServiceDto) {
-    return this.varianteServiceService.create(createVarianteServiceDto);
+    return this.varianteServiceService.create(createVarianteServiceDto)
   }
 
   @ApiBearerAuth()
@@ -55,7 +55,7 @@ export class VarianteServiceController {
     createVarianteServiceDto: CreateVarianteServiceDto,
     @Req() request: Request,
   ) {
-    return this.varianteServiceService.delete(varianteServiceId);
+    return this.varianteServiceService.delete(varianteServiceId)
   }
 
   @ApiBearerAuth()
@@ -68,6 +68,6 @@ export class VarianteServiceController {
     return this.varianteServiceService.update(
       varianteServiceId,
       updateVarianteServiceDto,
-    );
+    )
   }
 }

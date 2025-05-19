@@ -37,7 +37,9 @@ export class IdentifiantEffects {
   getAllIdentifiantWithFilters$ = createEffect(() =>
     this.actions$.pipe(
       ofType(fromIdentifiants.getAllIdentifiantsWithFilters.type),
-      switchMap(({ filter }) => this.identifiantService.getAllIdentifiantsWithFilters(filter)),
+      switchMap(({ filter }) =>
+        this.identifiantService.getAllIdentifiantsWithFilters(filter),
+      ),
       map((identifiantWithFilters: IIdentifiant[]) =>
         fromIdentifiants.getAllIdentifiantsWithFiltersSuccess({
           identifiantWithFilters,
@@ -53,7 +55,9 @@ export class IdentifiantEffects {
   createIdentifiant$ = createEffect(() =>
     this.actions$.pipe(
       ofType(fromIdentifiants.createIdentifiant),
-      switchMap(({ identifiant }) => this.identifiantService.create(identifiant)),
+      switchMap(({ identifiant }) =>
+        this.identifiantService.create(identifiant),
+      ),
       map((identifiant: IIdentifiant) =>
         fromIdentifiants.createIdentifiantSuccess({ identifiant }),
       ),
@@ -67,7 +71,9 @@ export class IdentifiantEffects {
   updateIdentifiant$ = createEffect(() =>
     this.actions$.pipe(
       ofType(fromIdentifiants.updateIdentifiant),
-      switchMap(({ identifiant }) => this.identifiantService.update(identifiant)),
+      switchMap(({ identifiant }) =>
+        this.identifiantService.update(identifiant),
+      ),
       map((identifiant: IIdentifiant) =>
         fromIdentifiants.updateIdentifiantSuccess({ identifiant }),
       ),
@@ -81,7 +87,9 @@ export class IdentifiantEffects {
   deleteIdentifiant$ = createEffect(() =>
     this.actions$.pipe(
       ofType(fromIdentifiants.deleteIdentifiant),
-      switchMap(({ identifiant }) => this.identifiantService.delete(identifiant)),
+      switchMap(({ identifiant }) =>
+        this.identifiantService.delete(identifiant),
+      ),
       map((identifiant: IIdentifiant) =>
         fromIdentifiants.deleteIdentifiantSuccess({ identifiant }),
       ),

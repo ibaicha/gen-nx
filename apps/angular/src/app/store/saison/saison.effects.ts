@@ -4,7 +4,6 @@ import { map, switchMap } from 'rxjs/operators'
 import * as fromSaisons from './index'
 import { SaisonService } from '../../services/saison.service'
 import { ISaison } from '@shared-models'
- 
 
 /**
  * Effets pour la gestion des saisons
@@ -25,8 +24,8 @@ export class SaisonEffects {
     this.actions$.pipe(
       ofType(fromSaisons.getSaisons.type),
       switchMap(() => this.saisonService.getSaisons()),
-      map((saisons: ISaison[]) => fromSaisons.getSaisonsSuccess({ saisons }))
-    )
+      map((saisons: ISaison[]) => fromSaisons.getSaisonsSuccess({ saisons })),
+    ),
   )
 
   /**
@@ -37,8 +36,8 @@ export class SaisonEffects {
     this.actions$.pipe(
       ofType(fromSaisons.createSaison),
       switchMap(({ saison }) => this.saisonService.create(saison)),
-      map((saison: ISaison) => fromSaisons.createSaisonSuccess({ saison }))
-    )
+      map((saison: ISaison) => fromSaisons.createSaisonSuccess({ saison })),
+    ),
   )
 
   /**
@@ -49,8 +48,8 @@ export class SaisonEffects {
     this.actions$.pipe(
       ofType(fromSaisons.updateSaison),
       switchMap(({ saison }) => this.saisonService.update(saison)),
-      map((saison: ISaison) => fromSaisons.updateSaisonSuccess({ saison }))
-    )
+      map((saison: ISaison) => fromSaisons.updateSaisonSuccess({ saison })),
+    ),
   )
 
   /**
@@ -61,7 +60,7 @@ export class SaisonEffects {
     this.actions$.pipe(
       ofType(fromSaisons.deleteSaison),
       switchMap(({ saison }) => this.saisonService.delete(saison)),
-      map((saison: ISaison) => fromSaisons.deleteSaisonSuccess({ saison }))
-    )
+      map((saison: ISaison) => fromSaisons.deleteSaisonSuccess({ saison })),
+    ),
   )
 }

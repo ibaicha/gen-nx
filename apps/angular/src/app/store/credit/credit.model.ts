@@ -1,7 +1,7 @@
 import {
   ICredit,
-  ICreditCustom, 
-  IExploitationCredit
+  ICreditCustom,
+  IExploitationCredit,
 } from '../../interfaces/credit.interface'
 
 /**
@@ -29,8 +29,6 @@ export interface ICreditState {
   /** Indicateur de chargement */
   isLoading: boolean
 }
-
-
 
 export class GetCreditParamsDTO {
   societeId?: number[]

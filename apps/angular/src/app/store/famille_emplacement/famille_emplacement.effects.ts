@@ -5,7 +5,6 @@ import * as fromFamilleEmplacements from './index'
 import { FamilleEmplacementService } from '../../services/famille-emplacement.service'
 import { IFamilleEmplacement } from '@shared-models'
 
-
 /**
  * Effets pour la gestion des familles d'emplacements
  * Gère les effets secondaires des actions liées aux familles d'emplacements

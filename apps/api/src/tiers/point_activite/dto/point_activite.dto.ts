@@ -1,19 +1,19 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator'
 
 export class CreatePointActiviteDto {
   @IsNotEmpty()
-  readonly name!: string;
+  readonly name!: string
   @IsNotEmpty()
-  readonly pointId!: number;
+  readonly pointId!: number
   @IsNotEmpty()
-  readonly activiteId!: number;
+  readonly activiteId!: number
 }
 
 export class UpdatePointActiviteDto {
   @IsNotEmpty()
-  readonly name!: string;
+  readonly name!: string
   @IsNotEmpty()
-  readonly pointId!: number;
+  readonly pointId!: number
   @IsNotEmpty()
-  readonly activiteId!: number;
+  readonly activiteId!: number
 }

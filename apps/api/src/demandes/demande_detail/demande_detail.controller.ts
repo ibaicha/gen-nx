@@ -8,14 +8,14 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { AuthGuard } from '@nestjs/passport'
 
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { DemandeDetailService } from './demande_detail.service';
-import { CreateDemandeDetailDto } from './dto/demande_detail.dto';
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { DemandeDetailService } from './demande_detail.service'
+import { CreateDemandeDetailDto } from './dto/demande_detail.dto'
 
 @ApiTags('DemandeDetail')
 @Controller('demandeDetails')
@@ -24,7 +24,7 @@ export class DemandeDetailController {
 
   @Get('/')
   getAll() {
-    return this.demandeDetailService.getAll();
+    return this.demandeDetailService.getAll()
   }
 
   @Get('/:id')
@@ -32,14 +32,14 @@ export class DemandeDetailController {
     @Param('id', ParseIntPipe) demandeDetailId: number,
     createDemandeDetailDto: CreateDemandeDetailDto,
   ) {
-    return this.demandeDetailService.getOne(demandeDetailId);
+    return this.demandeDetailService.getOne(demandeDetailId)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(@Body() createDemandeDetailDto: CreateDemandeDetailDto) {
-    return this.demandeDetailService.create(createDemandeDetailDto);
+    return this.demandeDetailService.create(createDemandeDetailDto)
   }
 
   @ApiBearerAuth()
@@ -50,7 +50,7 @@ export class DemandeDetailController {
     createDemandeDetailDto: CreateDemandeDetailDto,
     @Req() request: Request,
   ) {
-    return this.demandeDetailService.delete(demandeDetailId);
+    return this.demandeDetailService.delete(demandeDetailId)
   }
 
   @ApiBearerAuth()
@@ -63,6 +63,6 @@ export class DemandeDetailController {
     return this.demandeDetailService.update(
       demandeDetailId,
       updateDemandeDetailDto,
-    );
+    )
   }
 }

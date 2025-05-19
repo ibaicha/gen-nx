@@ -8,15 +8,15 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
 
-import { AuthGuard } from '@nestjs/passport';
+import { AuthGuard } from '@nestjs/passport'
 
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { CreateProducteurDto, UpdateProducteurDto } from './dto/producteur.dto';
-import { ProducteurService } from './producteur.service';
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { CreateProducteurDto, UpdateProducteurDto } from './dto/producteur.dto'
+import { ProducteurService } from './producteur.service'
 
 @ApiTags('Producteur')
 @Controller('producteurs')
@@ -25,7 +25,7 @@ export class ProducteurController {
 
   @Get()
   getAll() {
-    return this.producteurService.getAll();
+    return this.producteurService.getAll()
   }
 
   @Get('/:id')
@@ -33,14 +33,14 @@ export class ProducteurController {
     @Param('id', ParseIntPipe) producteurId: number,
     createProducteurDto: CreateProducteurDto,
   ) {
-    return this.producteurService.getOne(producteurId);
+    return this.producteurService.getOne(producteurId)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(@Body() createProducteurDto: CreateProducteurDto) {
-    return this.producteurService.create(createProducteurDto);
+    return this.producteurService.create(createProducteurDto)
   }
 
   @ApiBearerAuth()
@@ -51,7 +51,7 @@ export class ProducteurController {
     createProducteurDto: CreateProducteurDto,
     @Req() request: Request,
   ) {
-    return this.producteurService.delete(producteurId);
+    return this.producteurService.delete(producteurId)
   }
 
   @ApiBearerAuth()
@@ -61,6 +61,6 @@ export class ProducteurController {
     @Param('id', ParseIntPipe) producteurId: number,
     @Body() updateProducteurDto: UpdateProducteurDto,
   ) {
-    return this.producteurService.update(producteurId, updateProducteurDto);
+    return this.producteurService.update(producteurId, updateProducteurDto)
   }
 }

@@ -8,7 +8,7 @@ import { AuthService } from './../../shared/auth.service'
   styleUrls: ['./user-profile.component.scss'],
   standalone: true,
 })
-export class UserProfileComponent  {
+export class UserProfileComponent {
   currentUser: any = {}
 
   constructor(
@@ -20,6 +20,4 @@ export class UserProfileComponent  {
       this.currentUser = res.msg
     })
   }
-
-  
 }

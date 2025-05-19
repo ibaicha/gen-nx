@@ -19,8 +19,25 @@ export class ConstanteEffects {
       ofType(ConstanteActions.loadConstante),
       switchMap(() =>
         this.constanteService.loadAll().pipe(
-          map(({ annees, saisons, campagnes, formeJuridiques, localites, varietes, points }) =>
-            ConstanteActions.loadConstanteSuccess({ annees, saisons, campagnes, formeJuridiques, localites, varietes, points }),
+          map(
+            ({
+              annees,
+              saisons,
+              campagnes,
+              formeJuridiques,
+              localites,
+              varietes,
+              points,
+            }) =>
+              ConstanteActions.loadConstanteSuccess({
+                annees,
+                saisons,
+                campagnes,
+                formeJuridiques,
+                localites,
+                varietes,
+                points,
+              }),
           ),
           catchError((error) =>
             of(ConstanteActions.loadConstanteFailure({ error })),

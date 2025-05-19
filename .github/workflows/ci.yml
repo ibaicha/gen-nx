@@ -1,106 +1,146 @@
-name: CI/CD - Build with MySQL & phpMyAdmin
+name: CI # Nom du workflow GitHub Actions
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch: # Déclenchement manuel via l'interface GitHub
 
-env:
-  MYSQL_HOST: 127.0.0.1  # Doit être localhost pour l'hôte GitHub
-  CONTAINER_MYSQL_HOST: mysql  # Nom du service pour la communication entre conteneurs
-  MYSQL_PORT: 3307
-  PMA_PORT: 8080
+permissions:
+  actions: read # Accès en lecture seule aux métadonnées des actions
+  contents: read # Accès en lecture seule aux contenus du dépôt
+  pull-requests: write # 🔁 Autorise la publication de commentaires dans les PR
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD || 'root' }}
-          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE || 'mydb' }}
-          MYSQL_USER: ${{ secrets.MYSQL_USER || 'myuser' }}
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD || 'mypass' }}
-        ports:
-          - 3307:3306
-        options: >-
-          --health-cmd="mysqladmin ping -uroot -p$$MYSQL_ROOT_PASSWORD"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+  main:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    env:
+      NX_CLOUD_AUTH_TOKEN: ${{ secrets.NX_CLOUD_AUTH_TOKEN }} # Exécute dynamiquement sur les OS définis ci-dessous
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest] #[ubuntu-latest, macos-latest, windows-latest] # Matrice des OS
+      max-parallel: 3 # Limite le nombre de jobs simultanés à 3
 
     steps:
-      - name: 📥 Checkout code
+      - name: Récupération du dépôt
         uses: actions/checkout@v4
+        with:
+          filter: tree:0
+          fetch-depth: 0
 
-      - name: 🐳 Set up Docker network
-        id: network
-        run: |
-          NETWORK_NAME="ci-network-$GITHUB_RUN_ID"
-          echo "network_name=${NETWORK_NAME}" >> $GITHUB_OUTPUT
-          docker network create ${NETWORK_NAME}
-
-      - name: 🐳 Start MySQL container
-        run: |
-          docker run -d \
-            --name mysql \
-            --network ${{ steps.network.outputs.network_name }} \
-            -e MYSQL_ROOT_PASSWORD=${{ env.MYSQL_ROOT_PASSWORD }} \
-            -e MYSQL_DATABASE=${{ env.MYSQL_DATABASE }} \
-            -e MYSQL_USER=${{ env.MYSQL_USER }} \
-            -e MYSQL_PASSWORD=${{ env.MYSQL_PASSWORD }} \
-            -p 3308:3306 \
-            mysql:8.0
-
-      - name: 🐳 Start phpMyAdmin container
-        run: |
-          docker run -d \
-            --name phpmyadmin \
-            --network ${{ steps.network.outputs.network_name }} \
-            -e PMA_HOST=mysql \
-            -e PMA_PORT=3306 \
-            -e PMA_USER=${{ env.MYSQL_USER }} \
-            -e PMA_PASSWORD=${{ env.MYSQL_PASSWORD }} \
-            -p ${{ env.PMA_PORT }}:80 \
-            phpmyadmin/phpmyadmin
-
-      - name: 🧪 Verify containers
-        run: |
-          docker ps
-          echo "phpMyAdmin available at: http://localhost:${{ env.PMA_PORT }}"
-          echo "MySQL available at: ${{ env.MYSQL_HOST }}:${{ env.MYSQL_PORT }}"
-
-      - name: ⚙️ Setup Node.js
+      - name: Configuration de Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
           cache: 'npm'
 
-      - name: 📦 Install dependencies
-        run: npm ci
+      - name: Mise en cache de node_modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
 
-      - name: 🧪 Test MySQL connection
+      - name: Installation des dépendances
         run: |
-          for i in {1..5}; do
-            if mysqladmin ping -h"${{ env.MYSQL_HOST }}" -P"${{ env.MYSQL_PORT }}" \
-               -u"${{ env.MYSQL_USER }}" -p"${{ env.MYSQL_PASSWORD }}"; then
-              echo "✅ MySQL is ready!"
-              break
-            else
-              echo "⌛ Waiting for MySQL ($i/5)..."
-              sleep 5
-            fi
-          done
+          echo "📦 Installation des dépendances..."
+          npm ci --legacy-peer-deps
+          echo "✅ Dépendances installées"
 
-      - name: 🧹 Cleanup
-        if: always()
+      - name: Définir les SHAs Nx
+        uses: nrwl/nx-set-shas@v4
+
+      - name: Exécuter le Lint
         run: |
-          docker stop mysql phpmyadmin || true
-          docker rm mysql phpmyadmin || true
-          docker network rm ${{ steps.network.outputs.network_name }} || true
+          echo "🔍 Lint des projets affectés..."
+          npx nx affected --target=lint
+          echo "✅ Lint terminé"
+
+      - name: Tests unitaires
+        run: |
+          echo "🧪 Lancement des tests unitaires..."
+          npx nx affected --target=test
+          echo "✅ Tests terminés"
+
+      - name: Compilation des projets affectés
+        run: |
+          echo "🏗️ Compilation des projets..."
+          npx nx affected --target=build
+          echo "✅ Build terminé"
+        timeout-minutes: 30
+
+      - name: Génération du graphe de dépendances
+        run: |
+          echo "📊 Génération du graphe des dépendances..."
+          npx nx dep-graph --file=dist/graph.html
+          echo "✅ Graphe généré"
+
+      - name: Applications affectées
+        run: |
+          echo "📦 Liste des applications affectées :"
+          npx nx show projects --affected --type=app
+
+      - name: Librairies affectées
+        run: |
+          echo "📚 Liste des librairies affectées :"
+          npx nx show projects --affected --type=lib
+
+      - name: Déploiement des projets affectés
+        run: |
+          echo "🚀 Déploiement en cours..."
+          npx nx affected --target=deploy
+          echo "✅ Déploiement terminé"
+
+      - name: Tests avec couverture
+        run: |
+          echo "📈 Tests avec génération de couverture..."
+          npx nx affected --target=test --coverage
+
+      - name: Compilation d'un projet spécifique
+        run: |
+          echo "🔧 Build du projet spécifique..."
+          npx nx build angular
+
+      - name: Génération du timestamp
+        run: echo "timestamp=$(date +%s)" >> "$GITHUB_ENV"
+
+      - name: Téléverser l'artefact de build
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact-${{ env.timestamp }}
+          path: dist/apps/angular # apps/angular/dist
+
+      - name: Téléverser le graphe de dépendances
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-graph-${{ env.timestamp }}
+          path: dist/**/*
+
+      - name: Résumé Markdown visuel
+        run: |
+          echo "## ✅ Résumé de l'exécution du workflow" >> $GITHUB_STEP_SUMMARY
+          echo "- 📦 Dépendances installées" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔍 Lint terminé" >> $GITHUB_STEP_SUMMARY
+          echo "- 🧪 Tests OK" >> $GITHUB_STEP_SUMMARY
+          echo "- 🏗️ Build effectué" >> $GITHUB_STEP_SUMMARY
+          echo "- 📈 Couverture générée" >> $GITHUB_STEP_SUMMARY
+          echo "- 📊 Graphe de dépendances prêt" >> $GITHUB_STEP_SUMMARY
+
+      - name: Commentaire automatique dans la PR
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## 🔁 Résultats CI
+            ✅ Lint, build et tests passés avec succès.
+            📊 [Télécharger le graphe de dépendances](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) dans les artefacts.
 
       # (Optionnel) Login + Push vers Docker Hub
       # - name: 🔑 Login to Docker Hub

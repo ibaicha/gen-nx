@@ -20,7 +20,7 @@ import { SocieteService } from '../services/societe.service'
 import { TypeSocieteService } from '../services/type-societe.service'
 
 // Asset Services
- 
+
 import { PointService } from '../services/point.service'
 import { PointAgenceService } from '../services/point-agence.service'
 import { ProduitService } from '../services/produit.service'
@@ -51,15 +51,9 @@ const CORE_SERVICES = [OpService, CreditService]
 
 const TIME_SERVICES = [AnneeService, SaisonService, CampagneService]
 
-const ENTITY_SERVICES = [
-  SocieteService,
-  AgenceService,
-
-  TypeSocieteService,
-]
+const ENTITY_SERVICES = [SocieteService, AgenceService, TypeSocieteService]
 
 const ASSET_SERVICES = [
- 
   PointService,
   PointAgenceService,
   ProduitService,

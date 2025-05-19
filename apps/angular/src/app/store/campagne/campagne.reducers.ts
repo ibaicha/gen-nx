@@ -66,7 +66,7 @@ const reducer = createReducer<ICampagneState>(
   on(fromCampagnes.updateCampagneSuccess, (state, { campagne }) => ({
     ...state,
     campagnes: state.campagnes.map((item) =>
-      item.id === campagne.id ? campagne : item
+      item.id === campagne.id ? campagne : item,
     ),
     isLoading: false,
   })),

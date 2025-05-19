@@ -4,7 +4,6 @@ import { map, switchMap } from 'rxjs/operators'
 import * as fromSocietes from './index'
 import { SocieteService } from '../../services/societe.service'
 import { ISociete } from '@shared-models'
- 
 
 /**
  * Effets pour la gestion des sociétés
@@ -25,8 +24,10 @@ export class SocieteEffects {
     this.actions$.pipe(
       ofType(fromSocietes.getSocietes.type),
       switchMap(() => this.societeService.getSocietes()),
-      map((societes: ISociete[]) => fromSocietes.getSocietesSuccess({ societes }))
-    )
+      map((societes: ISociete[]) =>
+        fromSocietes.getSocietesSuccess({ societes }),
+      ),
+    ),
   )
 
   /**
@@ -37,8 +38,10 @@ export class SocieteEffects {
     this.actions$.pipe(
       ofType(fromSocietes.createSociete),
       switchMap(({ societe }) => this.societeService.create(societe)),
-      map((societe: ISociete) => fromSocietes.createSocieteSuccess({ societe }))
-    )
+      map((societe: ISociete) =>
+        fromSocietes.createSocieteSuccess({ societe }),
+      ),
+    ),
   )
 
   /**
@@ -47,10 +50,12 @@ export class SocieteEffects {
    */
   updateSociete$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(fromSocietes.updateSociete), 
+      ofType(fromSocietes.updateSociete),
       switchMap(({ societe }) => this.societeService.update(societe)),
-      map((societe: ISociete) => fromSocietes.updateSocieteSuccess({ societe }))
-    )
+      map((societe: ISociete) =>
+        fromSocietes.updateSocieteSuccess({ societe }),
+      ),
+    ),
   )
 
   /**
@@ -61,7 +66,9 @@ export class SocieteEffects {
     this.actions$.pipe(
       ofType(fromSocietes.deleteSociete),
       switchMap(({ societe }) => this.societeService.delete(societe)),
-      map((societe: ISociete) => fromSocietes.deleteSocieteSuccess({ societe }))
-    )
+      map((societe: ISociete) =>
+        fromSocietes.deleteSocieteSuccess({ societe }),
+      ),
+    ),
   )
 }

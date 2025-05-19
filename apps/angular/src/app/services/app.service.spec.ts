@@ -5,7 +5,6 @@ import { AppService } from './app.service'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideHttpClient } from '@angular/common/http'
 
-
 describe('AppService', () => {
   let service: AppService
 

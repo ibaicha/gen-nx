@@ -15,7 +15,7 @@ export const selectSaisonState = createFeatureSelector<ISaisonState>('saison')
  */
 export const selectSaisonsList = createSelector(
   selectSaisonState,
-  (state) => state.saisons
+  (state) => state.saisons,
 )
 
 /**
@@ -23,14 +23,14 @@ export const selectSaisonsList = createSelector(
  */
 export const selectSaisonIsLoading = createSelector(
   selectSaisonState,
-  (state) => state.isLoading
+  (state) => state.isLoading,
 )
 
 /**
  * Sélecteur pour obtenir une saison par son ID
  * @param itemId - ID de la saison à rechercher
  */
-export const selectSaisonById = (itemId: number) => createSelector(
-  selectSaisonState,
-  (state) => state.saisons.find((item) => item.id === itemId)
-)
+export const selectSaisonById = (itemId: number) =>
+  createSelector(selectSaisonState, (state) =>
+    state.saisons.find((item) => item.id === itemId),
+  )

@@ -4,7 +4,6 @@ import { AppService } from './app.service'
 import { Observable } from 'rxjs'
 import { IPointAgence } from '@shared-models'
 
-
 @Injectable({
   providedIn: 'root',
 })

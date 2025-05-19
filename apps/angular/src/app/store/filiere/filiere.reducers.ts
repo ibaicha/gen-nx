@@ -68,8 +68,8 @@ const reducer = createReducer<IFiliereState>(
 
   on(fromFilieres.updateFiliereSuccess, (state, { filiere }) => ({
     ...state,
-    filieres: state.filieres.map((item) => 
-      item.id === filiere.id ? filiere : item
+    filieres: state.filieres.map((item) =>
+      item.id === filiere.id ? filiere : item,
     ),
     isLoading: false,
   })),

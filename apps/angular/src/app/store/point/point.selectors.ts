@@ -15,7 +15,7 @@ export const selectPointState = createFeatureSelector<IPointState>('point')
  */
 export const selectPointsList = createSelector(
   selectPointState,
-  (state) => state.points
+  (state) => state.points,
 )
 
 /**
@@ -23,14 +23,14 @@ export const selectPointsList = createSelector(
  */
 export const selectPointIsLoading = createSelector(
   selectPointState,
-  (state) => state.isLoading
+  (state) => state.isLoading,
 )
 
 /**
  * Sélecteur pour obtenir un point par son ID
  * @param itemId - ID du point à rechercher
  */
-export const selectPointById = (itemId: number) => createSelector(
-  selectPointState,
-  (state) => state.points.find((item) => item.id === itemId)
-)
+export const selectPointById = (itemId: number) =>
+  createSelector(selectPointState, (state) =>
+    state.points.find((item) => item.id === itemId),
+  )

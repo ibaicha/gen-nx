@@ -1,6 +1,5 @@
 import { createAction, props } from '@ngrx/store'
 import { IVariete } from '@shared-models'
- 
 
 // ========== CONSTANTES ==========
 
@@ -23,12 +22,12 @@ const SUCCESS = 'Success'
  */
 export const getVariete = createAction(
   `${prefix} ${GET} Single Variete`,
-  props<{ id: number }>()
+  props<{ id: number }>(),
 )
 
 export const getVarieteSuccess = createAction(
   `${prefix} ${GET} Single Variete ${SUCCESS}`,
-  props<{ oneVariete: IVariete }>()
+  props<{ oneVariete: IVariete }>(),
 )
 
 /**
@@ -38,7 +37,7 @@ export const getVarietes = createAction(`${prefix} ${GET} All Varietes`)
 
 export const getVarietesSuccess = createAction(
   `${prefix} ${GET} All Varietes ${SUCCESS}`,
-  props<{ varietes: IVariete[] }>()
+  props<{ varietes: IVariete[] }>(),
 )
 
 // ========== ACTIONS DE MODIFICATION ==========
@@ -48,12 +47,12 @@ export const getVarietesSuccess = createAction(
  */
 export const createVariete = createAction(
   `${prefix} ${CREATE} Variete`,
-  props<{ variete: IVariete }>()
+  props<{ variete: IVariete }>(),
 )
 
 export const createVarieteSuccess = createAction(
   `${prefix} ${CREATE} Variete ${SUCCESS}`,
-  props<{ variete: IVariete }>()
+  props<{ variete: IVariete }>(),
 )
 
 /**
@@ -61,12 +60,12 @@ export const createVarieteSuccess = createAction(
  */
 export const updateVariete = createAction(
   `${prefix} ${UPDATE} Variete`,
-  props<{ variete: IVariete }>()
+  props<{ variete: IVariete }>(),
 )
 
 export const updateVarieteSuccess = createAction(
   `${prefix} ${UPDATE} Variete ${SUCCESS}`,
-  props<{ variete: IVariete }>()
+  props<{ variete: IVariete }>(),
 )
 
 /**
@@ -74,10 +73,10 @@ export const updateVarieteSuccess = createAction(
  */
 export const deleteVariete = createAction(
   `${prefix} ${DELETE} Variete`,
-  props<{ variete: IVariete }>()
+  props<{ variete: IVariete }>(),
 )
 
 export const deleteVarieteSuccess = createAction(
   `${prefix} ${DELETE} Variete ${SUCCESS}`,
-  props<{ variete: IVariete }>()
+  props<{ variete: IVariete }>(),
 )

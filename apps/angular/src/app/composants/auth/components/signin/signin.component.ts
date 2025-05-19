@@ -15,7 +15,7 @@ import { Router } from '@angular/router'
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule],
 })
-export class SigninComponent{
+export class SigninComponent {
   signinForm: FormGroup
 
   constructor(
@@ -28,8 +28,6 @@ export class SigninComponent{
       password: [''],
     })
   }
-
-
 
   loginUser() {
     this.authService.signIn(this.signinForm.value)

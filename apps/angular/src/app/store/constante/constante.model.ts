@@ -1,4 +1,12 @@
-import { IAnnee, ICampagne, IFormeJuridique, ILocalite, IPoint, ISaison, IVariete } from '@shared-models'
+import {
+  IAnnee,
+  ICampagne,
+  IFormeJuridique,
+  ILocalite,
+  IPoint,
+  ISaison,
+  IVariete,
+} from '@shared-models'
 
 /**
  * Interface définissant l'état du store pour les clients

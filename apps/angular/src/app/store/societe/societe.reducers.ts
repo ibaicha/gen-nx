@@ -18,7 +18,7 @@ const reducer = createReducer<ISocieteState>(
   initialSocieteState,
 
   // ===== Actions de lecture =====
-  
+
   /**
    * Gestion des actions de récupération d'une société
    */
@@ -73,8 +73,8 @@ const reducer = createReducer<ISocieteState>(
 
   on(fromSocietes.updateSocieteSuccess, (state, { societe }) => ({
     ...state,
-    societes: state.societes.map((item) => 
-      item.id === societe.id ? societe : item
+    societes: state.societes.map((item) =>
+      item.id === societe.id ? societe : item,
     ),
     isLoading: false,
   })),

@@ -1,7 +1,6 @@
 import { createAction, props } from '@ngrx/store'
 import { IAgence } from '@shared-models'
 
-
 // ========== CONSTANTES ==========
 
 /**

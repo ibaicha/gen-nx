@@ -4,7 +4,8 @@ import { IIdentifiantState } from './identifiant.model'
 /**
  * Sélecteur de base pour l'état des identifiants
  */
-export const selectIdentifiantState = createFeatureSelector<IIdentifiantState>('identifiant')
+export const selectIdentifiantState =
+  createFeatureSelector<IIdentifiantState>('identifiant')
 
 /**
  * Sélecteurs dérivés pour les différentes parties de l'état
@@ -15,7 +16,7 @@ export const selectIdentifiantState = createFeatureSelector<IIdentifiantState>('
  */
 export const selectIdentifiantsList = createSelector(
   selectIdentifiantState,
-  (state) => state.identifiants
+  (state) => state.identifiants,
 )
 
 /**
@@ -23,7 +24,7 @@ export const selectIdentifiantsList = createSelector(
  */
 export const selectIdentifiantWithFiltersList = createSelector(
   selectIdentifiantState,
-  (state) => state.identifiantWithFilters
+  (state) => state.identifiantWithFilters,
 )
 
 /**
@@ -31,5 +32,5 @@ export const selectIdentifiantWithFiltersList = createSelector(
  */
 export const selectIdentifiantIsLoading = createSelector(
   selectIdentifiantState,
-  (state) => state.isLoading
+  (state) => state.isLoading,
 )

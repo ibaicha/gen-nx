@@ -23,22 +23,28 @@ const reducer = createReducer<IFormeJuridiqueState>(
     isLoading: true,
   })),
 
-  on(fromFormeJuridiques.getFormeJuridiqueSuccess, (state, { oneFormeJuridique }) => ({
-    ...state,
-    isLoading: false,
-    oneFormeJuridique,
-  })),
+  on(
+    fromFormeJuridiques.getFormeJuridiqueSuccess,
+    (state, { oneFormeJuridique }) => ({
+      ...state,
+      isLoading: false,
+      oneFormeJuridique,
+    }),
+  ),
 
   on(fromFormeJuridiques.getFormeJuridiques, (state) => ({
     ...state,
     isLoading: true,
   })),
 
-  on(fromFormeJuridiques.getFormeJuridiquesSuccess, (state, { formeJuridiques }) => ({
-    ...state,
-    isLoading: false,
-    formeJuridiques,
-  })),
+  on(
+    fromFormeJuridiques.getFormeJuridiquesSuccess,
+    (state, { formeJuridiques }) => ({
+      ...state,
+      isLoading: false,
+      formeJuridiques,
+    }),
+  ),
 
   // Actions de création
   on(fromFormeJuridiques.createFormeJuridique, (state) => ({
@@ -46,11 +52,14 @@ const reducer = createReducer<IFormeJuridiqueState>(
     isLoading: true,
   })),
 
-  on(fromFormeJuridiques.createFormeJuridiqueSuccess, (state, { formeJuridique }) => ({
-    ...state,
-    formeJuridiques: [...state.formeJuridiques, formeJuridique],
-    isLoading: false,
-  })),
+  on(
+    fromFormeJuridiques.createFormeJuridiqueSuccess,
+    (state, { formeJuridique }) => ({
+      ...state,
+      formeJuridiques: [...state.formeJuridiques, formeJuridique],
+      isLoading: false,
+    }),
+  ),
 
   // Actions de mise à jour
   on(fromFormeJuridiques.updateFormeJuridique, (state) => ({
@@ -58,13 +67,16 @@ const reducer = createReducer<IFormeJuridiqueState>(
     isLoading: true,
   })),
 
-  on(fromFormeJuridiques.updateFormeJuridiqueSuccess, (state, { formeJuridique }) => ({
-    ...state,
-    formeJuridiques: state.formeJuridiques.map((item) =>
-      item.id === formeJuridique.id ? formeJuridique : item,
-    ),
-    isLoading: false,
-  })),
+  on(
+    fromFormeJuridiques.updateFormeJuridiqueSuccess,
+    (state, { formeJuridique }) => ({
+      ...state,
+      formeJuridiques: state.formeJuridiques.map((item) =>
+        item.id === formeJuridique.id ? formeJuridique : item,
+      ),
+      isLoading: false,
+    }),
+  ),
 
   // Actions de suppression
   on(fromFormeJuridiques.deleteFormeJuridique, (state) => ({
@@ -72,11 +84,16 @@ const reducer = createReducer<IFormeJuridiqueState>(
     isLoading: true,
   })),
 
-  on(fromFormeJuridiques.deleteFormeJuridiqueSuccess, (state, { formeJuridique }) => ({
-    ...state,
-    formeJuridiques: state.formeJuridiques.filter((item) => item.id !== formeJuridique.id),
-    isLoading: false,
-  })),
+  on(
+    fromFormeJuridiques.deleteFormeJuridiqueSuccess,
+    (state, { formeJuridique }) => ({
+      ...state,
+      formeJuridiques: state.formeJuridiques.filter(
+        (item) => item.id !== formeJuridique.id,
+      ),
+      isLoading: false,
+    }),
+  ),
 )
 
 /**

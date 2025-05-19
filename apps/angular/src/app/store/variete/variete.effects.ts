@@ -4,7 +4,6 @@ import { map, switchMap } from 'rxjs/operators'
 import * as fromVarietes from './index'
 import { VarieteService } from '../../services/variete.service'
 import { IVariete } from '@shared-models'
- 
 
 /**
  * Effets pour la gestion des variétés
@@ -25,7 +24,9 @@ export class VarieteEffects {
     this.actions$.pipe(
       ofType(fromVarietes.getVarietes.type),
       switchMap(() => this.varieteService.getVarietes()),
-      map((varietes: IVariete[]) => fromVarietes.getVarietesSuccess({ varietes })),
+      map((varietes: IVariete[]) =>
+        fromVarietes.getVarietesSuccess({ varietes }),
+      ),
     ),
   )
 
@@ -37,7 +38,9 @@ export class VarieteEffects {
     this.actions$.pipe(
       ofType(fromVarietes.createVariete),
       switchMap(({ variete }) => this.varieteService.create(variete)),
-      map((variete: IVariete) => fromVarietes.createVarieteSuccess({ variete })),
+      map((variete: IVariete) =>
+        fromVarietes.createVarieteSuccess({ variete }),
+      ),
     ),
   )
 
@@ -47,9 +50,11 @@ export class VarieteEffects {
    */
   updateVariete$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(fromVarietes.updateVariete), 
+      ofType(fromVarietes.updateVariete),
       switchMap(({ variete }) => this.varieteService.update(variete)),
-      map((variete: IVariete) => fromVarietes.updateVarieteSuccess({ variete })),
+      map((variete: IVariete) =>
+        fromVarietes.updateVarieteSuccess({ variete }),
+      ),
     ),
   )
 
@@ -61,7 +66,9 @@ export class VarieteEffects {
     this.actions$.pipe(
       ofType(fromVarietes.deleteVariete),
       switchMap(({ variete }) => this.varieteService.delete(variete)),
-      map((variete: IVariete) => fromVarietes.deleteVarieteSuccess({ variete })),
+      map((variete: IVariete) =>
+        fromVarietes.deleteVarieteSuccess({ variete }),
+      ),
     ),
   )
 }

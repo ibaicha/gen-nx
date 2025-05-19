@@ -8,16 +8,16 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { ProducteurActiviteService } from './producteur_activite.service';
-import { AuthGuard } from '@nestjs/passport';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { ProducteurActiviteService } from './producteur_activite.service'
+import { AuthGuard } from '@nestjs/passport'
 import {
   CreateProducteurActiviteDto,
   UpdateProducteurActiviteDto,
-} from './dto/producteur_activite.dto';
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+} from './dto/producteur_activite.dto'
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('ProducteurActivite')
 @Controller('producteurActivites')
@@ -28,7 +28,7 @@ export class ProducteurActiviteController {
 
   @Get()
   getAll() {
-    return this.producteurActiviteService.getAll();
+    return this.producteurActiviteService.getAll()
   }
 
   @Get('/:id')
@@ -36,16 +36,14 @@ export class ProducteurActiviteController {
     @Param('id', ParseIntPipe) producteurActiviteId: number,
     createProducteurActiviteDto: CreateProducteurActiviteDto,
   ) {
-    return this.producteurActiviteService.getOne(producteurActiviteId);
+    return this.producteurActiviteService.getOne(producteurActiviteId)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(@Body() createProducteurActiviteDto: CreateProducteurActiviteDto) {
-    return this.producteurActiviteService.create(
-      createProducteurActiviteDto,
-    );
+    return this.producteurActiviteService.create(createProducteurActiviteDto)
   }
 
   @ApiBearerAuth()
@@ -56,7 +54,7 @@ export class ProducteurActiviteController {
     createProducteurActiviteDto: CreateProducteurActiviteDto,
     @Req() request: Request,
   ) {
-    return this.producteurActiviteService.delete(producteurActiviteId);
+    return this.producteurActiviteService.delete(producteurActiviteId)
   }
 
   @ApiBearerAuth()
@@ -69,6 +67,6 @@ export class ProducteurActiviteController {
     return this.producteurActiviteService.update(
       producteurActiviteId,
       updateProducteurActiviteDto,
-    );
+    )
   }
 }

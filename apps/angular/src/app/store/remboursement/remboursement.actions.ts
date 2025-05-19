@@ -22,22 +22,24 @@ const SUCCESS = 'Success'
  */
 export const getRemboursement = createAction(
   `${prefix} ${GET} Single Remboursement`,
-  props<{ id: number }>()
+  props<{ id: number }>(),
 )
 
 export const getRemboursementSuccess = createAction(
   `${prefix} ${GET} Single Remboursement ${SUCCESS}`,
-  props<{ oneRemboursement: IRemboursement }>()
+  props<{ oneRemboursement: IRemboursement }>(),
 )
 
 /**
  * Actions pour la récupération de la liste complète des remboursements
  */
-export const getRemboursements = createAction(`${prefix} ${GET} All Remboursements`)
+export const getRemboursements = createAction(
+  `${prefix} ${GET} All Remboursements`,
+)
 
 export const getRemboursementsSuccess = createAction(
   `${prefix} ${GET} All Remboursements ${SUCCESS}`,
-  props<{ remboursements: IRemboursement[] }>()
+  props<{ remboursements: IRemboursement[] }>(),
 )
 
 // ========== ACTIONS DE MODIFICATION ==========
@@ -47,12 +49,12 @@ export const getRemboursementsSuccess = createAction(
  */
 export const createRemboursement = createAction(
   `${prefix} ${CREATE} Remboursement`,
-  props<{ remboursement: IRemboursement }>()
+  props<{ remboursement: IRemboursement }>(),
 )
 
 export const createRemboursementSuccess = createAction(
   `${prefix} ${CREATE} Remboursement ${SUCCESS}`,
-  props<{ remboursement: IRemboursement }>()
+  props<{ remboursement: IRemboursement }>(),
 )
 
 /**
@@ -60,12 +62,12 @@ export const createRemboursementSuccess = createAction(
  */
 export const updateRemboursement = createAction(
   `${prefix} ${UPDATE} Remboursement`,
-  props<{ remboursement: IRemboursement }>()
+  props<{ remboursement: IRemboursement }>(),
 )
 
 export const updateRemboursementSuccess = createAction(
   `${prefix} ${UPDATE} Remboursement ${SUCCESS}`,
-  props<{ remboursement: IRemboursement }>()
+  props<{ remboursement: IRemboursement }>(),
 )
 
 /**
@@ -73,10 +75,10 @@ export const updateRemboursementSuccess = createAction(
  */
 export const deleteRemboursement = createAction(
   `${prefix} ${DELETE} Remboursement`,
-  props<{ remboursement: IRemboursement }>()
+  props<{ remboursement: IRemboursement }>(),
 )
 
 export const deleteRemboursementSuccess = createAction(
   `${prefix} ${DELETE} Remboursement ${SUCCESS}`,
-  props<{ remboursement: IRemboursement }>()
+  props<{ remboursement: IRemboursement }>(),
 )

@@ -12,7 +12,7 @@ export const appRoutes: Route[] = [
     loadComponent: () =>
       import('./composants/home/home.component').then((m) => m.HomeComponent),
   },
-  
+
   {
     path: 'clients',
     loadComponent: () =>

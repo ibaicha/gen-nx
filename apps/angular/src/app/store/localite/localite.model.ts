@@ -2,8 +2,7 @@
  * Import de l'interface ILocalite depuis le fichier localite.interface
  */
 
-import { ILocalite } from "@shared-models"
-
+import { ILocalite } from '@shared-models'
 
 /**
  * Interface définissant l'état des localites dans le store

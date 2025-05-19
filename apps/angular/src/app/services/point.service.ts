@@ -4,7 +4,6 @@ import { AppService } from './app.service'
 import { Observable } from 'rxjs/internal/Observable'
 import { IPoint } from '@shared-models'
 
-
 @Injectable({
   providedIn: 'root',
 })
@@ -40,7 +39,7 @@ export class PointService {
     console.log(point)
     body.id = null
     body.name = point.name
-    body.localiteId = point.localiteId 
+    body.localiteId = point.localiteId
 
     return this.http.post(
       this.appService.getUrl('/points/create'),

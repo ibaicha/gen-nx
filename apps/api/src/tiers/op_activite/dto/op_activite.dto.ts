@@ -1,15 +1,15 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator'
 
 export class CreateOpActiviteDto {
   @IsNotEmpty()
-  readonly opId!: number;
+  readonly opId!: number
   @IsNotEmpty()
-  readonly activiteId!: number;
+  readonly activiteId!: number
 }
 
 export class UpdateOpActiviteDto {
   @IsNotEmpty()
-  readonly opId!: number;
+  readonly opId!: number
   @IsNotEmpty()
-  readonly activiteId!: number;
+  readonly activiteId!: number
 }

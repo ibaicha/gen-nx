@@ -11,22 +11,20 @@ const prefix = '[CreditCustoms]'
  */
 export const getCreditCustom = createAction(
   `${prefix} Get Single CreditCustom`,
-  props<{ id: number }>()
+  props<{ id: number }>(),
 )
 
 export const getCreditCustomSuccess = createAction(
-  `${getCreditCustom.type} Success`, 
-  props<{ oneCreditCustom: ICreditCustom }>()
+  `${getCreditCustom.type} Success`,
+  props<{ oneCreditCustom: ICreditCustom }>(),
 )
 
 /**
  * Actions pour la récupération de tous les crédits personnalisés
  */
-export const getCreditCustoms = createAction(
-  `${prefix} Get All CreditCustoms`
-)
+export const getCreditCustoms = createAction(`${prefix} Get All CreditCustoms`)
 
 export const getCreditCustomsSuccess = createAction(
   `${getCreditCustoms.type} Success`,
-  props<{ creditCustoms: ICreditCustom[] }>()
+  props<{ creditCustoms: ICreditCustom[] }>(),
 )

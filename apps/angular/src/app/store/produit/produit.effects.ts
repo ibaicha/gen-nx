@@ -4,7 +4,6 @@ import { map, switchMap } from 'rxjs/operators'
 import * as fromProduits from './index'
 import { ProduitService } from '../../services/produit.service'
 import { IProduit } from '@shared-models'
- 
 
 /**
  * Effets pour la gestion des produits
@@ -25,8 +24,10 @@ export class ProduitEffects {
     this.actions$.pipe(
       ofType(fromProduits.getProduits.type),
       switchMap(() => this.produitService.getProduits()),
-      map((produits: IProduit[]) => fromProduits.getProduitsSuccess({ produits }))
-    )
+      map((produits: IProduit[]) =>
+        fromProduits.getProduitsSuccess({ produits }),
+      ),
+    ),
   )
 
   /**
@@ -37,8 +38,10 @@ export class ProduitEffects {
     this.actions$.pipe(
       ofType(fromProduits.createProduit),
       switchMap(({ produit }) => this.produitService.create(produit)),
-      map((produit: IProduit) => fromProduits.createProduitSuccess({ produit }))
-    )
+      map((produit: IProduit) =>
+        fromProduits.createProduitSuccess({ produit }),
+      ),
+    ),
   )
 
   /**
@@ -48,9 +51,11 @@ export class ProduitEffects {
   updateProduit$ = createEffect(() =>
     this.actions$.pipe(
       ofType(fromProduits.updateProduit),
-      switchMap(({ produit }) => this.produitService.update(produit)), 
-      map((produit: IProduit) => fromProduits.updateProduitSuccess({ produit }))
-    )
+      switchMap(({ produit }) => this.produitService.update(produit)),
+      map((produit: IProduit) =>
+        fromProduits.updateProduitSuccess({ produit }),
+      ),
+    ),
   )
 
   /**
@@ -61,7 +66,9 @@ export class ProduitEffects {
     this.actions$.pipe(
       ofType(fromProduits.deleteProduit),
       switchMap(({ produit }) => this.produitService.delete(produit)),
-      map((produit: IProduit) => fromProduits.deleteProduitSuccess({ produit }))
-    )
+      map((produit: IProduit) =>
+        fromProduits.deleteProduitSuccess({ produit }),
+      ),
+    ),
   )
 }

@@ -52,7 +52,8 @@ const CDK_MODULES = [
   CdkTreeModule,
   DragDropModule,
   PortalModule,
-  ScrollingModule,]
+  ScrollingModule,
+]
 
 const FORM_CONTROLS = [
   MatAutocompleteModule,
@@ -101,11 +102,7 @@ const POPUPS_AND_MODALS = [
   MatTooltipModule,
 ]
 
-const DATA_TABLE = [
-  MatPaginatorModule,
-  MatSortModule,
-  MatTableModule,
-]
+const DATA_TABLE = [MatPaginatorModule, MatSortModule, MatTableModule]
 
 @NgModule({
   exports: [
@@ -116,7 +113,6 @@ const DATA_TABLE = [
     ...BUTTONS_AND_INDICATORS,
     ...POPUPS_AND_MODALS,
     ...DATA_TABLE,
-
-  ]
+  ],
 })
 export class MaterialSharedModule {}

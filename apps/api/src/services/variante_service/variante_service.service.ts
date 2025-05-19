@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common'
 
 import {
   CreateVarianteServiceDto,
   UpdateVarianteServiceDto,
-} from './dto/variante_service.dto';
-import { PrismaService } from '../../prisma/prisma.service';
+} from './dto/variante_service.dto'
+import { PrismaService } from '../../prisma/prisma.service'
 
 @Injectable()
 export class VarianteServiceService {
@@ -46,7 +46,7 @@ export class VarianteServiceService {
           },
         },
       },
-    });
+    })
   }
 
   async getOne(varianteServiceId: number) {
@@ -54,9 +54,9 @@ export class VarianteServiceService {
       {
         where: { id: varianteServiceId },
       },
-    );
-    if (!varianteService) throw new NotFoundException('Post not found');
-    return varianteService;
+    )
+    if (!varianteService) throw new NotFoundException('Post not found')
+    return varianteService
   }
   async create(createVarianteServiceDto: CreateVarianteServiceDto) {
     const {
@@ -70,7 +70,7 @@ export class VarianteServiceService {
       serviceId,
       typeEmballageId,
       uniteGrandeurId,
-    } = createVarianteServiceDto;
+    } = createVarianteServiceDto
     await this.prismaService.varianteService.create({
       data: {
         name,
@@ -84,8 +84,8 @@ export class VarianteServiceService {
         typeEmballageId,
         uniteGrandeurId,
       },
-    });
-    return { data: 'VarianteService created' };
+    })
+    return { data: 'VarianteService created' }
   }
 
   async update(
@@ -96,14 +96,14 @@ export class VarianteServiceService {
       {
         where: { id: varianteServiceId },
       },
-    );
+    )
     if (!varianteService)
-      throw new NotFoundException('VarianteService not found');
+      throw new NotFoundException('VarianteService not found')
     await this.prismaService.varianteService.update({
       where: { id: varianteServiceId },
       data: { ...updateVarianteServiceDto },
-    });
-    return { data: 'VarianteService updeted!' };
+    })
+    return { data: 'VarianteService updeted!' }
   }
 
   async delete(varianteServiceId: number) {
@@ -111,11 +111,11 @@ export class VarianteServiceService {
       {
         where: { id: varianteServiceId },
       },
-    );
-    if (!varianteService) throw new NotFoundException('Post not found');
+    )
+    if (!varianteService) throw new NotFoundException('Post not found')
     await this.prismaService.varianteService.delete({
       where: { id: varianteServiceId },
-    });
-    return { data: 'VarianteService deleted' };
+    })
+    return { data: 'VarianteService deleted' }
   }
 }

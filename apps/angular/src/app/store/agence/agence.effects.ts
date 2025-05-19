@@ -4,7 +4,6 @@ import { map, switchMap } from 'rxjs/operators'
 import * as fromAgences from './index'
 import { AgenceService } from '../../services/agence.service'
 import { IAgence } from '@shared-models'
- 
 
 /**
  * Effets pour la gestion des sociétés

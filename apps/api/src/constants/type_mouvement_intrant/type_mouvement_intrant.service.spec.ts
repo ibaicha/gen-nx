@@ -18,7 +18,9 @@ describe('TypeMouvementIntrantController', () => {
       ],
     }).compile()
 
-    controller = module.get<TypeMouvementIntrantController>(TypeMouvementIntrantController)
+    controller = module.get<TypeMouvementIntrantController>(
+      TypeMouvementIntrantController,
+    )
   })
 
   it('should be defined', () => {

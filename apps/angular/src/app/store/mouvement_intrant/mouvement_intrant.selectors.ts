@@ -4,7 +4,8 @@ import { IMouvementIntrantState } from './mouvement_intrant.model'
 /**
  * Sélecteur de base pour l'état des mouvements d'intrants
  */
-export const selectMouvementIntrantState = createFeatureSelector<IMouvementIntrantState>('mouvementIntrant')
+export const selectMouvementIntrantState =
+  createFeatureSelector<IMouvementIntrantState>('mouvementIntrant')
 
 /**
  * Sélecteurs dérivés pour les différentes parties de l'état
@@ -15,7 +16,7 @@ export const selectMouvementIntrantState = createFeatureSelector<IMouvementIntra
  */
 export const selectMouvementIntrantsList = createSelector(
   selectMouvementIntrantState,
-  (state) => state.mouvementIntrants
+  (state) => state.mouvementIntrants,
 )
 
 /**
@@ -23,7 +24,7 @@ export const selectMouvementIntrantsList = createSelector(
  */
 export const selectMouvementIntrantWithFiltersList = createSelector(
   selectMouvementIntrantState,
-  (state) => state.mouvementIntrantWithFilters
+  (state) => state.mouvementIntrantWithFilters,
 )
 
 /**
@@ -31,14 +32,14 @@ export const selectMouvementIntrantWithFiltersList = createSelector(
  */
 export const selectMouvementIntrantIsLoading = createSelector(
   selectMouvementIntrantState,
-  (state) => state.isLoading
+  (state) => state.isLoading,
 )
 
 /**
  * Sélecteur pour obtenir un mouvement d'intrant par son ID
  * @param itemId - ID du mouvement d'intrant à rechercher
  */
-export const selectMouvementIntrantById = (itemId: number) => createSelector(
-  selectMouvementIntrantState,
-  (state) => state.mouvementIntrants.find((item) => item.id === itemId)
-)
+export const selectMouvementIntrantById = (itemId: number) =>
+  createSelector(selectMouvementIntrantState, (state) =>
+    state.mouvementIntrants.find((item) => item.id === itemId),
+  )

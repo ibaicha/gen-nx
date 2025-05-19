@@ -38,7 +38,9 @@ export class PointAgenceEffects {
   createPointAgence$ = createEffect(() =>
     this.actions$.pipe(
       ofType(fromPointAgences.createPointAgence),
-      switchMap(({ pointAgence }) => this.pointAgenceService.create(pointAgence)),
+      switchMap(({ pointAgence }) =>
+        this.pointAgenceService.create(pointAgence),
+      ),
       map((pointAgence: IPointAgence) =>
         fromPointAgences.createPointAgenceSuccess({ pointAgence }),
       ),
@@ -52,7 +54,9 @@ export class PointAgenceEffects {
   updatePointAgence$ = createEffect(() =>
     this.actions$.pipe(
       ofType(fromPointAgences.updatePointAgence),
-      switchMap(({ pointAgence }) => this.pointAgenceService.update(pointAgence)),
+      switchMap(({ pointAgence }) =>
+        this.pointAgenceService.update(pointAgence),
+      ),
       map((pointAgence: IPointAgence) =>
         fromPointAgences.updatePointAgenceSuccess({ pointAgence }),
       ),
@@ -66,7 +70,9 @@ export class PointAgenceEffects {
   deletePointAgence$ = createEffect(() =>
     this.actions$.pipe(
       ofType(fromPointAgences.deletePointAgence),
-      switchMap(({ pointAgence }) => this.pointAgenceService.delete(pointAgence)),
+      switchMap(({ pointAgence }) =>
+        this.pointAgenceService.delete(pointAgence),
+      ),
       map((pointAgence: IPointAgence) =>
         fromPointAgences.deletePointAgenceSuccess({ pointAgence }),
       ),

@@ -8,14 +8,14 @@ import {
   Post,
   Put,
   Req,
-} from '@nestjs/common';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
-import { ServiceService } from './service.service';
-import { AuthGuard } from '@nestjs/passport';
-import { CreateServiceDto, UpdateServiceDto } from './dto/service.dto';
+} from '@nestjs/common'
+import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator'
+import { ServiceService } from './service.service'
+import { AuthGuard } from '@nestjs/passport'
+import { CreateServiceDto, UpdateServiceDto } from './dto/service.dto'
 
-import { Request } from 'express';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('Service')
 @Controller('services')
@@ -24,7 +24,7 @@ export class ServiceController {
 
   @Get()
   getAll() {
-    return this.serviceService.getAll();
+    return this.serviceService.getAll()
   }
 
   @Get('/:id')
@@ -32,14 +32,14 @@ export class ServiceController {
     @Param('id', ParseIntPipe) serviceId: number,
     createServiceDto: CreateServiceDto,
   ) {
-    return this.serviceService.getOne(serviceId);
+    return this.serviceService.getOne(serviceId)
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Post('create')
   create(@Body() createServiceDto: CreateServiceDto) {
-    return this.serviceService.create(createServiceDto);
+    return this.serviceService.create(createServiceDto)
   }
 
   @ApiBearerAuth()
@@ -50,7 +50,7 @@ export class ServiceController {
     createServiceDto: CreateServiceDto,
     @Req() request: Request,
   ) {
-    return this.serviceService.delete(serviceId);
+    return this.serviceService.delete(serviceId)
   }
 
   @ApiBearerAuth()
@@ -60,6 +60,6 @@ export class ServiceController {
     @Param('id', ParseIntPipe) serviceId: number,
     @Body() updateServiceDto: UpdateServiceDto,
   ) {
-    return this.serviceService.update(serviceId, updateServiceDto);
+    return this.serviceService.update(serviceId, updateServiceDto)
   }
 }

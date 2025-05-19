@@ -3,7 +3,6 @@ import { UserLocaliteController } from './user_localite.controller'
 import { UserLocaliteService } from './user_localite.service'
 import { PrismaService } from '../../../prisma/prisma.service'
 
-
 describe('UserLocaliteController', () => {
   let controller: UserLocaliteController
 

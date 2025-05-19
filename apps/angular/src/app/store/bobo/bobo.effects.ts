@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core'
 import { Actions, createEffect, ofType } from '@ngrx/effects'
 import { map, switchMap } from 'rxjs/operators'
 import * as fromBobos from './index'
- 
+
 import { IBobo } from '../../interfaces/bobo.interface'
 import { BoboService } from '../../services/bobo.service'
-
 
 /**
  * Effets pour la gestion des bobos
@@ -26,8 +25,8 @@ export class BoboEffects {
     this.actions$.pipe(
       ofType(fromBobos.getBobos.type),
       switchMap(() => this.boboService.getBobos()),
-      map((bobos: IBobo[]) => fromBobos.getBobosSuccess({ bobos }))
-    )
+      map((bobos: IBobo[]) => fromBobos.getBobosSuccess({ bobos })),
+    ),
   )
 
   /**
@@ -38,8 +37,8 @@ export class BoboEffects {
     this.actions$.pipe(
       ofType(fromBobos.getBobo),
       switchMap(({ id }) => this.boboService.getBobo(id)),
-      map((oneBobo: IBobo) => fromBobos.getBoboSuccess({ oneBobo }))
-    )
+      map((oneBobo: IBobo) => fromBobos.getBoboSuccess({ oneBobo })),
+    ),
   )
 
   /**
@@ -50,8 +49,8 @@ export class BoboEffects {
     this.actions$.pipe(
       ofType(fromBobos.createBobo),
       switchMap(({ bobo }) => this.boboService.create(bobo)),
-      map((bobo: IBobo) => fromBobos.createBoboSuccess({ bobo }))
-    )
+      map((bobo: IBobo) => fromBobos.createBoboSuccess({ bobo })),
+    ),
   )
 
   /**
@@ -62,8 +61,8 @@ export class BoboEffects {
     this.actions$.pipe(
       ofType(fromBobos.updateBobo),
       switchMap(({ bobo }) => this.boboService.update(bobo)),
-      map((bobo: IBobo) => fromBobos.updateBoboSuccess({ bobo }))
-    )
+      map((bobo: IBobo) => fromBobos.updateBoboSuccess({ bobo })),
+    ),
   )
 
   /**
@@ -74,7 +73,7 @@ export class BoboEffects {
     this.actions$.pipe(
       ofType(fromBobos.deleteBobo),
       switchMap(({ bobo }) => this.boboService.delete(bobo)),
-      map((bobo: IBobo) => fromBobos.deleteBoboSuccess({ bobo }))
-    )
+      map((bobo: IBobo) => fromBobos.deleteBoboSuccess({ bobo })),
+    ),
   )
 }

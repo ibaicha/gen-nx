@@ -1,7 +1,6 @@
 import { createAction, props } from '@ngrx/store'
 import { IPoint } from '@shared-models'
 
-
 // ========== CONSTANTES ==========
 
 /**
@@ -23,12 +22,12 @@ const SUCCESS = 'Success'
  */
 export const getPoint = createAction(
   `${prefix} ${GET} Single Point`,
-  props<{ id: number }>()
+  props<{ id: number }>(),
 )
 
 export const getPointSuccess = createAction(
   `${prefix} ${GET} Single Point ${SUCCESS}`,
-  props<{ onePoint: IPoint }>()
+  props<{ onePoint: IPoint }>(),
 )
 
 /**
@@ -38,7 +37,7 @@ export const getPoints = createAction(`${prefix} ${GET} All Points`)
 
 export const getPointsSuccess = createAction(
   `${prefix} ${GET} All Points ${SUCCESS}`,
-  props<{ points: IPoint[] }>()
+  props<{ points: IPoint[] }>(),
 )
 
 // ========== ACTIONS DE MODIFICATION ==========
@@ -48,12 +47,12 @@ export const getPointsSuccess = createAction(
  */
 export const createPoint = createAction(
   `${prefix} ${CREATE} Point`,
-  props<{ point: IPoint }>()
+  props<{ point: IPoint }>(),
 )
 
 export const createPointSuccess = createAction(
   `${prefix} ${CREATE} Point ${SUCCESS}`,
-  props<{ point: IPoint }>()
+  props<{ point: IPoint }>(),
 )
 
 /**
@@ -61,12 +60,12 @@ export const createPointSuccess = createAction(
  */
 export const updatePoint = createAction(
   `${prefix} ${UPDATE} Point`,
-  props<{ point: IPoint }>()
+  props<{ point: IPoint }>(),
 )
 
 export const updatePointSuccess = createAction(
   `${prefix} ${UPDATE} Point ${SUCCESS}`,
-  props<{ point: IPoint }>()
+  props<{ point: IPoint }>(),
 )
 
 /**
@@ -74,10 +73,10 @@ export const updatePointSuccess = createAction(
  */
 export const deletePoint = createAction(
   `${prefix} ${DELETE} Point`,
-  props<{ point: IPoint }>()
+  props<{ point: IPoint }>(),
 )
 
 export const deletePointSuccess = createAction(
   `${prefix} ${DELETE} Point ${SUCCESS}`,
-  props<{ point: IPoint }>()
+  props<{ point: IPoint }>(),
 )

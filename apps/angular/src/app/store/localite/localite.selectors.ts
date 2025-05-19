@@ -4,7 +4,8 @@ import { ILocaliteState } from './localite.model'
 /**
  * Sélecteur de base pour l'état des localites
  */
-export const selectLocaliteState = createFeatureSelector<ILocaliteState>('localite')
+export const selectLocaliteState =
+  createFeatureSelector<ILocaliteState>('localite')
 
 /**
  * Sélecteurs dérivés pour les différentes parties de l'état

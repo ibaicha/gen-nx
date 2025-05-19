@@ -73,8 +73,8 @@ const reducer = createReducer<IVarieteState>(
 
   on(fromVarietes.updateVarieteSuccess, (state, { variete }) => ({
     ...state,
-    varietes: state.varietes.map((item) => 
-      item.id === variete.id ? variete : item
+    varietes: state.varietes.map((item) =>
+      item.id === variete.id ? variete : item,
     ),
     isLoading: false,
   })),

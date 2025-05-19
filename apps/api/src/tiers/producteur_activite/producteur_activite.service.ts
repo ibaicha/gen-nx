@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common'
 import {
   CreateProducteurActiviteDto,
   UpdateProducteurActiviteDto,
-} from './dto/producteur_activite.dto';
-import { PrismaService } from '../../prisma/prisma.service';
+} from './dto/producteur_activite.dto'
+import { PrismaService } from '../../prisma/prisma.service'
 
 @Injectable()
 export class ProducteurActiviteService {
@@ -20,23 +20,23 @@ export class ProducteurActiviteService {
           include: {},
         },
       },
-    });
+    })
   }
 
   async getOne(producteurActiviteId: number) {
     const producteurActivite =
       await this.prismaService.producteurActivite.findUnique({
         where: { id: producteurActiviteId },
-      });
-    if (!producteurActivite) throw new NotFoundException('Post not found');
-    return producteurActivite;
+      })
+    if (!producteurActivite) throw new NotFoundException('Post not found')
+    return producteurActivite
   }
   async create(createProducteurActiviteDto: CreateProducteurActiviteDto) {
-    const { producteurId, activiteId } = createProducteurActiviteDto;
+    const { producteurId, activiteId } = createProducteurActiviteDto
     await this.prismaService.producteurActivite.create({
       data: { producteurId, activiteId },
-    });
-    return { data: 'ProducteurActivite created' };
+    })
+    return { data: 'ProducteurActivite created' }
   }
 
   async update(
@@ -46,25 +46,25 @@ export class ProducteurActiviteService {
     const producteurActivite =
       await this.prismaService.producteurActivite.findUnique({
         where: { id: producteurActiviteId },
-      });
+      })
     if (!producteurActivite)
-      throw new NotFoundException('ProducteurActivite not found');
+      throw new NotFoundException('ProducteurActivite not found')
     await this.prismaService.producteurActivite.update({
       where: { id: producteurActiviteId },
       data: { ...updateProducteurActiviteDto },
-    });
-    return { data: 'ProducteurActivite updeted!' };
+    })
+    return { data: 'ProducteurActivite updeted!' }
   }
 
   async delete(producteurActiviteId: number) {
     const producteurActivite =
       await this.prismaService.producteurActivite.findUnique({
         where: { id: producteurActiviteId },
-      });
-    if (!producteurActivite) throw new NotFoundException('Post not found');
+      })
+    if (!producteurActivite) throw new NotFoundException('Post not found')
     await this.prismaService.producteurActivite.delete({
       where: { id: producteurActiviteId },
-    });
-    return { data: 'ProducteurActivite deleted' };
+    })
+    return { data: 'ProducteurActivite deleted' }
   }
 }

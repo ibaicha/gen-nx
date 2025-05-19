@@ -26,11 +26,14 @@ const reducer = createReducer<IMouvementStockageState>(
     isLoading: true,
   })),
 
-  on(fromMouvementStockages.getMouvementStockageSuccess, (state, { oneMouvementStockage }) => ({
-    ...state,
-    isLoading: false,
-    oneMouvementStockage,
-  })),
+  on(
+    fromMouvementStockages.getMouvementStockageSuccess,
+    (state, { oneMouvementStockage }) => ({
+      ...state,
+      isLoading: false,
+      oneMouvementStockage,
+    }),
+  ),
 
   /**
    * Gestion des actions de récupération de tous les mouvements de stockage
@@ -40,41 +43,54 @@ const reducer = createReducer<IMouvementStockageState>(
     isLoading: true,
   })),
 
-  on(fromMouvementStockages.getMouvementStockagesSuccess, (state, { mouvementStockages }) => ({
-    ...state,
-    isLoading: false,
-    mouvementStockages,
-  })),
+  on(
+    fromMouvementStockages.getMouvementStockagesSuccess,
+    (state, { mouvementStockages }) => ({
+      ...state,
+      isLoading: false,
+      mouvementStockages,
+    }),
+  ),
 
   /**
    * Gestion des actions de récupération filtrée par produit et campagne
    */
-  on(fromMouvementStockages.getAllMouvementStockagesProduitCampagne, (state) => ({
-    ...state,
-    isLoading: true,
-  })),
+  on(
+    fromMouvementStockages.getAllMouvementStockagesProduitCampagne,
+    (state) => ({
+      ...state,
+      isLoading: true,
+    }),
+  ),
 
-  on(fromMouvementStockages.getAllMouvementStockagesProduitCampagneSuccess, 
+  on(
+    fromMouvementStockages.getAllMouvementStockagesProduitCampagneSuccess,
     (state, { mouvementStockagesProduitCampagne }) => ({
       ...state,
       isLoading: false,
       mouvementStockagesProduitCampagne,
-  })),
+    }),
+  ),
 
   /**
    * Gestion des actions de récupération filtrée par opération, produit et campagne
    */
-  on(fromMouvementStockages.getAllMouvementStockagesOpProduitCampagne, (state) => ({
-    ...state,
-    isLoading: true,
-  })),
+  on(
+    fromMouvementStockages.getAllMouvementStockagesOpProduitCampagne,
+    (state) => ({
+      ...state,
+      isLoading: true,
+    }),
+  ),
 
-  on(fromMouvementStockages.getAllMouvementStockagesOpProduitCampagneSuccess,
+  on(
+    fromMouvementStockages.getAllMouvementStockagesOpProduitCampagneSuccess,
     (state, { mouvementStockagesOpProduitCampagne }) => ({
       ...state,
       isLoading: false,
       mouvementStockagesOpProduitCampagne,
-  })),
+    }),
+  ),
 
   /**
    * Gestion des actions de création
@@ -84,11 +100,14 @@ const reducer = createReducer<IMouvementStockageState>(
     isLoading: true,
   })),
 
-  on(fromMouvementStockages.createMouvementStockageSuccess, (state, { mouvementStockage }) => ({
-    ...state,
-    mouvementStockages: [...state.mouvementStockages, mouvementStockage],
-    isLoading: false,
-  })),
+  on(
+    fromMouvementStockages.createMouvementStockageSuccess,
+    (state, { mouvementStockage }) => ({
+      ...state,
+      mouvementStockages: [...state.mouvementStockages, mouvementStockage],
+      isLoading: false,
+    }),
+  ),
 
   /**
    * Gestion des actions de mise à jour
@@ -98,13 +117,16 @@ const reducer = createReducer<IMouvementStockageState>(
     isLoading: true,
   })),
 
-  on(fromMouvementStockages.updateMouvementStockageSuccess, (state, { mouvementStockage }) => ({
-    ...state,
-    mouvementStockages: state.mouvementStockages.map((item) =>
-      item.id === mouvementStockage.id ? mouvementStockage : item
-    ),
-    isLoading: false,
-  })),
+  on(
+    fromMouvementStockages.updateMouvementStockageSuccess,
+    (state, { mouvementStockage }) => ({
+      ...state,
+      mouvementStockages: state.mouvementStockages.map((item) =>
+        item.id === mouvementStockage.id ? mouvementStockage : item,
+      ),
+      isLoading: false,
+    }),
+  ),
 
   /**
    * Gestion des actions de suppression
@@ -114,13 +136,16 @@ const reducer = createReducer<IMouvementStockageState>(
     isLoading: true,
   })),
 
-  on(fromMouvementStockages.deleteMouvementStockageSuccess, (state, { mouvementStockage }) => ({
-    ...state,
-    mouvementStockages: state.mouvementStockages.filter(
-      (item) => item.id !== mouvementStockage.id
-    ),
-    isLoading: false,
-  })),
+  on(
+    fromMouvementStockages.deleteMouvementStockageSuccess,
+    (state, { mouvementStockage }) => ({
+      ...state,
+      mouvementStockages: state.mouvementStockages.filter(
+        (item) => item.id !== mouvementStockage.id,
+      ),
+      isLoading: false,
+    }),
+  ),
 )
 
 /**
