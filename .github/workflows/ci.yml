@@ -1,147 +1,112 @@
-name: CI # Nom du workflow GitHub Actions
+name: Build & Push Docker Stack
 
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
-  workflow_dispatch: # Déclenchement manuel via l'interface GitHub
+  workflow_dispatch:
 
-permissions:
-  actions: read # Accès en lecture seule aux métadonnées des actions
-  contents: read # Accès en lecture seule aux contenus du dépôt
-  pull-requests: write # 🔁 Autorise la publication de commentaires dans les PR
+env:
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  VERSION_TAG: ${{ github.sha }}
+  LATEST_TAG: latest
 
 jobs:
-  main:
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 90
-    env:
-      NX_CLOUD_AUTH_TOKEN: ${{ secrets.NX_CLOUD_AUTH_TOKEN }} # Exécute dynamiquement sur les OS définis ci-dessous
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest] #[ubuntu-latest, macos-latest, windows-latest] # Matrice des OS
-      max-parallel: 3 # Limite le nombre de jobs simultanés à 3
+  build-and-push:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -uroot -p$$MYSQL_ROOT_PASSWORD"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
-      - name: Récupération du dépôt
+      - name: 📥 Checkout code
         uses: actions/checkout@v4
+
+      - name: 🔐 Login to DockerHub
+        uses: docker/login-action@v3
         with:
-          filter: tree:0
-          fetch-depth: 0
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
 
-      - name: Configuration de Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-
-      - name: Mise en cache de node_modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-
-
-      - name: Installation des dépendances
+      - name: 🏗️ Build Angular App
+        working-directory: apps/angular
         run: |
-          echo "📦 Installation des dépendances..."
-          npm ci --legacy-peer-deps
-          echo "✅ Dépendances installées"
+          docker build \
+            -t ${{ env.DOCKERHUB_USERNAME }}/angular-app:${{ env.VERSION_TAG }} \
+            -t ${{ env.DOCKERHUB_USERNAME }}/angular-app:${{ env.LATEST_TAG }} \
+            -f Dockerfile \
+            .
 
-      - name: Définir les SHAs Nx
-        uses: nrwl/nx-set-shas@v4
-
-      - name: Exécuter le Lint
+      - name: 🏗️ Build NestJS API
+        working-directory: apps/api
+        env:
+          DATABASE_URL: mysql://${{ secrets.MYSQL_USER }}:${{ secrets.MYSQL_PASSWORD }}@mysql:3306/${{ secrets.MYSQL_DATABASE }}
         run: |
-          echo "🔍 Lint des projets affectés..."
-          npx nx affected --target=lint
-          echo "✅ Lint terminé"
+          docker build \
+            -t ${{ env.DOCKERHUB_USERNAME }}/nestjs-api:${{ env.VERSION_TAG }} \
+            -t ${{ env.DOCKERHUB_USERNAME }}/nestjs-api:${{ env.LATEST_TAG }} \
+            -f Dockerfile \
+            --build-arg DATABASE_URL=$DATABASE_URL \
+            .
 
-      - name: Tests unitaires
+      - name: 🏗️ Build Prisma Studio
+        working-directory: apps/api
         run: |
-          echo "🧪 Lancement des tests unitaires..."
-          npx nx affected --target=test
-          echo "✅ Tests terminés"
+          docker build \
+            -t ${{ env.DOCKERHUB_USERNAME }}/prisma-studio:${{ env.VERSION_TAG }} \
+            -t ${{ env.DOCKERHUB_USERNAME }}/prisma-studio:${{ env.LATEST_TAG }} \
+            -f Dockerfile \
+            .
 
-      - name: Compilation des projets affectés
+      - name: 🏷️ Tag MySQL Image
         run: |
-          echo "🏗️ Compilation des projets..."
-          npx nx affected --target=build
-          echo "✅ Build terminé"
-        timeout-minutes: 30
+          docker pull mysql:8.0
+          docker tag mysql:8.0 ${{ env.DOCKERHUB_USERNAME }}/mysql-db:${{ env.VERSION_TAG }}
+          docker tag mysql:8.0 ${{ env.DOCKERHUB_USERNAME }}/mysql-db:${{ env.LATEST_TAG }}
 
-      - name: Génération du graphe de dépendances
+      - name: 🏷️ Tag phpMyAdmin Image
         run: |
-          echo "📊 Génération du graphe des dépendances..."
-          npx nx dep-graph --file=dist/graph.html
-          echo "✅ Graphe généré"
+          docker pull phpmyadmin/phpmyadmin:latest
+          docker tag phpmyadmin/phpmyadmin:latest ${{ env.DOCKERHUB_USERNAME }}/phpmyadmin:${{ env.VERSION_TAG }}
+          docker tag phpmyadmin/phpmyadmin:latest ${{ env.DOCKERHUB_USERNAME }}/phpmyadmin:${{ env.LATEST_TAG }}
 
-      - name: Applications affectées
+      - name: 🚀 Push Images to DockerHub
         run: |
-          echo "📦 Liste des applications affectées :"
-          npx nx show projects --affected --type=app
+          docker push ${{ env.DOCKERHUB_USERNAME }}/angular-app:${{ env.VERSION_TAG }}
+          docker push ${{ env.DOCKERHUB_USERNAME }}/angular-app:${{ env.LATEST_TAG }}
+          docker push ${{ env.DOCKERHUB_USERNAME }}/nestjs-api:${{ env.VERSION_TAG }}
+          docker push ${{ env.DOCKERHUB_USERNAME }}/nestjs-api:${{ env.LATEST_TAG }}
+          docker push ${{ env.DOCKERHUB_USERNAME }}/prisma-studio:${{ env.VERSION_TAG }}
+          docker push ${{ env.DOCKERHUB_USERNAME }}/prisma-studio:${{ env.LATEST_TAG }}
+          docker push ${{ env.DOCKERHUB_USERNAME }}/mysql-db:${{ env.VERSION_TAG }}
+          docker push ${{ env.DOCKERHUB_USERNAME }}/mysql-db:${{ env.LATEST_TAG }}
+          docker push ${{ env.DOCKERHUB_USERNAME }}/phpmyadmin:${{ env.VERSION_TAG }}
+          docker push ${{ env.DOCKERHUB_USERNAME }}/phpmyadmin:${{ env.LATEST_TAG }}
 
-      - name: Librairies affectées
+      - name: 📝 Generate Deployment Summary
         run: |
-          echo "📚 Liste des librairies affectées :"
-          npx nx show projects --affected --type=lib
-
-      - name: Déploiement des projets affectés
-        run: |
-          echo "🚀 Déploiement en cours..."
-          npx nx affected --target=deploy
-          echo "✅ Déploiement terminé"
-
-      - name: Tests avec couverture
-        run: |
-          echo "📈 Tests avec génération de couverture..."
-          npx nx affected --target=test --coverage
-
-      - name: Compilation d'un projet spécifique
-        run: |
-          echo "🔧 Build du projet spécifique..."
-          npx nx build angular
-
-      - name: Génération du timestamp
-        run: echo "timestamp=$(date +%s)" >> "$GITHUB_ENV"
-
-      - name: Téléverser l'artefact de build
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifact-${{ env.timestamp }}
-          path: dist/apps/angular # apps/angular/dist
-
-      - name: Téléverser le graphe de dépendances
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: dependency-graph-${{ env.timestamp }}
-          path: dist/**/*
-
-      - name: Résumé Markdown visuel
-        run: |
-          echo "## ✅ Résumé de l'exécution du workflow" >> $GITHUB_STEP_SUMMARY
-          echo "- 📦 Dépendances installées" >> $GITHUB_STEP_SUMMARY
-          echo "- 🔍 Lint terminé" >> $GITHUB_STEP_SUMMARY
-          echo "- 🧪 Tests OK" >> $GITHUB_STEP_SUMMARY
-          echo "- 🏗️ Build effectué" >> $GITHUB_STEP_SUMMARY
-          echo "- 📈 Couverture générée" >> $GITHUB_STEP_SUMMARY
-          echo "- 📊 Graphe de dépendances prêt" >> $GITHUB_STEP_SUMMARY
-
-      - name: Commentaire automatique dans la PR
-        if: github.event_name == 'pull_request'
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ## 🔁 Résultats CI
-            ✅ Lint, build et tests passés avec succès.
-            📊 [Télécharger le graphe de dépendances](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) dans les artefacts.
-
+          echo "### 🐳 Docker Images Published" >> $GITHUB_STEP_SUMMARY
+          echo "| Service | Version | Latest |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|---------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Angular App | \`${{ env.VERSION_TAG }}\` | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "| NestJS API | \`${{ env.VERSION_TAG }}\` | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Prisma Studio | \`${{ env.VERSION_TAG }}\` | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "| MySQL | \`${{ env.VERSION_TAG }}\` | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "| phpMyAdmin | \`${{ env.VERSION_TAG }}\` | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 [DockerHub Profile](https://hub.docker.com/u/${{ env.DOCKERHUB_USERNAME }})" >> $GITHUB_STEP_SUMMARY
       # (Optionnel) Login + Push vers Docker Hub
       # - name: 🔑 Login to Docker Hub
       #   uses: docker/login-action@v3
