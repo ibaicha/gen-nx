@@ -21,12 +21,11 @@ COPY . .
 RUN npx nx build angular --configuration production
 # Cela génère le code compilé dans `dist/apps/angular/browser`
 
+
 # ----------------------------
 # Étape 2 : Serveur Nginx pour héberger le frontend
 # ----------------------------
-
-# Utiliser la dernière image Nginx officielle pour servir l'app
-FROM nginx:latest
+FROM nginx:latest AS nginx  # ← ici tu ajoutes "AS nginx"
 
 # (Optionnel, en commentaire) : Surcharger la configuration Nginx par défaut
 # COPY apps/angular/config/nginx.conf  /etc/nginx/conf.d/default.conf
