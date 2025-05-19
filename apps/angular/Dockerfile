@@ -35,7 +35,10 @@ FROM nginx:latest AS nginx
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copier le code Angular compilé depuis l’étape précédente vers Nginx
-COPY dist/apps/angular/browser /usr/share/nginx/html
+# COPY dist/apps/angular/browser /usr/share/nginx/html
+COPY --from=builder /app/dist/apps/angular/browser /usr/share/nginx/html
+
+
 
 # Copier une configuration Nginx personnalisée (utile pour les routes Angular)
 COPY apps/angular/config/nginx.conf  /etc/nginx/conf.d/default.conf
