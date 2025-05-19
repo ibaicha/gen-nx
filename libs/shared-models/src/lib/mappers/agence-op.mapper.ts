@@ -1,10 +1,11 @@
 
 import { AgenceOp } from '@prisma/client'
 import { AgenceOpDto, CreateAgenceOpDto } from '../dtos/agence_op.dto'
+import { IAgenceOp } from '@shared-models'
  
 
 export class AgenceOpMapper {
-  static toDto(agenceOp: AgenceOp): AgenceOpDto {
+  static toDto(agenceOp: IAgenceOp) {
     const { id, agenceId, opId, pointId } = agenceOp
 
     return {
