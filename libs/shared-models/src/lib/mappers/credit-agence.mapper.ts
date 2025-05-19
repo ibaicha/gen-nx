@@ -3,11 +3,11 @@ import {
   CreateCreditAgenceDto,
   CreditAgenceDto,
 } from '../dtos/credit_agence.dto'
-import { ICreditAgence } from '../interfaces/interfaces'
+ 
  
 
 export class CreditAgenceMapper {
-  static toDto(creditAgence: ICreditAgence): CreditAgenceDto {
+  static toDto(creditAgence: CreditAgenceDto): CreditAgenceDto {
     const {
       id,
       date,

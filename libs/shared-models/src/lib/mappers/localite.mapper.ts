@@ -1,11 +1,11 @@
 //import { Localite } from "@prisma/client"
 import { CreateLocaliteDto, LocaliteDto } from "../dtos/localite.dto"
-import { ILocalite } from "../interfaces/interfaces"
+
 
 
 
 export class LocaliteMapper {
-  static toDto(localite: ILocalite): LocaliteDto {
+  static toDto(localite: LocaliteDto): LocaliteDto {
     const { id, name, sousZoneId, departementId } = localite
 
     return {

@@ -1,9 +1,9 @@
 
 import { AgenceOpDto, CreateAgenceOpDto } from '../dtos/agence_op.dto'
-import { IAgenceOp } from '../interfaces/interfaces'
+
 
 export class AgenceOpMapper {
-  static toDto(agenceOp: IAgenceOp): AgenceOpDto {
+  static toDto(agenceOp: AgenceOpDto): AgenceOpDto {
     const { id, agenceId, opId, pointId } = agenceOp
 
     return {
