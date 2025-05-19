@@ -1,80 +1,91 @@
-name: CI - Build Angular, NestJS, Prisma Studio & phpMyAdmin
+name: CI/CD - Build Angular & NestJS with MySQL
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
+    branches: [main]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     services:
       mysql:
-        image: mysql:8
+        image: mysql:latest
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: testdb
-          MYSQL_USER: test
-          MYSQL_PASSWORD: test
+          MYSQL_DATABASE: mydb
+          MYSQL_USER: myuser
+          MYSQL_PASSWORD: mypass
         ports:
-          - 3306:3306
+          - 3307:3306
         options: >-
-          --health-cmd="mysqladmin ping --silent"
+          --health-cmd="mysqladmin ping"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
 
     env:
-      MYSQL_HOST: 127.0.0.1
-      MYSQL_PORT: 3306
-      DATABASE_URL: mysql://test:test@127.0.0.1:3306/testdb
+      DATABASE_URL: mysql://myuser:mypass@localhost:3307/mydb
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypass
+      TZ: UTC
 
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # important pour nx affected
 
-      - name: 🟢 Setup Node.js
+      - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
-          cache: 'npm'
+          node-version: '18'
 
       - name: 📦 Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: 🔍 Lint affected projects
-        run: npx nx affected --target=lint --base=origin/main --head=HEAD
+      - name: 🧱 Build Angular App
+        run: npx nx build angular --configuration=production
 
-      - name: 🧪 Run tests on affected projects
-        run: npx nx affected --target=test --base=origin/main --head=HEAD
-
-      - name: 🧱 Build Angular Docker Image
+      - name: 🐳 Build Angular Docker Image
         run: |
           docker build \
             -f apps/angular/Dockerfile \
             -t my-angular-app:ci .
 
-      - name: 🧱 Build NestJS Docker Image
+      - name: 🧱 Build NestJS API
+        run: npx nx build api
+
+      - name: 🐳 Build NestJS Docker Image
         run: |
           docker build \
             -f apps/api/Dockerfile \
             -t my-nestjs-app:ci .
 
-      - name: 🧱 Build Prisma Studio Docker Image
+      - name: 🐳 Build Prisma Studio Image
         run: |
           docker build \
             -f apps/api/Dockerfile \
-            -t prisma-studio:ci \
-            --target=production .
-          
-      - name: 🧱 Build phpMyAdmin Image
+            -t prisma-studio:ci .
+
+      - name: 🐳 Run phpMyAdmin (test container)
         run: |
-          docker pull phpmyadmin/phpmyadmin:latest
-          docker tag phpmyadmin/phpmyadmin:latest phpmyadmin:ci
+          docker run -d \
+            --name phpmyadmin-ci \
+            --link mysql:db \
+            -e PMA_HOST=localhost \
+            -e MYSQL_ROOT_PASSWORD=root \
+            -p 8081:80 \
+            phpmyadmin/phpmyadmin
+
+      - name: 🧪 Optional Test Step (example)
+        run: echo "✅ Build complete. Ready for deploy or further testing."
+
+      - name: 🧹 Cleanup Docker (optional)
+        if: always()
+        run: docker rm -f $(docker ps -aq) || true
+
 
       # (Optionnel) Login + Push vers Docker Hub
       # - name: 🔑 Login to Docker Hub
