@@ -7,7 +7,7 @@ import {
 import { FormeJuridique } from '@prisma/client'
 
 export class FormeJuridiqueMapper {
-  static toDto(formeJuridique: IFormeJuridique) {
+  static toDto(formeJuridique: IFormeJuridique):IFormeJuridique {
     const { id, name } = formeJuridique
 
     return {

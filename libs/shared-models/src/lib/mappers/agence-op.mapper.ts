@@ -5,7 +5,7 @@ import { IAgenceOp } from '@shared-models'
  
 
 export class AgenceOpMapper {
-  static toDto(agenceOp: IAgenceOp) {
+  static toDto(agenceOp: IAgenceOp):IAgenceOp {
     const { id, agenceId, opId, pointId } = agenceOp
 
     return {

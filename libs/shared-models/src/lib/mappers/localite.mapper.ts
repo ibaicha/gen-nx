@@ -5,7 +5,7 @@ import { ILocalite } from "@shared-models"
 
 
 export class LocaliteMapper {
-  static toDto(localite: ILocalite){
+  static toDto(localite: ILocalite):ILocalite{
     const { id, name, sousZoneId, departementId } = localite
 
     return {
