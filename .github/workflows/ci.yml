@@ -25,7 +25,7 @@ jobs:
           MYSQL_USER: ${{ secrets.MYSQL_USER || 'myuser' }}
           MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD || 'mypass' }}
         ports:
-          - 3306:3306
+          - 3307:3306
         options: >-
           --health-cmd="mysqladmin ping -uroot -p$$MYSQL_ROOT_PASSWORD"
           --health-interval=10s
@@ -52,7 +52,7 @@ jobs:
             -e MYSQL_DATABASE=${{ env.MYSQL_DATABASE }} \
             -e MYSQL_USER=${{ env.MYSQL_USER }} \
             -e MYSQL_PASSWORD=${{ env.MYSQL_PASSWORD }} \
-            -p 3306:3306 \
+            -p 3307:3306 \
             mysql:8.0
 
       - name: 🐳 Start phpMyAdmin container
