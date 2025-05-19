@@ -2,9 +2,6 @@
   "name": "@gestionop/source",
   "version": "0.0.0",
   "license": "MIT",
-  "prisma": {
-    "schema": "apps/api/prisma/schema.prisma"
-  },
   "scripts": {
     "seed": "dotenv -e apps/api/.env -- ts-node-dev apps/api/src/prisma/seed.ts",
     "start:migrate:dev:init": "dotenv -e apps/api/.env -- npx prisma migrate dev --name init --schema=./apps/api/prisma/schema.prisma",
