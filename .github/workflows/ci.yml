@@ -1,4 +1,4 @@
-name: CI/CD - Build with MySQL & phpMyAdmin (Fixed)
+name: CI/CD - Build with MySQL & phpMyAdmin
 
 on:
   push:
