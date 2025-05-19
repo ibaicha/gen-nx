@@ -14,9 +14,9 @@ jobs:
         image: mysql:latest
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: nest_db
-          MYSQL_USER: nest_user
-          MYSQL_PASSWORD: password
+          MYSQL_DATABASE: mydb
+          MYSQL_USER: myuser
+          MYSQL_PASSWORD: mypass
         ports:
           - 3307:3306
         options: >-
@@ -69,6 +69,15 @@ jobs:
             -f apps/api/Dockerfile \
             -t prisma-studio:ci .
 
+      - name: 🐳 Run phpMyAdmin (test container)
+        run: |
+          docker run -d \
+            --name phpmyadmin-ci \
+            --link mysql:db \
+            -e PMA_HOST=localhost \
+            -e MYSQL_ROOT_PASSWORD=root \
+            -p 8081:80 \
+            phpmyadmin/phpmyadmin
 
       - name: 🧪 Optional Test Step (example)
         run: echo "✅ Build complete. Ready for deploy or further testing."
