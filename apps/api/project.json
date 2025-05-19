@@ -8,16 +8,14 @@
     "prisma-generate": {
       "executor": "@nx/run-commands:run-commands",
       "options": {
-        "command": "prisma generate --schema=apps/api/prisma/schema.prisma",
+        "command": "prisma generate",
         "cwd": "apps/api"
       }
     },
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
-      "dependsOn": [
-        "build"
-      ],
+      "dependsOn": ["build"],
       "options": {
         "buildTarget": "api:build",
         "runBuildTargetDependencies": false
@@ -33,17 +31,16 @@
     }
   },
   "api": {
-  "root": "apps/api",
-  "sourceRoot": "apps/api/src",
-  "projectType": "application",
-  "architect": {
-    "seed": {
-      "builder": "@nrwl/node:run-commands",
-      "options": {
-        "command": "npx ts-node apps/api/src/prisma/seed.ts"
+    "root": "apps/api",
+    "sourceRoot": "apps/api/src",
+    "projectType": "application",
+    "architect": {
+      "seed": {
+        "builder": "@nrwl/node:run-commands",
+        "options": {
+          "command": "npx ts-node apps/api/src/prisma/seed.ts"
+        }
       }
     }
   }
-}
-
 }

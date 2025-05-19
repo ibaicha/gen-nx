@@ -1,9 +1,10 @@
 import { OpDto, CreateOpDto } from '../dtos/op.dto'
+import { IOp } from '../interfaces/interfaces'
 
-import { Op } from '@prisma/client'
+//import { Op } from '@prisma/client'
 
 export class OpMapper {
-  static toDto(op: Op): OpDto {
+  static toDto(op: IOp): OpDto {
     const {
       id,
       name,

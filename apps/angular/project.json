@@ -6,6 +6,13 @@
   "sourceRoot": "apps/angular/src",
   "tags": [],
   "targets": {
+    "prisma-generate": {
+      "executor": "@nx/run-commands:run-commands",
+      "options": {
+        "command": "prisma generate",
+        "cwd": "apps/angular"
+      }
+    },
     "build": {
       "executor": "@angular-devkit/build-angular:application",
       "outputs": ["{options.outputPath}"],
