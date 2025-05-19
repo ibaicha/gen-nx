@@ -16,11 +16,9 @@ WORKDIR /app
 COPY package*.json .
 
 # Copier les fichiers Prisma nécessaires pour la génération
-#  #  # COPY apps/api/prisma ./prisma
-#  #  # COPY apps/api/src/prisma/seed.ts ./prisma
+COPY apps/api/prisma ./prisma
 
-COPY prisma ./prisma
-COPY apps/api ./apps/api
+COPY apps/api/src/prisma/seed.ts ./prisma
 
 # Copier les scripts SQL dans un répertoire spécifique
 # COPY apps/api/prisma/sql-scripts/exploitation_view.sql /docker-entrypoint-initdb.d/exploitation_view.sql

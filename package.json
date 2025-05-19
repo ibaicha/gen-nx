@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "prisma": {
-    "schema": "./apps/api/prisma/schema.prisma"
+    "schema": "apps/api/prisma/schema.prisma"
   },
   "scripts": {
     "seed": "dotenv -e apps/api/.env -- ts-node-dev apps/api/src/prisma/seed.ts",
