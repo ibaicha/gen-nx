@@ -1,5 +1,4 @@
  
-import { FormeJuridique } from '@prisma/client'
 import {
   CreateFormeJuridiqueDto,
   FormeJuridiqueDto,
@@ -8,7 +7,7 @@ import {
 
 
 export class FormeJuridiqueMapper {
-  static toDto(formeJuridique: FormeJuridique): FormeJuridiqueDto {
+  static toDto(formeJuridique: any): FormeJuridiqueDto {
     const { id, name } = formeJuridique
 
     return {
