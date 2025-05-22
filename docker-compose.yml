@@ -1,5 +1,4 @@
-version: '3.9'
-
+# Define services
 services:
   angular-app:
     container_name: angular-app-mysql
@@ -8,7 +7,7 @@ services:
       context: .
       dockerfile: ./apps/angular/Dockerfile
     ports:
-      - '8080:80'
+      - '8080:80' # Exposez l'application Angular sur le port 8080
     networks:
       - default
     depends_on:
@@ -16,31 +15,29 @@ services:
 
   nestjs-app:
     container_name: nestjs-app-mysql
+    depends_on:
+      - mysql-db
     build:
       context: .
       dockerfile: ./apps/api/Dockerfile
     restart: unless-stopped
     ports:
       - '3000:3000'
+    stdin_open: true
     env_file:
       - ./apps/api/.env
-    environment:
-      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql-db:${MYSQL_PORT}/${MYSQL_DATABASE}
-    stdin_open: true
     tty: true
     volumes:
       - .:/usr/src/app
-      - /usr/src/app/node_modules
-      - migrations:/usr/src/app/.migrations
-    depends_on:
-      - mysql-db
+      - /usr/src/app/node_modules # Volume persistant pour node_modules
+      - migrations:/usr/src/app/.migrations # Volume persistant pour le fichier de marquage
     networks:
       - default
 
   mysql-db:
     container_name: mysql-db
     platform: linux/amd64
-    image: mysql:8.0
+    image: mysql:latest
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -49,9 +46,10 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: ${TZ}
     ports:
-      - '3307:${MYSQL_PORT}' # Ton port local est 3307, dans le conteneur 3306 par défaut
+      - '3307:${MYSQL_PORT}'
     volumes:
       - db_data:/var/lib/mysql
+
     networks:
       - default
 
@@ -59,40 +57,37 @@ services:
     container_name: phpmyadmin
     image: phpmyadmin/phpmyadmin
     platform: linux/amd64
-    restart: unless-stopped
     depends_on:
       - mysql-db
+    restart: unless-stopped
     environment:
       PMA_HOST: mysql-db
-      PMA_USER: ${MYSQL_USER}
-      PMA_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - '8081:80'
-    networks:}}}
+    networks:
       - default
 
   prisma-studio:
     container_name: prisma-studio-mysql
-    image: node:18-alpine
-    working_dir: /app
-    volumes:
-      - .:/app
+    build:
+      context: .
+      dockerfile: ./apps/api/Dockerfile
+    restart: unless-stopped
+    command:
+      [
+        'npx',
+        'prisma',
+        'studio',
+        '--port',
+        '5555',
+        '--schema=./prisma/schema.prisma',
+      ]
     ports:
       - '5555:5555'
-    command: >
-      sh -c "npm install --omit=dev &&
-             npx prisma generate --schema=apps/api/prisma/schema.prisma &&
-             npx prisma studio --port 5555 --schema=apps/api/prisma/schema.prisma"
     environment:
-      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql-db:${MYSQL_PORT}/${MYSQL_DATABASE}
-    depends_on:
-      - mysql-db
-    networks:
-      - default
+      DATABASE_URL: ${DATABASE_URL}
 
 volumes:
   db_data:
   migrations:
-
-networks:
-  default:
