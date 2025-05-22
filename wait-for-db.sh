@@ -9,8 +9,11 @@ echo "Waiting for database to be ready..."
 # Variables d'environnement par défaut si elles ne sont pas définies
 DATABASE_HOST=${MYSQL_HOST:-mysql-db}
 DATABASE_PORT=${MYSQL_PORT:-3306}
+
 MYSQL_DATABASE=${MYSQL_DATABASE:-nest_db}
 DATABASE_PORT=${MYSQL_PORT:-3306}
+
+
 MAX_TRIES=${MAX_TRIES:-60}
 
 # Fichier de marquage pour indiquer que les migrations et le seed ont été exécutés
@@ -39,16 +42,9 @@ if [ ! -f "$MARKER_FILE" ]; then
   fi
 
 
-# Exécuter les fichiers SQL manuellement
-for file in /apps/api/prisma/sql-scripts/*.sql; do
-  if [ -f "$file" ]; then
-    echo "Exécution de $file..."
-    mysql -h "$HOST" -u"${MYSQL_ROOT}" -p"${MYSQL_ROOT_PASSWORD}" "${MYSQL_DATABASE}" < "$file"
-  fi
-done
 
   # Exécuter le seed
-  npx ts-node ./prisma/seed.ts
+  npx ts-node-dev ./prisma/seed.ts
   if [ $? -ne 0 ]; then
     echo "Échec de l'exécution du seed. Arrêt du script."
     exit 1
@@ -62,3 +58,4 @@ else
 fi
 
 exec "$@"
+ 

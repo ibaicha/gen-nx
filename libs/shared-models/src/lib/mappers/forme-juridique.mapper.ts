@@ -1,12 +1,14 @@
  
+import { FormeJuridique } from '@prisma/client'
 import {
   CreateFormeJuridiqueDto,
   FormeJuridiqueDto,
 } from '../dtos/forme_juridique.dto'
+ 
 
 
 export class FormeJuridiqueMapper {
-  static toDto(formeJuridique: FormeJuridiqueDto): FormeJuridiqueDto {
+  static toDto(formeJuridique: FormeJuridique): FormeJuridiqueDto {
     const { id, name } = formeJuridique
 
     return {

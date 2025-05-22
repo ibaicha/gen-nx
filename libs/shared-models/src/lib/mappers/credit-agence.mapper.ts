@@ -1,13 +1,15 @@
  
+import { CreditAgence } from '@prisma/client'
 import {
   CreateCreditAgenceDto,
   CreditAgenceDto,
 } from '../dtos/credit_agence.dto'
  
  
+ 
 
 export class CreditAgenceMapper {
-  static toDto(creditAgence: CreditAgenceDto): CreditAgenceDto {
+  static toDto(creditAgence: CreditAgence): CreditAgenceDto {
     const {
       id,
       date,

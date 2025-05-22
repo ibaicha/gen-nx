@@ -39,14 +39,12 @@ services:
     platform: linux/amd64
     image: mysql:latest
     restart: unless-stopped
-
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: ${TZ}
-
     ports:
       - '3307:${MYSQL_PORT}'
     volumes:
@@ -62,7 +60,6 @@ services:
     depends_on:
       - mysql-db
     restart: unless-stopped
-
     environment:
       PMA_HOST: mysql-db
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}

@@ -3,7 +3,7 @@
 # ----------------------------
 
 # Utilise une image Node.js officielle (version 18.14) pour construire l'app
-FROM node:18.18 AS builder
+FROM node:22-alpine AS builder
 
 # Définir le répertoire de travail dans le conteneur
 WORKDIR /app
@@ -19,6 +19,7 @@ COPY . .
 
 # Construire l'application Angular en mode production via Nx
 RUN npx nx build angular --configuration production
+# RUN npx nx run angular:build
 # Cela génère le code compilé dans `dist/apps/angular/browser`
 
 # ----------------------------

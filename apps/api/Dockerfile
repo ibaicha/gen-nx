@@ -1,4 +1,4 @@
-# Étape 1 : Environnement de développement - Buld nestjs
+# Étape 1 : Environnement de développement
 FROM node:22-alpine AS development
 
 # Installer les dépendances système nécessaires avec apk (gestionnaire Alpine)
@@ -17,16 +17,7 @@ COPY package*.json .
 
 # Copier les fichiers Prisma nécessaires pour la génération
 COPY apps/api/prisma ./prisma
-
 COPY apps/api/src/prisma/seed.ts ./prisma
-
-# Copier les scripts SQL dans un répertoire spécifique
-# COPY apps/api/prisma/sql-scripts/exploitation_view.sql /docker-entrypoint-initdb.d/exploitation_view.sql
-# RUN chmod 644 /docker-entrypoint-initdb.d/exploitation_view.sql
-# COPY apps/api/prisma/sql-scripts/mouvement_intrant_view.sql /docker-entrypoint-initdb.d/mouvement_intrant_view.sql
-# RUN chmod 644 /docker-entrypoint-initdb.d/mouvement_intrant_view.sql
-# COPY apps/api/prisma/sql-scripts/op_view.sql /docker-entrypoint-initdb.d/op_view.sql
-# RUN chmod 644 /docker-entrypoint-initdb.d/op_view.sql
 
 # Configurer le registre npm
 RUN npm config set registry https://registry.npmmirror.com/
@@ -36,7 +27,6 @@ RUN npm install
 
 # Générer les fichiers Prisma
 RUN npx prisma generate
-#RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
 
 # Copier tout le code source
 COPY . .
@@ -92,5 +82,3 @@ EXPOSE 3000 5555
 
 # Commande par défaut pour démarrer l'application
 CMD ["/wait-for-db.sh", "node", "dist/main.js"]
-
-
