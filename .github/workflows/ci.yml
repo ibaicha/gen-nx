@@ -99,7 +99,6 @@ jobs:
           path: |
             coverage/
             test-results/
-        retention-days: 7
 
       - name: Upload to Codecov
         if: success()
