@@ -1,4 +1,5 @@
 name: NX CI/CD Pipeline
+
 on:
   push:
     branches: [main]
@@ -22,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 20 # ou même 0 pour tout l'historique
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -30,31 +31,19 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install Dependencies
+      - name: Install Nx + Dependencies
         run: |
-          # Install specific compatible versions
           npm install -D nx@21.0.3 @nx/workspace@21.0.3 @nx/devkit@21.0.3
           npm ci --legacy-peer-deps
 
-          # Verify installation
-          ls -la node_modules/
-          npx nx --version
-
-      - name: Cache node modules
+      - name: Cache node_modules
         uses: actions/cache@v3
-        id: node-cache
         with:
           path: |
             node_modules
             .angular/cache
             apps/*/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Verify Project Structure
-        run: |
-          ls -la
-          ls -la apps/
-          npx nx report
 
   test:
     name: Run Tests
@@ -80,7 +69,6 @@ jobs:
 
       - name: Restore Cache
         uses: actions/cache@v3
-        id: restore-cache
         with:
           path: |
             node_modules
@@ -88,59 +76,40 @@ jobs:
             apps/*/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Install Dependencies if Needed
-        if: steps.restore-cache.outputs.cache-hit != 'true'
+      - name: Install Dependencies
         run: |
           npm install -D nx@21.0.3 @nx/workspace@21.0.3 @nx/devkit@21.0.3
           npm ci --legacy-peer-deps
 
-      - name: Verify Dependencies
-        run: |
-          ls -la node_modules/
-          npx nx --version
-
-      - name: Run Tests Individually
+      - name: Run Tests
         continue-on-error: true
         run: |
-            echo "🧪 Running tests for shared-models..."
-            npx nx run shared-models:test --ci --codeCoverage --reporters=jest-junit,default || echo "❌ shared-models:test failed"
-
-            echo "🧪 Running tests for angular..."
-            npx nx run angular:test --ci --codeCoverage --reporters=jest-junit,default || echo "❌ angular:test failed"
-
-            echo "🧪 Running tests for api..."
-            npx nx run api:test --ci --codeCoverage --reporters=jest-junit,default || echo "❌ api:test failed"
-
-      - name: Show Test Output (if any failed)
-        if: failure()
-        run: |
-            echo "=== JEST LOGS ==="
-            find ./test-results -type f -exec echo ">>> {}" \; -exec cat {} \; || echo "No test results found"
+          npx nx run shared-models:test || echo "❌ shared-models:test failed"
+          npx nx run angular:test || echo "❌ angular:test failed"
+          npx nx run api:test || echo "❌ api:test failed"
 
         env:
           CI: true
-          JEST_JUNIT_OUTPUT_DIR: ./test-results
           DATABASE_URL: mysql://root:root@localhost:3306/nest_db
 
-      - name: Upload Test Results
+      - name: Upload Coverage & Results
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: |
-            ./test-results/
-            ./coverage/
-          retention-days: 5
+            coverage/
+            test-results/
+        retention-days: 7
 
-      - name: Upload Coverage to Codecov
+      - name: Upload to Codecov
         if: success()
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./coverage/
-          fail_ci_if_error: false
 
   build-and-push:
-    name: Build and Push Docker Images
+    name: Build & Push Docker Images
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
@@ -151,13 +120,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Login to Docker Hub
+      - name: Docker Login
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Build and Push Frontend
+      - name: Build & Push Angular
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -165,11 +134,9 @@ jobs:
           push: true
           tags: ${{ env.FRONTEND_IMAGE }}:latest,${{ env.FRONTEND_IMAGE }}:${{ env.TAG }}
           labels: |
-            org.opencontainers.image.source=${{ github.repositoryUrl }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
 
-      - name: Build and Push Backend
+      - name: Build & Push NestJS API
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -179,26 +146,21 @@ jobs:
           build-args: |
             NODE_ENV=production
           labels: |
-            org.opencontainers.image.source=${{ github.repositoryUrl }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
 
-      - name: Build and Push Prisma Studio
+      - name: Build & Push Prisma Studio
         uses: docker/build-push-action@v5
         with:
           context: apps/api
+          file: Dockerfile
           push: true
           tags: ${{ env.PRISMA_STUDIO_IMAGE }}:latest,${{ env.PRISMA_STUDIO_IMAGE }}:${{ env.TAG }}
           target: development
           build-args: |
             NODE_ENV=development
-          labels: |
-            org.opencontainers.image.source=${{ github.repositoryUrl }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
   deploy:
-    name: Deploy to Production
+    name: Deploy to VPS
     needs: build-and-push
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
@@ -206,37 +168,37 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Generate Production Compose File
+      - name: Add SSH Key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy docker-compose.prod.yml
         run: |
+          echo "🔧 Génération du fichier docker-compose.prod.yml"
           cat <<EOF > docker-compose.prod.yml
           version: '3.8'
-
           services:
             angular-app:
               image: ${{ env.FRONTEND_IMAGE }}:${{ env.TAG }}
+              ports: ["8080:80"]
               restart: always
-              ports:
-                - "8080:80"
-              networks:
-                - app-network
+              networks: [app-network]
 
             nestjs-app:
               image: ${{ env.BACKEND_IMAGE }}:${{ env.TAG }}
+              ports: ["3000:3000"]
               restart: unless-stopped
-              depends_on:
-                mysql-db:
-                  condition: service_healthy
-              ports:
-                - "3000:3000"
               environment:
                 DATABASE_URL: mysql://\$MYSQL_USER:\$MYSQL_PASSWORD@mysql-db:3306/\$MYSQL_DATABASE
                 NODE_ENV: production
-              networks:
-                - app-network
+              depends_on:
+                mysql-db:
+                  condition: service_healthy
+              networks: [app-network]
 
             mysql-db:
               image: ${{ env.MYSQL_IMAGE }}
-              restart: unless-stopped
               environment:
                 MYSQL_ROOT_PASSWORD: \$MYSQL_ROOT_PASSWORD
                 MYSQL_DATABASE: \$MYSQL_DATABASE
@@ -244,35 +206,28 @@ jobs:
                 MYSQL_PASSWORD: \$MYSQL_PASSWORD
               volumes:
                 - mysql_data:/var/lib/mysql
-              networks:
-                - app-network
+              networks: [app-network]
 
             phpmyadmin:
               image: ${{ env.PHPMYADMIN_IMAGE }}
+              ports: ["8081:80"]
               depends_on:
                 mysql-db:
                   condition: service_healthy
-              restart: unless-stopped
               environment:
                 PMA_HOST: mysql-db
                 MYSQL_ROOT_PASSWORD: \$MYSQL_ROOT_PASSWORD
-              ports:
-                - "8081:80"
-              networks:
-                - app-network
+              networks: [app-network]
 
             prisma-studio:
               image: ${{ env.PRISMA_STUDIO_IMAGE }}:${{ env.TAG }}
+              ports: ["5555:5555"]
+              environment:
+                DATABASE_URL: mysql://\$MYSQL_USER:\$MYSQL_PASSWORD@mysql-db:3306/\$MYSQL_DATABASE
               depends_on:
                 mysql-db:
                   condition: service_healthy
-              restart: unless-stopped
-              environment:
-                DATABASE_URL: mysql://\$MYSQL_USER:\$MYSQL_PASSWORD@mysql-db:3306/\$MYSQL_DATABASE
-              ports:
-                - "5555:5555"
-              networks:
-                - app-network
+              networks: [app-network]
 
           volumes:
             mysql_data:
@@ -282,17 +237,12 @@ jobs:
               driver: bridge
           EOF
 
-      - name: Install SSH Key
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Copy Files to Server
+      - name: Copier sur le VPS
         run: |
           scp -o StrictHostKeyChecking=no docker-compose.prod.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/app/
-          scp -o StrictHostKeyChecking=no .env.production ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/app/
+          scp -o StrictHostKeyChecking=no .env.production ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/app/.env
 
-      - name: Deploy Stack
+      - name: Lancer le déploiement distant
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<EOF
           cd /app
