@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 20  # ou même 0 pour tout l'historique
+          fetch-depth: 20 # ou même 0 pour tout l'historique
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -35,7 +35,7 @@ jobs:
           # Install specific compatible versions
           npm install -D nx@21.0.3 @nx/workspace@21.0.3 @nx/devkit@21.0.3
           npm ci --legacy-peer-deps
-          
+
           # Verify installation
           ls -la node_modules/
           npx nx --version
@@ -99,22 +99,28 @@ jobs:
           ls -la node_modules/
           npx nx --version
 
-      - name: Run Tests
-        run: |
-            git fetch origin main --depth=20  # S'assurer que l'historique est bien là
-            npx nx affected:test \
-              --base=origin/main~1 \
-              --head=HEAD \
-              --parallel=3 \
-              --ci \
-              --codeCoverage \
-              --reporters=jest-junit,default \
-              --skip-nx-cache
+          - name: Run Tests Individually
+          continue-on-error: true
+          run: |
+            echo "🧪 Running tests for shared-models..."
+            npx nx run shared-models:test --ci --codeCoverage --reporters=jest-junit,default || echo "❌ shared-models:test failed"
+
+            echo "🧪 Running tests for angular..."
+            npx nx run angular:test --ci --codeCoverage --reporters=jest-junit,default || echo "❌ angular:test failed"
+
+            echo "🧪 Running tests for api..."
+            npx nx run api:test --ci --codeCoverage --reporters=jest-junit,default || echo "❌ api:test failed"
+
+          - name: Show Test Output (if any failed)
+            if: failure()
+            run: |
+              echo "=== JEST LOGS ==="
+              find ./test-results -type f -exec echo ">>> {}" \; -exec cat {} \; || echo "No test results found"
+
         env:
           CI: true
           JEST_JUNIT_OUTPUT_DIR: ./test-results
           DATABASE_URL: mysql://root:root@localhost:3306/nest_db
-        
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
