@@ -1,10 +1,10 @@
-name: Pipeline CI/CD NX
+name: NX CI/CD Pipeline
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-  workflow_dispatch: # Permet un déclenchement manuel via l'interface GitHub
+  workflow_dispatch:
 
 env:
   REGISTRY: docker.io
@@ -17,28 +17,32 @@ env:
 
 jobs:
   setup:
-    name: Configuration de l'environnement
+    name: Setup Environment
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
-      - name: Configurer Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      - name: Installer les dépendances avec version spécifique de NX
+      - name: Install Dependencies
         run: |
-          # Installer une version cohérente de NX et ses plugins
+          # Install specific compatible versions
           npm install -D nx@21.0.3 @nx/workspace@21.0.3 @nx/devkit@21.0.3
-          npm install --legacy-peer-deps
+          npm ci --legacy-peer-deps
+          
+          # Verify installation
+          ls -la node_modules/
           npx nx --version
 
       - name: Cache node modules
         uses: actions/cache@v3
+        id: node-cache
         with:
           path: |
             node_modules
@@ -46,8 +50,14 @@ jobs:
             apps/*/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
+      - name: Verify Project Structure
+        run: |
+          ls -la
+          ls -la apps/
+          npx nx report
+
   test:
-    name: Exécution des tests CI
+    name: Run Tests
     needs: setup
     runs-on: ubuntu-latest
     services:
@@ -63,13 +73,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configurer Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Restaurer le cache des modules Node
+      - name: Restore Cache
         uses: actions/cache@v3
+        id: restore-cache
         with:
           path: |
             node_modules
@@ -77,12 +88,18 @@ jobs:
             apps/*/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Vérifier l'installation de NX
+      - name: Install Dependencies if Needed
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        run: |
+          npm install -D nx@21.0.3 @nx/workspace@21.0.3 @nx/devkit@21.0.3
+          npm ci --legacy-peer-deps
+
+      - name: Verify Dependencies
         run: |
           ls -la node_modules/
-          npx nx report
+          npx nx --version
 
-      - name: Exécuter les tests NX
+      - name: Run Tests
         run: |
           npx nx affected:test \
             --base=main~1 \
@@ -97,7 +114,7 @@ jobs:
           JEST_JUNIT_OUTPUT_DIR: ./test-results
           DATABASE_URL: mysql://root:root@localhost:3306/nest_db
 
-      - name: Téléverser les résultats des tests
+      - name: Upload Test Results
         uses: actions/upload-artifact@v4
         with:
           name: test-results
@@ -106,7 +123,7 @@ jobs:
             ./coverage/
           retention-days: 5
 
-      - name: Envoyer la couverture de code à Codecov
+      - name: Upload Coverage to Codecov
         if: success()
         uses: codecov/codecov-action@v3
         with:
@@ -115,7 +132,7 @@ jobs:
           fail_ci_if_error: false
 
   build-and-push:
-    name: Construction et envoi des images Docker
+    name: Build and Push Docker Images
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
@@ -123,16 +140,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configurer Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Connexion à Docker Hub
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Construire et envoyer l'application Angular
+      - name: Build and Push Frontend
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -144,7 +161,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Construire et envoyer l'application NestJS
+      - name: Build and Push Backend
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -158,7 +175,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Construire et envoyer Prisma Studio
+      - name: Build and Push Prisma Studio
         uses: docker/build-push-action@v5
         with:
           context: apps/api
@@ -173,7 +190,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
-    name: Déploiement en production
+    name: Deploy to Production
     needs: build-and-push
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
@@ -181,7 +198,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Générer le fichier compose de production
+      - name: Generate Production Compose File
         run: |
           cat <<EOF > docker-compose.prod.yml
           version: '3.8'
@@ -194,11 +211,6 @@ jobs:
                 - "8080:80"
               networks:
                 - app-network
-              healthcheck:
-                test: ["CMD", "curl", "-f", "http://localhost:80"]
-                interval: 30s
-                timeout: 10s
-                retries: 3
 
             nestjs-app:
               image: ${{ env.BACKEND_IMAGE }}:${{ env.TAG }}
@@ -213,11 +225,6 @@ jobs:
                 NODE_ENV: production
               networks:
                 - app-network
-              healthcheck:
-                test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
-                interval: 30s
-                timeout: 10s
-                retries: 3
 
             mysql-db:
               image: ${{ env.MYSQL_IMAGE }}
@@ -231,11 +238,6 @@ jobs:
                 - mysql_data:/var/lib/mysql
               networks:
                 - app-network
-              healthcheck:
-                test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-                interval: 10s
-                timeout: 5s
-                retries: 10
 
             phpmyadmin:
               image: ${{ env.PHPMYADMIN_IMAGE }}
@@ -261,7 +263,6 @@ jobs:
                 DATABASE_URL: mysql://\$MYSQL_USER:\$MYSQL_PASSWORD@mysql-db:3306/\$MYSQL_DATABASE
               ports:
                 - "5555:5555"
-              command: ["npx", "prisma", "studio", "--port", "5555"]
               networks:
                 - app-network
 
@@ -273,17 +274,17 @@ jobs:
               driver: bridge
           EOF
 
-      - name: Installer la clé SSH
+      - name: Install SSH Key
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Copier les fichiers sur le serveur
+      - name: Copy Files to Server
         run: |
           scp -o StrictHostKeyChecking=no docker-compose.prod.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/app/
           scp -o StrictHostKeyChecking=no .env.production ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/app/
 
-      - name: Déployer la stack
+      - name: Deploy Stack
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<EOF
           cd /app
