@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 20  # ou même 0 pour tout l'historique
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -101,18 +101,20 @@ jobs:
 
       - name: Run Tests
         run: |
-          npx nx affected:test \
-            --base=main~1 \
-            --head=main \
-            --parallel=3 \
-            --ci \
-            --codeCoverage \
-            --reporters=jest-junit,default \
-            --skip-nx-cache
+            git fetch origin main --depth=20  # S'assurer que l'historique est bien là
+            npx nx affected:test \
+              --base=origin/main~1 \
+              --head=HEAD \
+              --parallel=3 \
+              --ci \
+              --codeCoverage \
+              --reporters=jest-junit,default \
+              --skip-nx-cache
         env:
           CI: true
           JEST_JUNIT_OUTPUT_DIR: ./test-results
           DATABASE_URL: mysql://root:root@localhost:3306/nest_db
+        
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
