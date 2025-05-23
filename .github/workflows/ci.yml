@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0 # Récupère tout l'historique
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -32,29 +32,18 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          # Install specific compatible versions
           npm install -D nx@21.0.3 @nx/workspace@21.0.3 @nx/devkit@21.0.3
           npm ci --legacy-peer-deps
-          
-          # Verify installation
-          ls -la node_modules/
           npx nx --version
 
       - name: Cache node modules
         uses: actions/cache@v3
-        id: node-cache
         with:
           path: |
             node_modules
             .angular/cache
             apps/*/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Verify Project Structure
-        run: |
-          ls -la
-          ls -la apps/
-          npx nx report
 
   test:
     name: Run Tests
@@ -72,38 +61,28 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Restore Cache
-        uses: actions/cache@v3
-        id: restore-cache
-        with:
-          path: |
-            node_modules
-            .angular/cache
-            apps/*/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-
-      - name: Install Dependencies if Needed
-        if: steps.restore-cache.outputs.cache-hit != 'true'
+      - name: Get base SHA
+        id: get-base
         run: |
-          npm install -D nx@21.0.3 @nx/workspace@21.0.3 @nx/devkit@21.0.3
-          npm ci --legacy-peer-deps
-
-      - name: Verify Dependencies
-        run: |
-          ls -la node_modules/
-          npx nx --version
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "BASE_SHA=$(git merge-base origin/main HEAD)" >> $GITHUB_OUTPUT
+          else
+            echo "BASE_SHA=origin/main~1" >> $GITHUB_OUTPUT
+          fi
 
       - name: Run Tests
         run: |
           npx nx affected:test \
-            --base=main~1 \
-            --head=main \
+            --base=${{ steps.get-base.outputs.BASE_SHA }} \
+            --head=HEAD \
             --parallel=3 \
             --ci \
             --codeCoverage \
@@ -130,6 +109,8 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./coverage/
           fail_ci_if_error: false
+
+  
 
   build-and-push:
     name: Build and Push Docker Images
