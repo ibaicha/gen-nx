@@ -2,6 +2,7 @@
   "name": "@gestionop/source",
   "version": "0.0.0",
   "license": "MIT",
+
   "scripts": {
     "test:ci:angular": "nx test angular --ci --codeCoverage",
     "test:ci:api": "nx test api --ci --codeCoverage",
