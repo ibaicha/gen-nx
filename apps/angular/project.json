@@ -6,7 +6,6 @@
   "sourceRoot": "apps/angular/src",
   "tags": [],
   "targets": {
-
     "build": {
       "executor": "@angular-devkit/build-angular:application",
       "outputs": ["{options.outputPath}"],
@@ -92,6 +91,7 @@
         "jestConfig": "apps/angular/jest.config.ts"
       }
     },
+
     "serve-static": {
       "executor": "@nx/web:file-server",
       "options": {

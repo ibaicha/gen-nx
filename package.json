@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "test:ci:angular": "nx test angular --ci --codeCoverage",
+    "test:ci:api": "nx test api --ci --codeCoverage",
+    "test:ci": "nx run-many --target=test --all --ci --parallel --maxParallel=3",
+    "test:ci:all": "npm run test:ci:angular && npm run test:ci:nest",
     "seed": "dotenv -e apps/api/.env -- ts-node-dev apps/api/src/prisma/seed.ts",
     "seed-dev": "dotenv -e apps/api/.env -- ts-node-dev apps/api/src/prisma/seed.ts",
     "start:migrate:dev:init": "dotenv -e apps/api/.env -- npx prisma migrate dev --name init --schema=./apps/api/prisma/schema.prisma",
