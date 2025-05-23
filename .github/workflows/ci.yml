@@ -4,6 +4,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch: # Déclenchement manuel via l'interface GitHub
 
 env:
   REGISTRY: docker.io
@@ -16,45 +17,44 @@ env:
 
 jobs:
   setup:
-    name: Setup NX Workspace
+    name: Setup Environment
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2  # Nécessaire pour nx affected
+          fetch-depth: 2 # Nécessaire pour nx affected
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      - name: Clean Install
+      - name: Install NX and dependencies
         run: |
-          # Nettoyer le cache npm
-          npm cache clean --force
-          
-          # Installation propre des dépendances
-          npm install --legacy-peer-deps --force
-          npm install -g nx@latest @nrwl/cli@latest
+          # Installer NX globalement
+          npm install -g nx@latest
+
+          # Clean install des dépendances
+          npm ci --force
+
+          # Installer les packages de test manquants
           npm install -D jest jest-junit @types/jest ts-jest @nrwl/jest
 
-      - name: Verify Installation
-        run: |
-          npx nx --version
-          ls -la node_modules/@nrwl/
+          # Vérifier l'installation
           npx nx report
+          npx nx --version
 
-      - name: Cache NX
+      - name: Cache node modules
         uses: actions/cache@v3
         with:
           path: |
-            .nx/cache
             node_modules
-          key: ${{ runner.os }}-nx-${{ hashFiles('package-lock.json') }}
+            apps/*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
   test:
-    name: Run Tests
+    name: Run CI Tests
     needs: setup
     runs-on: ubuntu-latest
     services:
@@ -75,9 +75,13 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Run Tests
+      - name: Verify NX installation
         run: |
-          # Solution optimale avec nx affected
+          npx nx report
+          ls -la node_modules/@nrwl/
+
+      - name: Run NX tests
+        run: |
           npx nx affected:test \
             --base=main~1 \
             --head=main \
@@ -85,16 +89,13 @@ jobs:
             --ci \
             --codeCoverage \
             --reporters=jest-junit,default \
-            --skip-nx-cache || \
-          
-          # Fallback si nx affected échoue
-          npx nx run-many --target=test --all --parallel=3 --ci --codeCoverage --reporters=jest-junit,default
+            --skip-nx-cache
         env:
           CI: true
           JEST_JUNIT_OUTPUT_DIR: ./test-results
           DATABASE_URL: mysql://root:root@localhost:3306/nest_db
 
-      - name: Upload Results
+      - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
           name: test-results
@@ -103,41 +104,45 @@ jobs:
             ./coverage/
           retention-days: 5
 
-      - name: Upload to Codecov
+      - name: Upload coverage to Codecov
         if: success()
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./coverage/
+          fail_ci_if_error: false
 
   build-and-push:
-    name: Build and Push
+    name: Build and Push Docker Images
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup Docker Buildx
+
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      
-      - name: Build Frontend
+
+      - name: Build and push Angular
         uses: docker/build-push-action@v5
         with:
           context: .
           file: apps/angular/Dockerfile
           push: true
           tags: ${{ env.FRONTEND_IMAGE }}:latest,${{ env.FRONTEND_IMAGE }}:${{ env.TAG }}
+          labels: |
+            org.opencontainers.image.source=${{ github.repositoryUrl }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      
-      - name: Build Backend
+
+      - name: Build and push NestJS
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -146,50 +151,142 @@ jobs:
           tags: ${{ env.BACKEND_IMAGE }}:latest,${{ env.BACKEND_IMAGE }}:${{ env.TAG }}
           build-args: |
             NODE_ENV=production
+          labels: |
+            org.opencontainers.image.source=${{ github.repositoryUrl }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push Prisma Studio
+        uses: docker/build-push-action@v5
+        with:
+          context: apps/api
+          push: true
+          tags: ${{ env.PRISMA_STUDIO_IMAGE }}:latest,${{ env.PRISMA_STUDIO_IMAGE }}:${{ env.TAG }}
+          target: development
+          build-args: |
+            NODE_ENV=development
+          labels: |
+            org.opencontainers.image.source=${{ github.repositoryUrl }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
   deploy:
-    name: Deploy
+    name: Deploy to Production
     needs: build-and-push
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Generate Compose File
+
+      - name: Generate production compose file
         run: |
           cat <<EOF > docker-compose.prod.yml
           version: '3.8'
+
           services:
-            frontend:
+            angular-app:
               image: ${{ env.FRONTEND_IMAGE }}:${{ env.TAG }}
-              ports: ["8080:80"]
-              depends_on: [backend]
-            
-            backend:
+              restart: always
+              ports:
+                - "8080:80"
+              networks:
+                - app-network
+              healthcheck:
+                test: ["CMD", "curl", "-f", "http://localhost:80"]
+                interval: 30s
+                timeout: 10s
+                retries: 3
+
+            nestjs-app:
               image: ${{ env.BACKEND_IMAGE }}:${{ env.TAG }}
+              restart: unless-stopped
+              depends_on:
+                mysql-db:
+                  condition: service_healthy
+              ports:
+                - "3000:3000"
               environment:
-                DATABASE_URL: mysql://\$DB_USER:\$DB_PASS@db:3306/\$DB_NAME
-              ports: ["3000:3000"]
-            
-            db:
+                DATABASE_URL: mysql://\$MYSQL_USER:\$MYSQL_PASSWORD@mysql-db:3306/\$MYSQL_DATABASE
+                NODE_ENV: production
+              networks:
+                - app-network
+              healthcheck:
+                test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+                interval: 30s
+                timeout: 10s
+                retries: 3
+
+            mysql-db:
               image: ${{ env.MYSQL_IMAGE }}
+              restart: unless-stopped
               environment:
-                MYSQL_ROOT_PASSWORD: \$DB_ROOT_PASS
-                MYSQL_DATABASE: \$DB_NAME
-                MYSQL_USER: \$DB_USER
-                MYSQL_PASSWORD: \$DB_PASS
+                MYSQL_ROOT_PASSWORD: \$MYSQL_ROOT_PASSWORD
+                MYSQL_DATABASE: \$MYSQL_DATABASE
+                MYSQL_USER: \$MYSQL_USER
+                MYSQL_PASSWORD: \$MYSQL_PASSWORD
+              volumes:
+                - mysql_data:/var/lib/mysql
+              networks:
+                - app-network
+              healthcheck:
+                test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+                interval: 10s
+                timeout: 5s
+                retries: 10
+
+            phpmyadmin:
+              image: ${{ env.PHPMYADMIN_IMAGE }}
+              depends_on:
+                mysql-db:
+                  condition: service_healthy
+              restart: unless-stopped
+              environment:
+                PMA_HOST: mysql-db
+                MYSQL_ROOT_PASSWORD: \$MYSQL_ROOT_PASSWORD
+              ports:
+                - "8081:80"
+              networks:
+                - app-network
+
+            prisma-studio:
+              image: ${{ env.PRISMA_STUDIO_IMAGE }}:${{ env.TAG }}
+              depends_on:
+                mysql-db:
+                  condition: service_healthy
+              restart: unless-stopped
+              environment:
+                DATABASE_URL: mysql://\$MYSQL_USER:\$MYSQL_PASSWORD@mysql-db:3306/\$MYSQL_DATABASE
+              ports:
+                - "5555:5555"
+              command: ["npx", "prisma", "studio", "--port", "5555"]
+              networks:
+                - app-network
+
+          volumes:
+            mysql_data:
+
+          networks:
+            app-network:
+              driver: bridge
           EOF
-      
-      - name: Deploy Stack
-        uses: appleboy/ssh-action@v1
+
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.9.0
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /app
-            docker compose -f docker-compose.prod.yml down
-            docker compose -f docker-compose.prod.yml pull
-            docker compose -f docker-compose.prod.yml up -d --remove-orphans
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Copy files to server
+        run: |
+          scp -o StrictHostKeyChecking=no docker-compose.prod.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/app/
+          scp -o StrictHostKeyChecking=no .env.production ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/app/
+
+      - name: Deploy stack
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<EOF
+          cd /app
+          docker compose -f docker-compose.prod.yml down
+          docker compose -f docker-compose.prod.yml pull
+          docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
+          docker image prune -f
+          EOF
