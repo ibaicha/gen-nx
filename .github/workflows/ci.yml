@@ -99,9 +99,9 @@ jobs:
           ls -la node_modules/
           npx nx --version
 
-          - name: Run Tests Individually
-          continue-on-error: true
-          run: |
+      - name: Run Tests Individually
+        continue-on-error: true
+        run: |
             echo "🧪 Running tests for shared-models..."
             npx nx run shared-models:test --ci --codeCoverage --reporters=jest-junit,default || echo "❌ shared-models:test failed"
 
@@ -111,11 +111,11 @@ jobs:
             echo "🧪 Running tests for api..."
             npx nx run api:test --ci --codeCoverage --reporters=jest-junit,default || echo "❌ api:test failed"
 
-          - name: Show Test Output (if any failed)
-            if: failure()
-            run: |
-              echo "=== JEST LOGS ==="
-              find ./test-results -type f -exec echo ">>> {}" \; -exec cat {} \; || echo "No test results found"
+      - name: Show Test Output (if any failed)
+        if: failure()
+        run: |
+            echo "=== JEST LOGS ==="
+            find ./test-results -type f -exec echo ">>> {}" \; -exec cat {} \; || echo "No test results found"
 
         env:
           CI: true
