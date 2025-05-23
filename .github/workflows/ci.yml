@@ -10,9 +10,6 @@ env:
   REGISTRY: docker.io
   FRONTEND_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/gen-nx-frontend
   BACKEND_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/gen-nx-api
-  MYSQL_IMAGE: mysql:8.0
-  PHPMYADMIN_IMAGE: phpmyadmin/phpmyadmin
-  PRISMA_STUDIO_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/gen-nx-prisma-studio
   TAG: ${{ github.sha }}
 
 jobs:
@@ -22,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Récupère tout l'historique
+          fetch-depth: 0 # Nécessaire pour nx affected
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -30,11 +27,17 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install Dependencies
+      - name: Install NX and dependencies
         run: |
-          npm install -D nx@21.0.3 @nx/workspace@21.0.3 @nx/devkit@21.0.3
-          npm ci --legacy-peer-deps
+          # Installer les dépendances avec les versions compatibles
+          npm install -D nx@21.0.3 @nrwl/workspace@21.0.3 @nrwl/devkit@21.0.3
+          npm install --legacy-peer-deps
+          
+          # Vérifier la structure du projet
+          ls -la
+          ls -la node_modules/
           npx nx --version
+          npx nx report
 
       - name: Cache node modules
         uses: actions/cache@v3
@@ -49,16 +52,6 @@ jobs:
     name: Run Tests
     needs: setup
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: nest_db
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
     steps:
       - uses: actions/checkout@v4
         with:
@@ -68,6 +61,28 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Restore cache
+        uses: actions/cache@v3
+        id: cache
+        with:
+          path: |
+            node_modules
+            .angular/cache
+            apps/*/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies if cache missed
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          npm install -D nx@21.0.3 @nrwl/workspace@21.0.3 @nrwl/devkit@21.0.3
+          npm install --legacy-peer-deps
+
+      - name: Verify NX workspace
+        run: |
+          ls -la node_modules/@nrwl/
+          npx nx --version
+          npx nx report
 
       - name: Get base SHA
         id: get-base
@@ -86,14 +101,12 @@ jobs:
             --parallel=3 \
             --ci \
             --codeCoverage \
-            --reporters=jest-junit,default \
             --skip-nx-cache
         env:
           CI: true
           JEST_JUNIT_OUTPUT_DIR: ./test-results
-          DATABASE_URL: mysql://root:root@localhost:3306/nest_db
 
-      - name: Upload Test Results
+      - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
           name: test-results
@@ -102,15 +115,7 @@ jobs:
             ./coverage/
           retention-days: 5
 
-      - name: Upload Coverage to Codecov
-        if: success()
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./coverage/
-          fail_ci_if_error: false
-
-  
+  # ... (build-and-push et deploy jobs restent inchangés) ...
 
   build-and-push:
     name: Build and Push Docker Images
