@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2 # Nécessaire pour nx affected
+          fetch-depth: 2
 
       - name: Configurer Node.js
         uses: actions/setup-node@v4
@@ -30,18 +30,14 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Installer les dépendances
+      - name: Installer les dépendances avec version spécifique de NX
         run: |
-          # Installation propre des dépendances
-          npm ci
-          
-          # Installation locale de Nx (important pour la reconnaissance du workspace)
-          npm install -D nx@latest
-          
-          # Vérification de l'installation
+          # Installer une version cohérente de NX et ses plugins
+          npm install -D nx@21.0.3 @nx/workspace@21.0.3 @nx/devkit@21.0.3
+          npm install --legacy-peer-deps
           npx nx --version
 
-      - name: Mise en cache des modules Node
+      - name: Cache node modules
         uses: actions/cache@v3
         with:
           path: |
