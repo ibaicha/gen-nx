@@ -2,7 +2,6 @@
   "name": "@gestionop/source",
   "version": "0.0.0",
   "license": "MIT",
-
   "scripts": {
     "test:ci:angular": "nx test angular --ci --codeCoverage",
     "test:ci:api": "nx test api --ci --codeCoverage",
@@ -18,6 +17,7 @@
     "format": "prettier --write \"apps/{api,angular}/src/**/*.ts\"",
     "docker:clean": "./docker-nx-clean.sh",
     "docker:restart": "./docker-nx-restart.sh",
+    "docker:restart-prod": "./docker-nx-restart-prod.sh",
     "docker:restart:angular": "./docker-nx-restart-cible.sh angular-app",
     "docker:restart:nestjs": "./docker-nx-restart-cible.sh nestjs-app",
     "docker:restart:mysql": "./docker-nx-restart-cible.sh mysql-db",

@@ -1,0 +1,103 @@
+services:
+  angular-app:
+    image: ${FRONTEND_IMAGE}:${TAG}
+    container_name: angular-app-prod
+    restart: always
+    ports:
+      - '8080:80' # Angular app accessible sur http://localhost:8080
+    networks:
+      - app-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:80']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - nestjs-app
+
+  nestjs-app:
+    image: ${BACKEND_IMAGE}:${TAG}
+    container_name: nestjs-app-prod
+    restart: unless-stopped
+    ports:
+      - '3000:3000' # API accessible sur http://localhost:3000
+    env_file:
+      - ./apps/api/.env.production
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql-db-prod:3306/${MYSQL_DATABASE}
+    networks:
+      - app-network
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db-prod
+    restart: unless-stopped
+    env_file:
+      - ./apps/api/.env.production
+    environment:
+      TZ: ${TZ}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'mysqladmin',
+          'ping',
+          '-h',
+          'localhost',
+          '-u${MYSQL_USER}',
+          '-p${MYSQL_PASSWORD}',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-prod
+    depends_on:
+      - mysql-db
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql-db-prod
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - '127.0.0.1:8081:80' # Accès seulement en local
+    networks:
+      - app-network
+
+  prisma-studio:
+    image: ${PRISMA_STUDIO_IMAGE}:${TAG}
+    container_name: prisma-studio-prod
+    restart: unless-stopped
+    command: ['npx', 'prisma', 'studio', '--port', '5555']
+    ports:
+      - '127.0.0.1:5555:5555' # Accès seulement en local
+    environment:
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql-db-prod:3306/${MYSQL_DATABASE}
+      NODE_ENV: production
+    depends_on:
+      - mysql-db
+    networks:
+      - app-network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
