@@ -10,6 +10,9 @@ env:
   REGISTRY: docker.io
   FRONTEND_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/gen-nx-frontend
   BACKEND_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/gen-nx-api
+  MYSQL_IMAGE: mysql:8.0
+  PHPMYADMIN_IMAGE: phpmyadmin/phpmyadmin
+  PRISMA_STUDIO_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/gen-nx-prisma-studio
   TAG: ${{ github.sha }}
 
 jobs:
@@ -19,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Nécessaire pour nx affected
+          fetch-depth: 2
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -27,20 +30,19 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install NX and dependencies
+      - name: Install Dependencies
         run: |
-          # Installer les dépendances avec les versions compatibles
-          npm install -D nx@21.0.3 @nrwl/workspace@21.0.3 @nrwl/devkit@21.0.3
-          npm install --legacy-peer-deps
+          # Install specific compatible versions
+          npm install -D nx@21.0.3 @nx/workspace@21.0.3 @nx/devkit@21.0.3
+          npm ci --legacy-peer-deps
           
-          # Vérifier la structure du projet
-          ls -la
+          # Verify installation
           ls -la node_modules/
           npx nx --version
-          npx nx report
 
       - name: Cache node modules
         uses: actions/cache@v3
+        id: node-cache
         with:
           path: |
             node_modules
@@ -48,23 +50,37 @@ jobs:
             apps/*/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
+      - name: Verify Project Structure
+        run: |
+          ls -la
+          ls -la apps/
+          npx nx report
+
   test:
     name: Run Tests
     needs: setup
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: nest_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Restore cache
+      - name: Restore Cache
         uses: actions/cache@v3
-        id: cache
+        id: restore-cache
         with:
           path: |
             node_modules
@@ -72,41 +88,33 @@ jobs:
             apps/*/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Install dependencies if cache missed
-        if: steps.cache.outputs.cache-hit != 'true'
+      - name: Install Dependencies if Needed
+        if: steps.restore-cache.outputs.cache-hit != 'true'
         run: |
-          npm install -D nx@21.0.3 @nrwl/workspace@21.0.3 @nrwl/devkit@21.0.3
-          npm install --legacy-peer-deps
+          npm install -D nx@21.0.3 @nx/workspace@21.0.3 @nx/devkit@21.0.3
+          npm ci --legacy-peer-deps
 
-      - name: Verify NX workspace
+      - name: Verify Dependencies
         run: |
-          ls -la node_modules/@nrwl/
+          ls -la node_modules/
           npx nx --version
-          npx nx report
-
-      - name: Get base SHA
-        id: get-base
-        run: |
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            echo "BASE_SHA=$(git merge-base origin/main HEAD)" >> $GITHUB_OUTPUT
-          else
-            echo "BASE_SHA=origin/main~1" >> $GITHUB_OUTPUT
-          fi
 
       - name: Run Tests
         run: |
           npx nx affected:test \
-            --base=${{ steps.get-base.outputs.BASE_SHA }} \
-            --head=HEAD \
+            --base=main~1 \
+            --head=main \
             --parallel=3 \
             --ci \
             --codeCoverage \
+            --reporters=jest-junit,default \
             --skip-nx-cache
         env:
           CI: true
           JEST_JUNIT_OUTPUT_DIR: ./test-results
+          DATABASE_URL: mysql://root:root@localhost:3306/nest_db
 
-      - name: Upload test results
+      - name: Upload Test Results
         uses: actions/upload-artifact@v4
         with:
           name: test-results
@@ -115,7 +123,13 @@ jobs:
             ./coverage/
           retention-days: 5
 
-  # ... (build-and-push et deploy jobs restent inchangés) ...
+      - name: Upload Coverage to Codecov
+        if: success()
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./coverage/
+          fail_ci_if_error: false
 
   build-and-push:
     name: Build and Push Docker Images
