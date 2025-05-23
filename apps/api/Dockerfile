@@ -18,15 +18,10 @@ COPY package*.json .
 # Copier les fichiers Prisma nécessaires pour la génération
 COPY apps/api/prisma ./prisma
 
-COPY apps/api/src/prisma/seed.ts ./prisma
 
-RUN if [ -f "apps/api/src/prisma/seed.ts" ]; then \
-      echo "[INFO] Copie du fichier seed.ts..."; \
-      mkdir -p apps/api/prisma && \
-      cp apps/api/src/prisma/seed.ts apps/api/prisma/; \
-    else \
-      echo "[WARN] Fichier seed.ts non trouvé - chemin vérifié: apps/api/src/prisma/"; \
-    fi
+
+COPY apps/api/src/prisma/seed.ts apps/api/prisma/
+
 
 
 # Configurer le registre npm
