@@ -17,10 +17,7 @@ COPY package*.json .
 
 # Copier les fichiers Prisma nécessaires pour la génération
 COPY apps/api/prisma ./prisma
-
-
-COPY apps/api/src/prisma/seed.ts ./prisma/seed.ts
-
+# COPY apps/api/src/prisma/seed.ts ./prisma
 
 # Configurer le registre npm
 RUN npm config set registry https://registry.npmmirror.com/
