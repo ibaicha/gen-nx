@@ -2,9 +2,7 @@
   "name": "@gestionop/source",
   "version": "0.0.0",
   "license": "MIT",
-  "prisma": {
-    "schema": "apps/api/prisma/schema.prisma"
-  },
+
 
   "scripts": {
     "test:ci:angular": "nx test angular --ci --codeCoverage",
