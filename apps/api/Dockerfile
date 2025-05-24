@@ -15,12 +15,13 @@ WORKDIR /app
 
 COPY package*.json .
 COPY apps/api/src/prisma ./apps/api/prisma
+COPY apps/api/prisma ./apps/api/prisma
 # Configurer le registre npm
 RUN npm install -g pnpm && npm config set registry https://registry.npmmirror.com/
 
 # Installer les dépendances Node.js
 RUN pnpm install
-RUN npx prisma generate --schema=apps/api/src/prisma/schema.prisma
+RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
 
 # Copier tout le code source
 COPY . .
