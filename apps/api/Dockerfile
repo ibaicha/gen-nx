@@ -13,7 +13,7 @@ WORKDIR /app
 
 # Copier les fichiers de config pour les dépendances
 COPY package*.json ./
-COPY pnpm-lock.yaml ./
+ 
 
 # Configurer le registre et installer pnpm
 RUN npm install -g pnpm && npm config set registry https://registry.npmmirror.com/
