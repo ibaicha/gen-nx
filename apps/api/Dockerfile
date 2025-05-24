@@ -10,12 +10,12 @@ WORKDIR /app
 # Configurer npm (optionnel : miroir pour la Chine)
 RUN npm config set registry https://registry.npmmirror.com/
 
-# Copier les fichiers nécessaires pour les dépendances
-COPY package*.json .
+# 2. Copier package.json et package-lock.json depuis la racine du projet
+COPY ./package.json ./package.json
+COPY ./package-lock.json ./package-lock.json
 
-
-# Installer les dépendances avec npm (au lieu de pnpm)
-RUN npm install
+# 3. Installer les dépendances (vérification visuelle)
+RUN ls -la && npm install
 
 # Copier le reste du code
 COPY . .
