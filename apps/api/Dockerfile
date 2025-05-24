@@ -16,6 +16,7 @@ WORKDIR /app
 COPY package*.json .
 COPY apps/api/src/prisma ./apps/api/prisma
 COPY apps/api/prisma ./apps/api/prisma
+COPY apps/api/prisma/schema.prisma ./apps/api/prisma/schema.prisma
 # Configurer le registre npm
 RUN npm install -g pnpm && npm config set registry https://registry.npmmirror.com/
 
