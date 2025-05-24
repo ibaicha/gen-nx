@@ -11,7 +11,8 @@ WORKDIR /app
 RUN npm install -g pnpm && npm config set registry https://registry.npmmirror.com/
 
 # Copier les fichiers nécessaires pour les dépendances
-COPY package*.json ./
+COPY package.json ./
+COPY package-lock.json ./
 
 # Installer les dépendances
 RUN pnpm install
