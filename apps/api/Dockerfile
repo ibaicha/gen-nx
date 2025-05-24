@@ -12,7 +12,8 @@ RUN apk add --no-cache \
 WORKDIR /app
 
 # Copier les fichiers de dépendances pour optimiser le cache
-COPY package.json pnpm-lock.yaml .npmrc ./
+
+COPY package*.json .
 
 # Configurer le registre npm
 RUN npm install -g pnpm && npm config set registry https://registry.npmmirror.com/
