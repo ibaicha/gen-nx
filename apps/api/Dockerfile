@@ -52,7 +52,9 @@ RUN chmod +x /wait-for-db.sh
 COPY apps/api/.env .env
 
 # (Optionnel) Installer ts-node si nécessaire à l'exécution
-RUN npm install -D ts-node typescript
+# RUN npm install -D ts-node typescript
+RUN pnpm add -D ts-node typescript
+
 
 # Exposer les ports nécessaires
 EXPOSE 3000 5555
