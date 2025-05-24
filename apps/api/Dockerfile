@@ -14,12 +14,13 @@ WORKDIR /app
 # Copier les fichiers de dépendances pour optimiser le cache
 
 COPY package*.json .
-
+COPY apps/api/src/prisma ./apps/api/prisma
 # Configurer le registre npm
 RUN npm install -g pnpm && npm config set registry https://registry.npmmirror.com/
 
 # Installer les dépendances Node.js
 RUN pnpm install
+RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
 
 # Copier tout le code source
 COPY . .
@@ -28,7 +29,7 @@ COPY . .
 COPY apps/api/src/prisma/seed.ts apps/api/prisma/seed.ts
 
 # Générer les fichiers Prisma
-RUN npx prisma generate
+# RUN npx prisma generate
 
 # Définir une variable d'environnement par défaut
 ARG APP_ENV=development
@@ -61,6 +62,7 @@ RUN npm config set registry https://registry.npmmirror.com/
 
 # Générer à nouveau les fichiers Prisma (par sécurité)
 RUN npx prisma generate
+
 
 # Copier et rendre le script `wait-for-db.sh` exécutable
 COPY wait-for-db.sh /wait-for-db.sh

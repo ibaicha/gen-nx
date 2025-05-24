@@ -5,6 +5,7 @@
   "prisma": {
     "schema": "apps/api/prisma/schema.prisma"
   },
+
   "scripts": {
     "test:ci:angular": "nx test angular --ci --codeCoverage",
     "test:ci:api": "nx test api --ci --codeCoverage",
