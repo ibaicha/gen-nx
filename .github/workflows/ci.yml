@@ -1,4 +1,4 @@
-name: NX CI/CD Pipeline
+name: NX CI/CD Pipeline with Docker
 on:
   push:
     branches: [main]
