@@ -7,15 +7,15 @@ RUN apk add --no-cache bash git openssl mysql-client
 # Définir le répertoire de travail
 WORKDIR /app
 
-# Installer pnpm
-RUN npm install -g pnpm && npm config set registry https://registry.npmmirror.com/
+# Configurer npm (optionnel : miroir pour la Chine)
+RUN npm config set registry https://registry.npmmirror.com/
 
 # Copier les fichiers nécessaires pour les dépendances
 COPY package.json ./
 COPY package-lock.json ./
 
-# Installer les dépendances
-RUN pnpm install
+# Installer les dépendances avec npm (au lieu de pnpm)
+RUN npm install
 
 # Copier le reste du code
 COPY . .
@@ -24,7 +24,7 @@ COPY . .
 RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
 
 # Build de l'application NestJS via Nx
-RUN pnpm nx build api
+RUN npx nx build api
 
 # Étape 2 : Image de production
 FROM node:22-alpine AS production
@@ -52,12 +52,8 @@ RUN chmod +x /wait-for-db.sh
 # Copier le fichier d'environnement
 COPY apps/api/.env .env
 
-# Installer pnpm
-RUN npm install -g pnpm
 # (Optionnel) Installer ts-node si nécessaire à l'exécution
-# RUN npm install -D ts-node typescript
-RUN pnpm add -D ts-node typescript
-
+RUN npm install -D ts-node typescript
 
 # Exposer les ports nécessaires
 EXPOSE 3000 5555
