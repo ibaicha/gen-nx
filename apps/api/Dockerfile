@@ -51,6 +51,8 @@ RUN chmod +x /wait-for-db.sh
 # Copier le fichier d'environnement
 COPY apps/api/.env .env
 
+# Installer pnpm
+RUN npm install -g pnpm
 # (Optionnel) Installer ts-node si nécessaire à l'exécution
 # RUN npm install -D ts-node typescript
 RUN pnpm add -D ts-node typescript
