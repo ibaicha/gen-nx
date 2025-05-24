@@ -20,7 +20,7 @@ RUN npm install -g pnpm && npm config set registry https://registry.npmmirror.co
 
 # Installer les dépendances Node.js
 RUN pnpm install
-RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
+RUN npx prisma generate --schema=apps/api/src/prisma/schema.prisma
 
 # Copier tout le code source
 COPY . .
