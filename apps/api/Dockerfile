@@ -11,8 +11,7 @@ WORKDIR /app
 RUN npm config set registry https://registry.npmmirror.com/
 
 # 2. Copier package.json et package-lock.json depuis la racine du projet
-COPY ./package.json ./package.json
-COPY ./package-lock.json ./package-lock.json
+COPY ../../package*.json .
 
 # 3. Installer les dépendances (vérification visuelle)
 RUN ls -la && npm install
