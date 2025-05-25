@@ -10,7 +10,8 @@ WORKDIR /usr/src/app
 COPY . .
  
 RUN npm install 
-RUN npm run build ${APP}
+# RUN npm run build ${APP}
+RUN npm run  build api
 
 # production stage
 FROM base AS production 
