@@ -4,6 +4,9 @@ FROM node:20-alpine AS builder
 # Créer le dossier de travail
 WORKDIR /app
 
+
+# Configurer npm (optionnel : miroir pour la Chine)
+RUN npm config set registry https://registry.npmmirror.com/
 # Copier les fichiers Nx et les dépendances nécessaires
 
 
@@ -26,9 +29,7 @@ RUN npm ci
 
 # Build uniquement l'app NestJS ciblée
 
-# Vérification du workspace Nx
-RUN if [ ! -f "nx.json" ]; then echo "ERREUR: nx.json manquant - Ce n'est pas un workspace Nx valide" && exit 1; fi
-
+ 
 RUN npx nx run api:build:production --verbose
 
 # Étape 2 : Image de production
@@ -43,6 +44,8 @@ WORKDIR /app
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist/apps/api ./dist/apps/api
+COPY --from=builder /app/dist ./dist
+
 
 # Utiliser un utilisateur non-root
 USER appuser
