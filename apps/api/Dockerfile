@@ -1,34 +1,25 @@
 # Étape 1 : Build de l'application
-FROM node:22-alpine AS builder
+FROM node:22-alpine AS development
 
-WORKDIR /usr/src/app
 
-# Copier les fichiers de base
-COPY package*.json ./
-COPY nx.json workspace.json tsconfig.base.json ./
-COPY tsconfig.json ./
-COPY libs ./libs
-COPY apps/api ./apps/api
+ARG APP 
+ARG NODE_ENV=development 
+ENV NODE_ENV=${NODE_ENV}
+WORKDIR /usr/src/app 
+COPY api .   
+RUN npm install 
+RUN npm run build ${APP}
 
-# Installer les dépendances
-RUN npm install
-
-# Build l'application NestJS (avec ou sans --prod selon config Nx)
-RUN npx nx build api
-
-# Étape 2 : Création de l’image finale
-FROM node:22-alpine AS runner
-
-WORKDIR /usr/src/app
-
-# Copier uniquement les dépendances nécessaires à l'exécution
-COPY --from=builder /usr/src/app/node_modules ./node_modules
-
-# Copier le code buildé
-COPY --from=builder /usr/src/app/dist/apps/api ./dist
-
-# Exposer le port utilisé par NestJS
-EXPOSE 3000
-
-# Lancer l'application
-CMD ["node", "dist/main.js"]
+# production stage
+FROM base AS production 
+ARG APP 
+ARG NODE_ENV=production 
+ENV NODE_ENV=${NODE_ENV} 
+WORKDIR /usr/src/app 
+COPY api . 
+RUN npm install --prod
+COPY --from=development /usr/src/app/dist ./dist 
+ 
+# Add an env to save ARG
+ENV APP_MAIN_FILE=dist/apps/${APP}/main 
+CMD node ${APP_MAIN_FILE}
