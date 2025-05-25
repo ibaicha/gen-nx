@@ -6,13 +6,16 @@ WORKDIR /app
 
 # Copier les fichiers Nx et les dépendances nécessaires
 
-COPY package.json /package.json
-COPY package-lock.json /package-lock.json
-COPY tsconfig.base.json /tsconfig.base.json
-COPY nx.json /nx.json
-# COPY workspace.json /workspace.json
-COPY tsconfig.base.json /tsconfig.json
+
+# 3. Copier les fichiers essentiels pour Nx (dans le bon ordre)
+COPY package.json package-lock.json ./
+COPY nx.json .
+COPY tsconfig.base.json .
 COPY apps/api/project.json ./apps/api/project.json
+
+
+
+
 
 # Copier les sources nécessaires depuis le monorepo
 COPY libs ./libs
