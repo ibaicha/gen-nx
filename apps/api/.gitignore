@@ -21,3 +21,8 @@ build
 # OS-specific files
 .DS_Store
 Thumbs.db
+
+!nx.json
+!package.json
+!tsconfig.base.json
+!apps/api/project.json

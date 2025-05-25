@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="43" failures="0" errors="0" time="14.404">
+  <testsuite name="CreditCampagneTitreComponent" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:05" time="6.186" tests="1">
+    <testcase classname="CreditCampagneTitreComponent should create" name="CreditCampagneTitreComponent should create" time="0.417">
+    </testcase>
+  </testsuite>
+  <testsuite name="UserProfileComponent" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:05" time="6.481" tests="1">
+    <testcase classname="UserProfileComponent should create the component" name="UserProfileComponent should create the component" time="0.372">
+    </testcase>
+  </testsuite>
+  <testsuite name="FooterComponent" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:11" time="0.489" tests="1">
+    <testcase classname="FooterComponent should create" name="FooterComponent should create" time="0.077">
+    </testcase>
+  </testsuite>
+  <testsuite name="SignupComponent" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:12" time="1.208" tests="1">
+    <testcase classname="SignupComponent should create" name="SignupComponent should create" time="0.136">
+    </testcase>
+  </testsuite>
+  <testsuite name="NavbarComponent" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:05" time="7.795" tests="1">
+    <testcase classname="NavbarComponent should create" name="NavbarComponent should create" time="0.518">
+    </testcase>
+  </testsuite>
+  <testsuite name="SigninComponent" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:12" time="1.542" tests="1">
+    <testcase classname="SigninComponent should create" name="SigninComponent should create" time="0.053">
+    </testcase>
+  </testsuite>
+  <testsuite name="CampagneService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:13" time="0.671" tests="1">
+    <testcase classname="CampagneService should be created" name="CampagneService should be created" time="0.011">
+    </testcase>
+  </testsuite>
+  <testsuite name="HeaderComponent" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:13" time="0.636" tests="1">
+    <testcase classname="HeaderComponent should create" name="HeaderComponent should create" time="0.051">
+    </testcase>
+  </testsuite>
+  <testsuite name="AppComponent" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:05" time="8.651" tests="2">
+    <testcase classname="AppComponent should render title" name="AppComponent should render title" time="0.944">
+    </testcase>
+    <testcase classname="AppComponent should have as title &apos;GesOPs&apos;" name="AppComponent should have as title &apos;GesOPs&apos;" time="0.078">
+    </testcase>
+  </testsuite>
+  <testsuite name="ClientComponent" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:05" time="8.861" tests="1">
+    <testcase classname="ClientComponent should create" name="ClientComponent should create" time="0.551">
+    </testcase>
+  </testsuite>
+  <testsuite name="ProduitService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:13" time="0.663" tests="1">
+    <testcase classname="ProduitService should be created" name="ProduitService should be created" time="0.006">
+    </testcase>
+  </testsuite>
+  <testsuite name="ConstanteService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:14" time="0.525" tests="1">
+    <testcase classname="ConstanteService should be created" name="ConstanteService should be created" time="0.009">
+    </testcase>
+  </testsuite>
+  <testsuite name="VarieteService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:14" time="0.496" tests="1">
+    <testcase classname="VarieteService should be created" name="VarieteService should be created" time="0.008">
+    </testcase>
+  </testsuite>
+  <testsuite name="SaisonService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:14" time="0.545" tests="1">
+    <testcase classname="SaisonService should be created" name="SaisonService should be created" time="0.006">
+    </testcase>
+  </testsuite>
+  <testsuite name="PointService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:14" time="0.486" tests="1">
+    <testcase classname="PointService should be created" name="PointService should be created" time="0.023">
+    </testcase>
+  </testsuite>
+  <testsuite name="ShareService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:14" time="0.271" tests="1">
+    <testcase classname="ShareService should be created" name="ShareService should be created" time="0.021">
+    </testcase>
+  </testsuite>
+  <testsuite name="AgenceOpService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:14" time="0.564" tests="1">
+    <testcase classname="AgenceOpService should be created" name="AgenceOpService should be created" time="0.009">
+    </testcase>
+  </testsuite>
+  <testsuite name="MouvementIntrantService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:14" time="0.683" tests="1">
+    <testcase classname="MouvementIntrantService should be created" name="MouvementIntrantService should be created" time="0.017">
+    </testcase>
+  </testsuite>
+  <testsuite name="ExploitationService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:14" time="0.515" tests="1">
+    <testcase classname="ExploitationService should be created" name="ExploitationService should be created" time="0.019">
+    </testcase>
+  </testsuite>
+  <testsuite name="LocaliteService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:14" time="0.74" tests="1">
+    <testcase classname="LocaliteService should be created" name="LocaliteService should be created" time="0.015">
+    </testcase>
+  </testsuite>
+  <testsuite name="RemboursementService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:15" time="0.807" tests="1">
+    <testcase classname="RemboursementService should be created" name="RemboursementService should be created" time="0.026">
+    </testcase>
+  </testsuite>
+  <testsuite name="SocieteService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:15" time="0.68" tests="1">
+    <testcase classname="SocieteService should be created" name="SocieteService should be created" time="0.019">
+    </testcase>
+  </testsuite>
+  <testsuite name="FiliereService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:15" time="0.781" tests="1">
+    <testcase classname="FiliereService should be created" name="FiliereService should be created" time="0.119">
+    </testcase>
+  </testsuite>
+  <testsuite name="LoaderService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:15" time="0.832" tests="1">
+    <testcase classname="LoaderService should be created" name="LoaderService should be created" time="0.006">
+    </testcase>
+  </testsuite>
+  <testsuite name="IdentifiantService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:15" time="1.201" tests="1">
+    <testcase classname="IdentifiantService should be created" name="IdentifiantService should be created" time="0.046">
+    </testcase>
+  </testsuite>
+  <testsuite name="CreditAgenceComponent" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:05" time="11.721" tests="1">
+    <testcase classname="CreditAgenceComponent should create" name="CreditAgenceComponent should create" time="1.308">
+    </testcase>
+  </testsuite>
+  <testsuite name="AnneeService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:16" time="1.353" tests="1">
+    <testcase classname="AnneeService should be created" name="AnneeService should be created" time="0.127">
+    </testcase>
+  </testsuite>
+  <testsuite name="MouvementStockageService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:16" time="1.422" tests="1">
+    <testcase classname="MouvementStockageService should be created" name="MouvementStockageService should be created" time="0.022">
+    </testcase>
+  </testsuite>
+  <testsuite name="OpComponent" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:05" time="11.968" tests="1">
+    <testcase classname="OpComponent should create" name="OpComponent should create" time="1.478">
+    </testcase>
+  </testsuite>
+  <testsuite name="FamilleEmplacementService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:15" time="1.653" tests="1">
+    <testcase classname="FamilleEmplacementService should be created" name="FamilleEmplacementService should be created" time="0.019">
+    </testcase>
+  </testsuite>
+  <testsuite name="ChargeExploitationService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:16" time="1.154" tests="1">
+    <testcase classname="ChargeExploitationService should be created" name="ChargeExploitationService should be created" time="0.023">
+    </testcase>
+  </testsuite>
+  <testsuite name="CreditAgenceService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:17" time="0.573" tests="1">
+    <testcase classname="CreditAgenceService should be created" name="CreditAgenceService should be created" time="0.078">
+    </testcase>
+  </testsuite>
+  <testsuite name="DbindexedService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:17" time="0.437" tests="1">
+    <testcase classname="DbindexedService should be created" name="DbindexedService should be created" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="CreditService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:17" time="0.47" tests="1">
+    <testcase classname="CreditService should be created" name="CreditService should be created" time="0.014">
+    </testcase>
+  </testsuite>
+  <testsuite name="NavigationService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:17" time="0.455" tests="1">
+    <testcase classname="NavigationService should be created" name="NavigationService should be created" time="0.032">
+    </testcase>
+  </testsuite>
+  <testsuite name="PointAgenceService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:17" time="0.462" tests="1">
+    <testcase classname="PointAgenceService should be created" name="PointAgenceService should be created" time="0.007">
+    </testcase>
+  </testsuite>
+  <testsuite name="LoginService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:17" time="0.499" tests="1">
+    <testcase classname="LoginService should be created" name="LoginService should be created" time="0.004">
+    </testcase>
+  </testsuite>
+  <testsuite name="OnlineOfflineService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:17" time="0.417" tests="1">
+    <testcase classname="OnlineOfflineService should be created" name="OnlineOfflineService should be created" time="0.008">
+    </testcase>
+  </testsuite>
+  <testsuite name="FormeJuridiqueService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:17" time="0.822" tests="1">
+    <testcase classname="FormeJuridiqueService should be created" name="FormeJuridiqueService should be created" time="0.009">
+    </testcase>
+  </testsuite>
+  <testsuite name="AppService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:18" time="0.153" tests="1">
+    <testcase classname="AppService should be created" name="AppService should be created" time="0.009">
+    </testcase>
+  </testsuite>
+  <testsuite name="OpService" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:18" time="0.13" tests="1">
+    <testcase classname="OpService should be created" name="OpService should be created" time="0.008">
+    </testcase>
+  </testsuite>
+  <testsuite name="HomeComponent" errors="0" failures="0" skipped="0" timestamp="2025-05-25T15:43:18" time="0.29" tests="1">
+    <testcase classname="HomeComponent should create" name="HomeComponent should create" time="0.025">
+    </testcase>
+  </testsuite>
+</testsuites>

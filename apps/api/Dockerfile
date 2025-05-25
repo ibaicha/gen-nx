@@ -12,6 +12,7 @@ COPY tsconfig.base.json /tsconfig.base.json
 COPY nx.json /nx.json
 # COPY workspace.json /workspace.json
 COPY tsconfig.base.json /tsconfig.json
+COPY apps/api/project.json ./apps/api/project.json
 
 # Copier les sources nécessaires depuis le monorepo
 COPY libs ./libs
@@ -21,7 +22,11 @@ COPY /apps/api ./apps/api
 RUN npm ci
 
 # Build uniquement l'app NestJS ciblée
-RUN npx nx build api
+
+# Vérification du workspace Nx
+RUN if [ ! -f "nx.json" ]; then echo "ERREUR: nx.json manquant - Ce n'est pas un workspace Nx valide" && exit 1; fi
+
+RUN npx nx run api:build:production --verbose
 
 # Étape 2 : Image de production
 FROM node:20-alpine AS runner
