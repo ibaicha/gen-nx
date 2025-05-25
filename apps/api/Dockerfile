@@ -1,53 +1,63 @@
-# Étape 1: Builder - Installation des dépendances et compilation
+# ================================================
+# ÉTAPE 1 : BUILDER - INSTALLATION ET COMPILATION
+# ================================================
 FROM node:20-alpine AS builder
 
-# Installer les dépendances système nécessaires
-RUN apk add --no-cache git openssl python3 make g++
+# 1. Installer les dépendances système nécessaires
+RUN apk add --no-cache git openssl python3 make g++ mysql-client
 
-# Configurer le répertoire de travail
+# 2. Configurer le workspace
 WORKDIR /app
 
-# 1. Copier les fichiers de configuration du monorepo
-COPY package.json package-lock.json wait-for-db.sh ./
-COPY nx.json .
-COPY tsconfig.base.json .
+# 3. Copier les fichiers de configuration (optimisation du cache Docker)
+COPY package.json package-lock.json nx.json tsconfig.base.json ./
+COPY wait-for-db.sh /wait-for-db.sh
 
+# 4. Installer les dépendances
+RUN npm ci
 
-# 2. Copier les fichiers spécifiques à l'application
+# 5. Copier le reste du code source
 COPY apps/api/ apps/api/
 COPY libs/ libs/
 
-# 3. Installer les dépendances et build
-RUN npm ci
+# 6. Builder l'application (production)
 RUN npx nx build api --prod --skip-nx-cache
 
-# Étape 2: Runner - Image finale de production
+# ================================================
+# ÉTAPE 2 : RUNNER - IMAGE FINALE DE PRODUCTION
+# ================================================
 FROM node:20-alpine
 
-# Créer un utilisateur non-root pour plus de sécurité
+# 1. Installer les dépendances runtime nécessaires
+RUN apk add --no-cache mysql-client openssl && \
+    chmod +x /wait-for-db.sh
+
+# 2. Créer un utilisateur non-root
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# 3. Configurer l'environnement
 WORKDIR /app
-
-# Configurer NODE_ENV
 ENV NODE_ENV=production
+ENV DATABASE_URL=mysql://user:pass@db:3306/dbname
 
-# Copier depuis le builder
+# 4. Copier uniquement le nécessaire depuis le builder
 COPY --from=builder --chown=appuser:appgroup /app/dist/apps/api ./dist
 COPY --from=builder --chown=appuser:appgroup /app/node_modules ./node_modules
+COPY --from=builder --chown=appuser:appgroup /app/apps/api/prisma ./prisma
+COPY --from=builder /wait-for-db.sh /wait-for-db.sh
 
-# Copier les fichiers nécessaires au runtime
-COPY --chown=appuser:appgroup apps/api/prisma ./prisma
-COPY --chown=appuser:appgroup apps/api/.env .env
+# 5. Nettoyer les dépendances inutiles
+RUN npm prune --production && \
+    chown -R appuser:appgroup /app
 
-# Installer Prisma et autres dépendances de production
-RUN npm install -g prisma
-
-# Changer les permissions
-RUN chown -R appuser:appgroup /app
-
-# Passer à l'utilisateur non-root
+# 6. Basculer vers l'utilisateur non-root
 USER appuser
 
+# 7. Préparer Prisma
+RUN npx prisma generate
+
+# 8. Exposer les ports
 EXPOSE 3000 5555
 
-CMD ["/wait-for-db.sh", "node", "dist/apps/api/main.js"]
+# 9. Commande de démarrage
+CMD ["/bin/sh", "-c", "/wait-for-db.sh && node dist/apps/api/main.js"]
