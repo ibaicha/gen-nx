@@ -10,9 +10,12 @@ WORKDIR /usr/src/app
 
 COPY package.json /package.json
 COPY package-lock.json /package-lock.json
+
+# 3. Installer les dépendances (vérification visuelle)
+RUN ls -la && npm install
 COPY . .
  
-RUN npm install 
+
 # RUN npm run build ${APP}
 
 # RUN npx nx build api
