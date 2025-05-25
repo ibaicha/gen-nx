@@ -10,12 +10,12 @@ COPY package.json /package.json
 COPY package-lock.json /package-lock.json
 COPY tsconfig.base.json /tsconfig.base.json
 COPY nx.json /nx.json
-COPY workspace.json /workspace.json
-COPY tsconfig.json /tsconfig.json
+# COPY workspace.json /workspace.json
+COPY tsconfig.base.json /tsconfig.json
 
 # Copier les sources nécessaires depuis le monorepo
-COPY ../../libs ./libs
-COPY ../../apps/api ./apps/api
+COPY libs ./libs
+COPY /apps/api ./apps/api
 
 # Installer les dépendances
 RUN npm ci
