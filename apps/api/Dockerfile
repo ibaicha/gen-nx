@@ -1,8 +1,8 @@
 # Étape 1 : Build de l'application
-FROM node:20-alpine AS development
+FROM node:22-alpine AS development
 
 # Créer le dossier de travail
-WORKDIR /app
+WORKDIR /usr/src/app
 
 # Copy the root package.json and yarn.lock to install dependencies
 COPY package*.json ./
@@ -13,7 +13,7 @@ COPY . .
 # Build the NestJS app
 RUN npx nx build api --prod
 # Use a lightweight Node.js image for the production environment
-FROM node:20-alpine
+FROM node:22-alpine
 # Set working directory
 WORKDIR /app
 # Copy the build output and install only production dependencies
