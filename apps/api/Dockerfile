@@ -1,5 +1,5 @@
 # Étape 1 : Build de développement
-FROM node:22-alpine AS builder  # J'ai renommé cette étape en 'builder' pour plus de clarté
+FROM node:22-alpine AS builder
 
 # Installation des outils
 RUN apk add --no-cache bash git openssl mysql-client
@@ -30,7 +30,7 @@ WORKDIR /app
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/apps/api/prisma ./prisma  # Correction du chemin ici
+COPY --from=builder /app/apps/api/prisma ./prisma  
 
 # Scripts utilitaires
 COPY wait-for-db.sh /wait-for-db.sh
