@@ -12,8 +12,8 @@ RUN npm config set registry https://registry.npmmirror.com/
 
 # 3. Copier les fichiers essentiels pour Nx (dans le bon ordre)
 COPY package.json package-lock.json ./
-COPY nx.json .
-COPY tsconfig.base.json .
+COPY nx.json ./
+COPY tsconfig.base.json ./
 COPY apps/api/project.json ./apps/api/project.json
 
 
@@ -22,8 +22,11 @@ COPY eslint.config.js .
 
 
 # Copier les sources nécessaires depuis le monorepo
-COPY libs ./libs
-COPY /apps/api ./apps/api
+# COPY libs ./libs
+# COPY /apps/api ./apps/api
+
+COPY libs/shared-models/eslint.config.js ./libs/shared-models/
+COPY apps/api/eslint.config.js ./apps/api/
 
 # Installer les dépendances
 RUN npm install
