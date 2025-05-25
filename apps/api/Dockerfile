@@ -9,8 +9,8 @@ FROM base AS development
 WORKDIR /app
 
 # Copier les fichiers de dépendances pour npm
-COPY package.json /package.json
-COPY package-lock.json /package-lock.json
+COPY apps/api ./
+COPY package.json package-lock.json ./
 
 COPY . .
 
