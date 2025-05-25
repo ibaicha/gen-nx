@@ -5,9 +5,9 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Copier les fichiers Nx et les dépendances nécessaires
-COPY ../../package.json ../../package-lock.json ./
-COPY ../../tsconfig.base.json ../../nx.json ../../workspace.json ./
-COPY ../../tsconfig.json ./
+COPY package.json package-lock.json ./
+COPY tsconfig.base.json nx.json workspace.json ./
+COPY tsconfig.json ./
 
 # Copier les sources nécessaires depuis le monorepo
 COPY ../../libs ./libs

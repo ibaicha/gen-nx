@@ -88,7 +88,10 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "apps/angular/jest.config.ts"
+        "jestConfig": "apps/angular/jest.config.ts",
+        "ci": true,
+        "codeCoverage": true,
+        "reporters": ["default", "jest-junit"]
       }
     },
 
