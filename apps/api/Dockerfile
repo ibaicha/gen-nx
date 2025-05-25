@@ -4,58 +4,22 @@ FROM node:20-alpine AS development
 # Créer le dossier de travail
 WORKDIR /app
 
-
-# Configurer npm (optionnel : miroir pour la Chine)
-RUN npm config set registry https://registry.npmmirror.com/
-# Copier les fichiers Nx et les dépendances nécessaires
-
-
-# 3. Copier les fichiers essentiels pour Nx (dans le bon ordre)
-COPY package.json package-lock.json ./
-COPY nx.json ./
-COPY tsconfig.base.json ./
-COPY apps/api/project.json ./apps/api/project.json
-
-
-COPY eslint.config.js . 
-
-
-
-# Copier les sources nécessaires depuis le monorepo
-# COPY libs ./libs
-# COPY /apps/api ./apps/api
-
-COPY libs/shared-models/eslint.config.js ./libs/shared-models/
-COPY apps/api/eslint.config.js ./apps/api/
-
-# Installer les dépendances
+# Copy the root package.json and yarn.lock to install dependencies
+COPY package*.json ./
+# Install dependencies
 RUN npm install
-
-# Build uniquement l'app NestJS ciblée
-
- 
-
-RUN npx nx build api --configuration production
-
-# Étape 2 : Image de production
-FROM node:20-alpine AS runner
-
-# Créer un utilisateur non-root
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-
+# Copy the entire monorepo to the container
+COPY . .
+# Build the NestJS app
+RUN npx nx build api --prod
+# Use a lightweight Node.js image for the production environment
+FROM node:20-alpine
+# Set working directory
 WORKDIR /app
-
-# Copier uniquement ce qu'il faut
-COPY --from=development /app/package.json ./
-COPY --from=development /app/node_modules ./node_modules
-COPY --from=development /app/dist/apps/api ./dist/apps/api
-COPY --from=development /app/dist ./dist
-
-
-
-
-# Utiliser un utilisateur non-root
-USER appuser
-
-# Lancer l'application
-CMD ["node", "dist/apps/api/main.js"]
+# Copy the build output and install only production dependencies
+COPY --from=development /app/dist/apps/api /app
+COPY --from=development /app/node_modules /app/node_modules
+# Expose the api port
+EXPOSE 3000
+# Start the NestJS app
+CMD ["node", "main.js"]
