@@ -1,32 +1,47 @@
-FROM node:22-alpine AS production
+# Étape 1 : Build de développement
+FROM node:22-alpine AS builder  # J'ai renommé cette étape en 'builder' pour plus de clarté
 
-# Dépendances système minimales pour Node
-RUN apk add --no-cache bash openssl
-
-# Variables d'environnement
-ARG APP_ENV=production
-ENV NODE_ENV=${APP_ENV}
+# Installation des outils
+RUN apk add --no-cache bash git openssl mysql-client
 
 WORKDIR /app
 
-# Copie sélective depuis l'étape development
-COPY --from=development /app/package*.json ./
-COPY --from=development /app/node_modules ./node_modules
-COPY --from=development /app/dist ./dist
-COPY --from=development /app/prisma ./prisma
+# Copie des fichiers de dépendances
+COPY package.json package-lock.json ./
+
+# Installation des dépendances
+RUN npm install
+
+# Copie du reste du code
+COPY . .
+
+# Génération des fichiers Prisma
+RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
+
+# Build de l'application
+RUN npx nx build api
+
+# Étape 2 : Image de production
+FROM node:22-alpine
+
+WORKDIR /app
+
+# Copie depuis l'étape builder (anciennement development)
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/apps/api/prisma ./prisma  # Correction du chemin ici
 
 # Scripts utilitaires
-COPY --from=development /app/wait-for-db.sh /wait-for-db.sh
+COPY wait-for-db.sh /wait-for-db.sh
 RUN chmod +x /wait-for-db.sh
 
-# Fichier .env sécurisé
-COPY --from=development /app/apps/api/.env /app/.env
-RUN chmod 644 /app/.env
+# Fichier d'environnement
+COPY apps/api/.env .env
 
-# Génération Prisma (si nécessaire)
-RUN npx prisma generate
+# Installation ts-node (si nécessaire)
+RUN npm install -D ts-node typescript
 
 EXPOSE 3000 5555
 
-CMD ["/wait-for-db.sh", "node", "dist/main.js"]
-
+CMD ["/wait-for-db.sh", "node", "dist/apps/api/main.js"]
