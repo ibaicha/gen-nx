@@ -7,12 +7,17 @@ ARG APP
 ARG NODE_ENV=development 
 ENV NODE_ENV=${NODE_ENV}
 WORKDIR /usr/src/app 
+
+COPY package.json /package.json
+COPY package-lock.json /package-lock.json
 COPY . .
  
 RUN npm install 
 # RUN npm run build ${APP}
 
-RUN npx nx build api
+# RUN npx nx build api
+
+RUN npx nx build api --configuration production
 
 # production stage
 FROM base AS production 
