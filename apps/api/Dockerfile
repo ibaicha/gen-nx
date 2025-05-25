@@ -7,8 +7,9 @@ FROM base AS development
 # Stage 1 - build
 
 WORKDIR /app
-COPY package.json /package.json
-COPY package-lock.json /package-lock.json
+
+# Copier les fichiers de dépendances pour npm
+COPY package.json package-lock.json ./
 
 COPY . .
 
