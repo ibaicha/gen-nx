@@ -1,5 +1,5 @@
 # Étape 1 : Build de l'application
-FROM node:20-alpine AS builder
+FROM node:20-alpine AS development
 
 # Créer le dossier de travail
 WORKDIR /app
@@ -43,10 +43,10 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 WORKDIR /app
 
 # Copier uniquement ce qu'il faut
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist/apps/api ./dist/apps/api
-COPY --from=builder /app/dist ./dist
+COPY --from=development /app/package.json ./
+COPY --from=development /app/node_modules ./node_modules
+COPY --from=development /app/dist/apps/api ./dist/apps/api
+COPY --from=development /app/dist ./dist
 
 
 
