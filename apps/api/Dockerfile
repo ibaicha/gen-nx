@@ -25,12 +25,13 @@ COPY libs ./libs
 COPY /apps/api ./apps/api
 
 # Installer les dépendances
-RUN npm ci
+RUN npm install
 
 # Build uniquement l'app NestJS ciblée
 
  
-RUN npx nx run api:build:production --verbose
+
+RUN npx nx build api --configuration production
 
 # Étape 2 : Image de production
 FROM node:20-alpine AS runner
@@ -45,6 +46,8 @@ COPY --from=builder /app/package.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist/apps/api ./dist/apps/api
 COPY --from=builder /app/dist ./dist
+
+
 
 
 # Utiliser un utilisateur non-root
