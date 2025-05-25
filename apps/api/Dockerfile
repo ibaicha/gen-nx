@@ -1,7 +1,8 @@
 # Étape 1 : Build de l'application
-FROM node:22-alpine AS development
-
-
+FROM node:22-alpine AS base
+ 
+# development stage
+FROM base AS development 
 ARG APP 
 ARG NODE_ENV=development 
 ENV NODE_ENV=${NODE_ENV}
