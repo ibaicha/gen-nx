@@ -7,23 +7,25 @@ RUN apk add --no-cache bash git openssl mysql-client
 # Définir le répertoire de travail
 WORKDIR /app
 
-# Installer pnpm et configurer le registre (optionnel : miroir pour la Chine)
-RUN npm install -g pnpm && pnpm config set registry https://registry.npmmirror.com/
+# Configurer npm (optionnel : miroir pour la Chine)
+RUN npm config set registry https://registry.npmmirror.com/
 
-# Copier les fichiers de dépendances
-COPY package.json ./
+# 2. Copier package.json et package-lock.json depuis la racine du projet
 
-# Installer les dépendances avec pnpm
-RUN pnpm install
+COPY package.json /package.json
+COPY package-lock.json /package-lock.json
 
-# Copier tout le code source
+# 3. Installer les dépendances (vérification visuelle)
+RUN ls -la && npm install
+
+# Copier le reste du code
 COPY . .
 
 # Générer les fichiers Prisma
 RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
 
 # Build de l'application NestJS via Nx
-RUN pnpm nx build api
+RUN npx nx build api
 
 # Étape 2 : Image de production
 FROM node:22-alpine AS production
@@ -38,12 +40,8 @@ WORKDIR /app
 ARG APP_ENV=production
 ENV NODE_ENV=${APP_ENV}
 
-# Installer pnpm dans l'image de production
-RUN npm install -g pnpm
-
-# Copier les fichiers nécessaires depuis l'étape de développement
+# Copier les fichiers nécessaires depuis le build de développement
 COPY --from=development /app/package.json ./
-COPY --from=development /app/pnpm-lock.yaml ./
 COPY --from=development /app/node_modules ./node_modules
 COPY --from=development /app/dist ./dist
 COPY --from=development /app/apps/api/prisma ./prisma
@@ -55,12 +53,11 @@ RUN chmod +x /wait-for-db.sh
 # Copier le fichier d'environnement
 COPY apps/api/.env .env
 
-# (Optionnel) Installer ts-node et typescript si nécessaire
-RUN pnpm add -D ts-node typescript
+# (Optionnel) Installer ts-node si nécessaire à l'exécution
+RUN npm install -D ts-node typescript
 
 # Exposer les ports nécessaires
 EXPOSE 3000 5555
 
 # Commande par défaut
 CMD ["/wait-for-db.sh", "node", "dist/apps/api/main.js"]
-
