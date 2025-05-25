@@ -46,7 +46,7 @@ ENV NODE_ENV=${APP_ENV}
 
 # Copier les fichiers nécessaires depuis le build de développement
 COPY --from=development /app/package.json ./
-COPY --from=development /app/node_modules ./node_modules
+
 COPY --from=development /app/dist ./dist
 COPY --from=development /app/apps/api/prisma ./prisma
 
