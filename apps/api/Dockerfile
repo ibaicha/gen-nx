@@ -1,46 +1,52 @@
-# Étape 1 : Build de développement
-FROM node:22-alpine AS builder
+# Étape 1: Builder - Installation des dépendances et compilation
+FROM node:20-alpine AS builder
 
-# Installation des outils
-RUN apk add --no-cache bash git openssl mysql-client
+# Installer les dépendances système nécessaires
+RUN apk add --no-cache git openssl python3 make g++
 
+# Configurer le répertoire de travail
 WORKDIR /app
 
-# Copie des fichiers de dépendances
-COPY package.json package-lock.json ./
+# 1. Copier les fichiers de configuration du monorepo
+COPY package.json package-lock.json wait-for-db.sh ./
+COPY nx.json .
+COPY tsconfig.base.json .
 
-# Installation des dépendances
-RUN npm install
 
-# Copie du reste du code
-COPY . .
+# 2. Copier les fichiers spécifiques à l'application
+COPY apps/api/ apps/api/
+COPY libs/ libs/
 
-# Génération des fichiers Prisma
-RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
+# 3. Installer les dépendances et build
+RUN npm ci
+RUN npx nx build api --prod --skip-nx-cache
 
-# Build de l'application
-RUN npx nx build api
+# Étape 2: Runner - Image finale de production
+FROM node:20-alpine
 
-# Étape 2 : Image de production
-FROM node:22-alpine
-
+# Créer un utilisateur non-root pour plus de sécurité
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 WORKDIR /app
 
-# Copie depuis l'étape builder (anciennement development)
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/apps/api/prisma ./prisma  
+# Configurer NODE_ENV
+ENV NODE_ENV=production
 
-# Scripts utilitaires
-COPY wait-for-db.sh /wait-for-db.sh
-RUN chmod +x /wait-for-db.sh
+# Copier depuis le builder
+COPY --from=builder --chown=appuser:appgroup /app/dist/apps/api ./dist
+COPY --from=builder --chown=appuser:appgroup /app/node_modules ./node_modules
 
-# Fichier d'environnement
-COPY apps/api/.env .env
+# Copier les fichiers nécessaires au runtime
+COPY --chown=appuser:appgroup apps/api/prisma ./prisma
+COPY --chown=appuser:appgroup apps/api/.env .env
 
-# Installation ts-node (si nécessaire)
-RUN npm install -D ts-node typescript
+# Installer Prisma et autres dépendances de production
+RUN npm install -g prisma
+
+# Changer les permissions
+RUN chown -R appuser:appgroup /app
+
+# Passer à l'utilisateur non-root
+USER appuser
 
 EXPOSE 3000 5555
 
