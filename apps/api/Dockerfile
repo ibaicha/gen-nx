@@ -7,7 +7,8 @@ ARG APP
 ARG NODE_ENV=development 
 ENV NODE_ENV=${NODE_ENV}
 WORKDIR /usr/src/app 
-COPY api .   
+COPY . .
+ 
 RUN npm install 
 RUN npm run build ${APP}
 
@@ -17,7 +18,8 @@ ARG APP
 ARG NODE_ENV=production 
 ENV NODE_ENV=${NODE_ENV} 
 WORKDIR /usr/src/app 
-COPY api . 
+COPY . .
+
 RUN npm install --prod
 COPY --from=development /usr/src/app/dist ./dist 
  
