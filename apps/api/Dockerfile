@@ -17,6 +17,7 @@ COPY tsconfig.base.json .
 COPY apps/api/project.json ./apps/api/project.json
 
 
+COPY eslint.config.js . 
 
 
 
