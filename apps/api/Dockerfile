@@ -11,7 +11,8 @@ COPY . .
  
 RUN npm install 
 # RUN npm run build ${APP}
-RUN npm run  build api
+
+RUN npx nx build api
 
 # production stage
 FROM base AS production 
