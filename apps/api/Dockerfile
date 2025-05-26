@@ -7,8 +7,18 @@ FROM base AS development
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+ 
+ 
 COPY nx.json ./
+COPY project.json ./                
+COPY tsconfig.base.json ./
+COPY apps ./apps
+COPY libs ./libs
+COPY .nx ./.nx                       
+COPY package.json package-lock.json ./
+
+
+
 RUN npm ci --omit=dev
 
 
