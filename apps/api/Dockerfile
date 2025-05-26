@@ -5,38 +5,31 @@ FROM node:22-alpine AS base
 FROM base AS development 
 
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
- 
- 
-# Copier manuellement les fichiers depuis la racine
-COPY ../../package.json ../../package-lock.json ./
-COPY ../../nx.json ../../tsconfig.base.json ./
-COPY ../../eslint.config.js ./
-COPY ../../apps ./apps
-COPY ../../libs ./libs
-# COPY ../../.nx ./.nx
-
-                    
+# 1. Copier les fichiers de verrouillage npm
 COPY package.json package-lock.json ./
 
+# 2. Copier les dépendances spécifiques à l'API
+COPY apps/api/package.json ./apps/api/
 
-RUN npm ci
+# 3. Installation propre des dépendances
+RUN npm ci --workspace=apps/api
 
-# Utiliser le binaire local nx
-RUN ./node_modules/.bin/nx build api
+# 4. Copier tout le code source
+COPY . .
 
+# 5. Builder l'API
+RUN npm run build --workspace=apps/api
 
+# Étape 2 : Image finale
+FROM node:18-alpine
+WORKDIR /usr/src/app
 
-# --- Étape 2 : Image de prod ---
-FROM base AS production
+# 1. Copier uniquement le nécessaire
+COPY --from=builder /usr/src/app/apps/api/dist ./dist
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/apps/api/package.json .
 
-WORKDIR /app
-
-COPY --from=development  /app/dist/apps/api ./dist
-COPY package*.json ./
-
-RUN npm ci --omit=dev
-
-EXPOSE 3000
+# 2. Démarrer l'application
 CMD ["node", "dist/main.js"]
