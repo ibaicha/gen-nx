@@ -14,7 +14,7 @@ COPY project.json ./
 COPY tsconfig.base.json ./
 COPY apps ./apps
 COPY libs ./libs
-COPY .nx ./.nx                       
+# COPY .nx ./.nx                       
 COPY package.json package-lock.json ./
 
 
