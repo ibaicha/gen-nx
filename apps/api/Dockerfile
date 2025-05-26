@@ -18,11 +18,12 @@ COPY libs ./libs
 COPY package.json package-lock.json ./
 
 
+RUN npm ci
 
-RUN npm ci --omit=dev
+# Utiliser le binaire local nx
+RUN ./node_modules/.bin/nx build api
 
 
-RUN npx nx build api
 
 # --- Étape 2 : Image de prod ---
 FROM base AS production
