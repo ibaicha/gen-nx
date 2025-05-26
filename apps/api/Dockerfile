@@ -14,13 +14,14 @@ COPY package.json package-lock.json ./
 COPY apps/api/project.json ./apps/api/
 
 # 3. Installation propre des dépendances
-RUN npm ci --workspace=apps/api
+RUN npm ci 
 
 # 4. Copier tout le code source
 COPY . .
 
 # 5. development  l'API
-RUN npm run build --workspace=apps/api
+# RUN npm run build --workspace=apps/api
+RUN npx nx build api --configuration production
 
 # Étape 2 : Image finale
 FROM base AS production
