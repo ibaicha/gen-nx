@@ -6,7 +6,7 @@ FROM base AS development
 
 
 WORKDIR /usr/src/app
-
+RUN ls -la /usr/src/app
 # 1. Copier les fichiers de verrouillage npm
 COPY package.json package-lock.json ./
 
