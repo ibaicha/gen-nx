@@ -9,14 +9,15 @@ WORKDIR /app
 
  
  
-COPY nx.json ./
-              
-COPY tsconfig.base.json ./
-COPY apps ./apps
-COPY libs ./libs
-COPY eslint.config.js ./
+# Copier manuellement les fichiers depuis la racine
+COPY ../../package.json ../../package-lock.json ./
+COPY ../../nx.json ../../tsconfig.base.json ./
+COPY ../../eslint.config.js ./
+COPY ../../apps ./apps
+COPY ../../libs ./libs
+# COPY ../../.nx ./.nx
 
-# COPY .nx ./.nx                       
+                    
 COPY package.json package-lock.json ./
 
 
