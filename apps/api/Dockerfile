@@ -31,7 +31,7 @@ WORKDIR /usr/src/app
 COPY --from=development  /usr/src/app/dist/apps/api ./dist
 
 # COPY --from=development  /usr/src/app/node_modules ./node_modules
-COPY --from=development  /usr/src/app/apps/api/package.json .
+# COPY --from=development  /usr/src/app/apps/api/package.json .
 
 # 2. Démarrer l'application
 CMD ["node", "dist/main.js"]
