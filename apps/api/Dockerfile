@@ -14,6 +14,8 @@ COPY nx.json ./
 COPY tsconfig.base.json ./
 COPY apps ./apps
 COPY libs ./libs
+COPY eslint.config.js ./
+
 # COPY .nx ./.nx                       
 COPY package.json package-lock.json ./
 
