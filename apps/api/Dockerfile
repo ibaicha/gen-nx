@@ -14,7 +14,7 @@ RUN npm ci --omit=dev
 RUN npx nx build api
 
 # --- Étape 2 : Image de prod ---
-FROM node:22-alpine
+FROM base AS production
 
 WORKDIR /app
 
