@@ -10,7 +10,7 @@ WORKDIR /app
  
  
 COPY nx.json ./
-COPY project.json ./                
+              
 COPY tsconfig.base.json ./
 COPY apps ./apps
 COPY libs ./libs
