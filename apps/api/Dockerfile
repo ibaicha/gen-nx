@@ -19,7 +19,7 @@ RUN npm ci --workspace=apps/api
 # 4. Copier tout le code source
 COPY . .
 
-# 5. Builder l'API
+# 5. development  l'API
 RUN npm run build --workspace=apps/api
 
 # Étape 2 : Image finale
@@ -27,9 +27,9 @@ FROM base AS production
 WORKDIR /usr/src/app
 
 # 1. Copier uniquement le nécessaire
-COPY --from=builder /usr/src/app/apps/api/dist ./dist
-# COPY --from=builder /usr/src/app/node_modules ./node_modules
-COPY --from=builder /usr/src/app/apps/api/package.json .
+COPY --from=development  /usr/src/app/apps/api/dist ./dist
+# COPY --from=development  /usr/src/app/node_modules ./node_modules
+COPY --from=development  /usr/src/app/apps/api/package.json .
 
 # 2. Démarrer l'application
 CMD ["node", "dist/main.js"]
