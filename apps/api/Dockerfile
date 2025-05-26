@@ -6,9 +6,11 @@ FROM base AS development
 
 
 WORKDIR /app
-COPY . .
 
-RUN npm ci
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
+
+
 RUN npx nx build api
 
 # --- Étape 2 : Image de prod ---
