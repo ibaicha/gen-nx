@@ -23,12 +23,12 @@ COPY . .
 RUN npm run build --workspace=apps/api
 
 # Étape 2 : Image finale
-FROM node:18-alpine
+FROM base AS production
 WORKDIR /usr/src/app
 
 # 1. Copier uniquement le nécessaire
 COPY --from=builder /usr/src/app/apps/api/dist ./dist
-COPY --from=builder /usr/src/app/node_modules ./node_modules
+# COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/apps/api/package.json .
 
 # 2. Démarrer l'application
