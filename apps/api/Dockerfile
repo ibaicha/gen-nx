@@ -8,13 +8,13 @@ FROM base AS development
 WORKDIR /usr/src/app
 RUN ls -la /usr/src/app
 # 1. Copier les fichiers de verrouillage npm
-# COPY package.json package-lock.json ./
+COPY package.json package-lock.json ./
 
 # 2. Copier les dépendances spécifiques à l'API
 #COPY apps/api/project.json ./apps/api/
 
 # 3. Installation propre des dépendances
-# RUN npm ci 
+RUN npm ci 
 
 # 4. Copier tout le code source
 COPY . .
