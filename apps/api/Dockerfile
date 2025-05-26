@@ -8,10 +8,10 @@ FROM base AS development
 WORKDIR /usr/src/app
 
 # 1. Copier les fichiers de verrouillage npm
-COPY package.json package-lock.json ./
+# COPY package.json package-lock.json ./
 
 # 2. Copier les dépendances spécifiques à l'API
-COPY apps/api/project.json ./apps/api/
+# COPY apps/api/project.json ./apps/api/
 
 # 3. Installation propre des dépendances
 RUN npm ci 
