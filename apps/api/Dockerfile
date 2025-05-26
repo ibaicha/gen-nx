@@ -20,8 +20,8 @@ WORKDIR /app
 COPY package*.json .
 
 # Copier les fichiers Prisma nécessaires pour la génération
-COPY apps/api/prisma ./prisma
-COPY apps/api/src/prisma/seed.ts ./prisma
+# COPY apps/api/prisma ./prisma
+# # COPY apps/api/src/prisma/seed.ts ./prisma
 
 # Configurer le registre npm
 RUN npm config set registry https://registry.npmmirror.com/
@@ -30,7 +30,7 @@ RUN npm config set registry https://registry.npmmirror.com/
 RUN npm install
 
 # Générer les fichiers Prisma
-RUN npx prisma generate
+# # RUN npx prisma generate
 
 # Copier tout le code source
 COPY . .
@@ -58,7 +58,7 @@ WORKDIR /app
 COPY --from=development /app/package.json ./
 COPY --from=development /app/package-lock.json ./
 COPY --from=development /app/dist/apps/api ./dist
-COPY --from=development /app/prisma ./prisma
+# # COPY --from=development /app/prisma ./prisma
 
 # Configurer le registre npm
 RUN npm config set registry https://registry.npmmirror.com/
@@ -67,7 +67,7 @@ RUN npm config set registry https://registry.npmmirror.com/
 RUN npm install --production
 
 # Générer à nouveau les fichiers Prisma
-RUN npx prisma generate
+# # RUN npx prisma generate
 
 # Copier et rendre le script `wait-for-db.sh` exécutable
 COPY wait-for-db.sh /wait-for-db.sh
