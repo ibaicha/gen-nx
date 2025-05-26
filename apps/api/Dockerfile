@@ -11,7 +11,7 @@ WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 
 # 2. Copier les dépendances spécifiques à l'API
-COPY apps/api/package.json ./apps/api/
+COPY apps/api/project.json ./apps/api/
 
 # 3. Installation propre des dépendances
 RUN npm ci --workspace=apps/api
