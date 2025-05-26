@@ -8,13 +8,13 @@ FROM base AS development
 WORKDIR /usr/src/app
 
 # 1. Copier les fichiers de verrouillage npm
-# COPY package.json package-lock.json ./
+#COPY package.json package-lock.json ./
 
 # 2. Copier les dépendances spécifiques à l'API
-# COPY apps/api/project.json ./apps/api/
+#COPY apps/api/project.json ./apps/api/
 
 # 3. Installation propre des dépendances
-RUN npm ci 
+#RUN npm ci 
 
 # 4. Copier tout le code source
 COPY . .
@@ -31,7 +31,7 @@ WORKDIR /usr/src/app
 COPY --from=development  /usr/src/app/dist/apps/api ./dist
 
 # COPY --from=development  /usr/src/app/node_modules ./node_modules
-# COPY --from=development  /usr/src/app/apps/api/package.json .
+COPY --from=development  /usr/src/app/apps/api/package.json .
 
 # 2. Démarrer l'application
 CMD ["node", "dist/main.js"]
