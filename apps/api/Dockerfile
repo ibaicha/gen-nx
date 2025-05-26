@@ -18,7 +18,12 @@ WORKDIR /app
 
 # Copier les fichiers de dépendances pour optimiser le cache
 COPY package*.json .
-RUN ls -la /app
+
+RUN ls -la /app && \
+    echo "=== Taille des éléments ===" && \
+    du -sh /app/* && \
+    echo "=== Arborescence (max 3 niveaux) ===" && \
+    (command -v tree >/dev/null && tree -ahpugCD -L 3 /app || ls -laR /app | head -n 30)
 # Copier les fichiers Prisma nécessaires pour la génération
 # COPY apps/api/prisma ./prisma
 # # COPY apps/api/src/prisma/seed.ts ./prisma
