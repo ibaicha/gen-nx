@@ -8,6 +8,7 @@ FROM base AS development
 WORKDIR /app
 
 COPY package.json package-lock.json ./
+COPY nx.json ./
 RUN npm ci --omit=dev
 
 
