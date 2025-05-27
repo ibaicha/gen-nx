@@ -1,87 +1,83 @@
-# Étape 1 : Build de l'application
+# Étape 1 : Image de base
 FROM node:22-alpine AS base
- 
-# development stage
-FROM base AS development 
+WORKDIR /app
 
+# Étape 2 : Phase de développement
+FROM base AS development
 
-# Installer les dépendances système nécessaires avec apk (gestionnaire Alpine)
-
+# Installer les dépendances système
 RUN apk add --no-cache \
     bash \
     git \
     openssl \
-    mysql-client 
+    mysql-client && \
+    echo "=== Dépendances système installées ===" && \
+    apk info
 
-# Définir le répertoire de travail
-WORKDIR /app
-
-# Copier les fichiers de dépendances pour optimiser le cache
-COPY package*.json .
-RUN ls -laR /app 
-# Copier les fichiers Prisma nécessaires pour la génération
-# COPY apps/api/prisma ./prisma
-# # COPY apps/api/src/prisma/seed.ts ./prisma
-
-# Configurer le registre npm
+# Configuration NPM
 RUN npm config set registry https://registry.npmmirror.com/
 
-# Installer les dépendances Node.js
-RUN npm install
+# Copie et vérification des dépendances
+COPY package*.json ./
+RUN echo "=== Fichiers avant installation ===" && \
+    ls -la && \
+    npm install && \
+    echo "=== Structure après installation ===" && \
+    find node_modules -maxdepth 2 -type d -print | sort && \
+    echo "=== Taille des dépendances ===" && \
+    du -sh node_modules
 
-# Générer les fichiers Prisma
-# # RUN npx prisma generate
-
-# Copier tout le code source
+# Copie du code source avec vérification
 COPY . .
+RUN echo "=== Structure complète avant build ===" && \
+    find apps/api/src -type f -print | sort && \
+    echo "=== Fichiers Prisma ===" && \
+    ls -la apps/api/prisma
 
-# Définir une variable d'environnement par défaut
+# Build de l'application
 ARG APP_ENV=development
 ENV NODE_ENV=${APP_ENV}
+RUN npx nx run api:build && \
+    echo "=== Fichiers générés ===" && \
+    ls -la dist/apps/api
 
-# Construire l'application avec Nx
-RUN npx nx run api:build
+# Étape 3 : Phase de production
+FROM base AS production
 
-FROM base AS production 
+# Dépendances système minimales
+RUN apk add --no-cache bash openssl && \
+    echo "=== Dépôts Alpine ===" && \
+    cat /etc/apk/repositories
 
-# Installer les dépendances nécessaires avec apk
-RUN apk add --no-cache bash openssl
-
-# Définir une variable d'environnement
+# Configuration de l'environnement
 ARG APP_ENV=production
 ENV NODE_ENV=${APP_ENV}
-
-# Définir le répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers nécessaires depuis l'étape de développement
-COPY --from=development /app/package.json ./
-COPY --from=development /app/package-lock.json ./
+# Copie des artefacts depuis le stage development
+COPY --from=development /app/package*.json ./
 COPY --from=development /app/dist/apps/api ./dist
-# # COPY --from=development /app/prisma ./prisma
+RUN echo "=== Fichiers copiés en production ===" && \
+    ls -laR /app
 
-# Configurer le registre npm
-RUN npm config set registry https://registry.npmmirror.com/
+# Installation production
+RUN npm config set registry https://registry.npmmirror.com/ && \
+    npm install --production && \
+    echo "=== Dépendances production ===" && \
+    npm list --depth=0
 
-# Installer uniquement les dépendances de production
-RUN npm install --production
-
-# Générer à nouveau les fichiers Prisma
-# # RUN npx prisma generate
-
-# Copier et rendre le script `wait-for-db.sh` exécutable
+# Configuration des scripts
 COPY wait-for-db.sh /wait-for-db.sh
-RUN chmod +x /wait-for-db.sh
+COPY apps/api/.env.production /.env
+RUN chmod +x /wait-for-db.sh && \
+    echo "=== Permissions ===" && \
+    ls -la /wait-for-db.sh /.env
 
-# Copier le fichier `.env` et lui attribuer les droits d'exécution
-COPY apps/api/.env /.env
-RUN chmod +x /.env
+# Vérification finale
+RUN echo "=== Structure finale ===" && \
+    find /app -type d -name "node_modules" -prune -o -print | sort && \
+    echo "=== Variables d'environnement ===" && \
+    printenv | sort
 
-# Installer des dépendances de développement pour Typescript (si nécessaire à l'exécution)
-RUN npm install -D ts-node typescript
-
-# Exposer les ports nécessaires
 EXPOSE 3000 5555
-
-# Commande par défaut pour démarrer l'application
 CMD ["/wait-for-db.sh", "node", "dist/main.js"]
