@@ -16,7 +16,7 @@ FROM base AS development
 WORKDIR /app
 
 # Copier les fichiers de dépendances pour optimiser le cache
-COPY package*.json .
+COPY package*.json ./
 
 # 📂 Afficher la structure du dossier après la copie des packages
 RUN echo "### Après COPY package*.json ###" && tree -a /app
