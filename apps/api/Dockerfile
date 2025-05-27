@@ -64,6 +64,10 @@ COPY --from=development /app/package.json ./
 COPY --from=development /app/package-lock.json ./
 COPY --from=development /app/dist/apps/api ./dist
 
+COPY --from=development /app/dist/apps/api ./dist/api
+COPY --from=development /app/dist/apps/libs ./dist/libs
+
+
 # 📂 Afficher la structure après copie depuis le build
 RUN echo "### Après COPY depuis l'étape de développement ###" && tree -a /app
 
