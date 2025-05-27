@@ -183,19 +183,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build and Push Prisma Studio
-        uses: docker/build-push-action@v5
-        with:
-          context: apps/api
-          push: true
-          tags: ${{ env.PRISMA_STUDIO_IMAGE }}:latest,${{ env.PRISMA_STUDIO_IMAGE }}:${{ env.TAG }}
-          target: development
-          build-args: |
-            NODE_ENV=development
-          labels: |
-            org.opencontainers.image.source=${{ github.repositoryUrl }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+  
 
   deploy:
     name: Deploy to Production
@@ -261,7 +249,18 @@ jobs:
               networks:
                 - app-network
 
-
+            prisma-studio:
+              image: ${{ env.PRISMA_STUDIO_IMAGE }}:${{ env.TAG }}
+              depends_on:
+                mysql-db:
+                  condition: service_healthy
+              restart: unless-stopped
+              environment:
+                DATABASE_URL: mysql://\$MYSQL_USER:\$MYSQL_PASSWORD@mysql-db:3306/\$MYSQL_DATABASE
+              ports:
+                - "5555:5555"
+              networks:
+                - app-network
 
           volumes:
             mysql_data:
