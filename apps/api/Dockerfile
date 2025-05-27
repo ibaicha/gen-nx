@@ -18,7 +18,7 @@ WORKDIR /app
 
 # Copier les fichiers de dépendances pour optimiser le cache
 COPY package*.json .
-RUN ls -la /app
+RUN ls -laR /app 
 # Copier les fichiers Prisma nécessaires pour la génération
 # COPY apps/api/prisma ./prisma
 # # COPY apps/api/src/prisma/seed.ts ./prisma
