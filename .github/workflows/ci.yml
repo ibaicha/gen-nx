@@ -186,7 +186,7 @@ jobs:
       - name: Build and Push Prisma Studio (Production)
         uses: docker/build-push-action@v5
         with:
-          context: apps/api
+          context: .
           push: true
           tags: |
             ${{ env.PRISMA_STUDIO_IMAGE }}:${{ env.TAG }}
