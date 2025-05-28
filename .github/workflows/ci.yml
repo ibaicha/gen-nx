@@ -189,7 +189,7 @@ jobs:
           context: apps/api
           push: true
           tags: ${{ env.PRISMA_STUDIO_IMAGE }}:latest,${{ env.PRISMA_STUDIO_IMAGE }}:${{ env.TAG }}
-          target: development
+          target: prisma-studio 
           build-args: |
             NODE_ENV=development
           labels: |
