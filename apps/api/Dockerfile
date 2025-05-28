@@ -1,89 +1,80 @@
-# Étape 1 : Image de base commune
+# Étape 1 : Build de base
 FROM node:22-alpine AS base
 
-# Installer les dépendances système nécessaires
 RUN apk add --no-cache \
     bash \
     git \
     openssl \
-    mysql-client
+    mysql-client \
+    tree
 
-# Étape 2 : Builder pour la construction
-FROM base AS builder
+# Étape 2 : Étape de développement
+FROM base AS development 
 
 WORKDIR /app
 
-# Copier les fichiers de dépendances
 COPY package*.json ./
-COPY nx.json .
-COPY apps/api/package.json apps/api/
-COPY libs/ libs/
 
-# Configurer le registre npm
+RUN echo "### Après COPY package*.json ###" && tree -a /app
+
 RUN npm config set registry https://registry.npmmirror.com/
-
-# Installer toutes les dépendances
 RUN npm install
 
-# Copier le reste du code source
+RUN echo "### Après npm install ###" && tree -a /app
+
 COPY . .
 
-# Construire l'application
+RUN echo "### Après COPY . . ###" && tree -a /app
+
+ARG APP_ENV=development
+ENV NODE_ENV=${APP_ENV}
+
 RUN npx nx run api:build
 
-# Étape 3 : Image de développement (générale)
-FROM base AS development
+RUN echo "### Après build Nx ###" && tree -a /app
 
-WORKDIR /app
-
-# Copier uniquement ce qui est nécessaire depuis le builder
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist/apps/api ./dist
-COPY --from=builder /app/apps/api/.env .env
-COPY --from=builder /app/wait-for-db.sh /wait-for-db.sh
-
-# Permissions
-RUN chmod +x /wait-for-db.sh
-
-ENV NODE_ENV=development
-EXPOSE 3000 5555
-
-CMD ["node", "dist/main.js"]
-
-# Étape 4 : Image spécifique pour Prisma Studio
+# Étape 3 : Target spécifique pour Prisma Studio
 FROM base AS prisma-studio
 
 WORKDIR /app
 
-# Copier uniquement ce qui est nécessaire pour Prisma Studio
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/apps/api/.env .env
+# Copier uniquement les fichiers utiles depuis l'étape développement
+COPY --from=development /app/node_modules ./node_modules
+COPY --from=development /app/package.json ./package.json
+COPY --from=development /app/apps/api/prisma ./prisma
 
-ENV NODE_ENV=development
-EXPOSE 5555
+# Optionnel : pour inspecter la structure
+RUN echo "### Prisma Studio Target ###" && tree -a /app
 
-CMD ["npx", "prisma", "studio"]
+# Étape 4 : Image production
+FROM base AS production 
 
-# Étape 5 : Image de production
-FROM base AS production
+RUN apk add --no-cache bash openssl tree
+
+ARG APP_ENV=production
+ENV NODE_ENV=${APP_ENV}
 
 WORKDIR /app
 
-# Copier uniquement ce qui est nécessaire depuis le builder
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/dist/apps/api ./dist
-COPY --from=builder /app/wait-for-db.sh /wait-for-db.sh
-COPY --from=builder /app/apps/api/.env /.env
+COPY --from=development /app/package.json ./
+COPY --from=development /app/package-lock.json ./
+COPY --from=development /app/dist/apps/api ./dist
 
-# Configurer npm et installer les dépendances de production
-RUN npm config set registry https://registry.npmmirror.com/ && \
-    npm install --production && \
-    chmod +x /wait-for-db.sh
+RUN echo "### Après COPY depuis l'étape de développement ###" && tree -a /app
 
-ENV NODE_ENV=production
-EXPOSE 3000
+RUN npm config set registry https://registry.npmmirror.com/
+RUN npm install --production
+
+COPY wait-for-db.sh /wait-for-db.sh
+RUN chmod +x /wait-for-db.sh
+
+COPY apps/api/.env /.env
+RUN chmod +x /.env
+
+RUN npm install -D ts-node typescript
+
+RUN echo "### Structure finale de l'image production ###" && tree -a /
+
+EXPOSE 3000 5555
 
 CMD ["/wait-for-db.sh", "node", "dist/main.js"]
