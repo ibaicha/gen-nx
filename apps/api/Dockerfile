@@ -34,8 +34,7 @@ RUN npx nx run api:build
 # # # # RUN echo "### Après build Nx ###" && tree -a /app
 
 
-FROM base AS prisma-studio
-WORKDIR /app
+
 
 # Étape 4 : Image production
 FROM base AS production 
@@ -65,13 +64,10 @@ RUN chmod +x /.env
 
 RUN npm install -D ts-node typescript
 
-RUN echo "### Structure finale de l'image production ###" && tree -a /
+# # # # RUN echo "### Structure finale de l'image production ###" && tree -a /
 
 EXPOSE 3000 5555
 
 CMD ["/wait-for-db.sh", "node", "dist/main.js"]
-
-
-
 
 
