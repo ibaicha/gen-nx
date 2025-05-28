@@ -80,7 +80,7 @@ RUN chmod +x /.env
 RUN npm install -D ts-node typescript
 
 # Exposer les ports nécessaires
-EXPOSE 3000 5555
+EXPOSE 3000
 
 # Commande par défaut pour démarrer l'application
 CMD ["/wait-for-db.sh", "node", "dist/main.js"]
