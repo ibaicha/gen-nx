@@ -182,7 +182,7 @@ jobs:
             org.opencontainers.image.source=${{ github.repositoryUrl }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          
+
   deploy:
     name: Deploy to Production
     needs: build-and-push
