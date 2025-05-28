@@ -39,9 +39,15 @@ FROM base AS prisma-studio
 WORKDIR /app
 
 # Copier uniquement les fichiers utiles depuis l'étape développement
-COPY --from=development /app/node_modules ./node_modules
-COPY --from=development /app/package.json ./package.json
-COPY --from=development /app/apps/api/prisma ./prisma
+# # COPY --from=development /app/node_modules ./node_modules
+# # COPY --from=development /app/package.json ./package.json
+# # COPY --from=development /app/apps/api/prisma ./prisma
+
+COPY --from=development /app/package.json ./
+COPY --from=development /app/package-lock.json ./
+COPY --from=development /app/node_modules ./
+COPY --from=development /app/apps/api/prisma ./
+
 
 # Optionnel : pour inspecter la structure
 RUN echo "### Prisma Studio Target ###" && tree -a /app
@@ -59,6 +65,7 @@ WORKDIR /app
 COPY --from=development /app/package.json ./
 COPY --from=development /app/package-lock.json ./
 COPY --from=development /app/dist/apps/api ./dist
+
 
 RUN echo "### Après COPY depuis l'étape de développement ###" && tree -a /app
 
