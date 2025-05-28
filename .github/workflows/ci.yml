@@ -191,9 +191,7 @@ jobs:
           tags: |
             ${{ env.PRISMA_STUDIO_IMAGE }}:${{ env.TAG }}
             ${{ env.PRISMA_STUDIO_IMAGE }}:stable
-          target: production # Cible le stage "production" dans le Dockerfile
-          build-args: |
-            NODE_ENV=production  # Force l'environnement Node.js en production
+
           labels: |
             org.opencontainers.image.source=${{ github.repositoryUrl }}
             org.opencontainers.image.version=${{ env.TAG }}

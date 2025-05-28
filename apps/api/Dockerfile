@@ -15,25 +15,25 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN echo "### Après COPY package*.json ###" && tree -a /app
+# # # # RUN echo "### Après COPY package*.json ###" && tree -a /app
 
 RUN npm config set registry https://registry.npmmirror.com/
 RUN npm install
 
-RUN echo "### Après npm install ###" && tree -a /app
+# # # # RUN echo "### Après npm install ###" && tree -a /app
 
 COPY . .
 
-RUN echo "### Après COPY . . ###" && tree -a /app
+# # # # RUN echo "### Après COPY . . ###" && tree -a /app
 
 ARG APP_ENV=development
 ENV NODE_ENV=${APP_ENV}
 
 RUN npx nx run api:build
 
-RUN echo "### Après build Nx ###" && tree -a /app
+# # # # RUN echo "### Après build Nx ###" && tree -a /app
 
-# Étape 3 : Target spécifique pour Prisma Studio
+
 
 
 # Étape 4 : Image production
@@ -51,7 +51,7 @@ COPY --from=development /app/package-lock.json ./
 COPY --from=development /app/dist/apps/api ./dist
 
 
-RUN echo "### Après COPY depuis l'étape de développement ###" && tree -a /app
+# # # # RUN echo "### Après COPY depuis l'étape de développement ###" && tree -a /app
 
 RUN npm config set registry https://registry.npmmirror.com/
 RUN npm install --production
