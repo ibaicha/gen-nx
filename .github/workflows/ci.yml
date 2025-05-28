@@ -183,19 +183,26 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build and Push Prisma Studio
+      - name: Build and Push Prisma Studio (Production)
         uses: docker/build-push-action@v5
         with:
           context: apps/api
           push: true
-          tags: ${{ env.PRISMA_STUDIO_IMAGE }}:latest,${{ env.PRISMA_STUDIO_IMAGE }}:${{ env.TAG }}
-          target: prisma-studio 
+          tags: |
+            ${{ env.PRISMA_STUDIO_IMAGE }}:${{ env.TAG }}  # Tag versionné (ex: v1.0.0)
+            ${{ env.PRISMA_STUDIO_IMAGE }}:stable            # Tag optionnel pour la dernière version stable
+          target: production  # Cible le stage "production" dans le Dockerfile
           build-args: |
-            NODE_ENV=development
+            NODE_ENV=production  # Force l'environnement Node.js en production
           labels: |
             org.opencontainers.image.source=${{ github.repositoryUrl }}
+            org.opencontainers.image.version=${{ env.TAG }}
+            org.opencontainers.image.licenses=MIT  # Si applicable
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          secrets: |  # Authentification au registre Docker (ex: Docker Hub)
+            DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+            DOCKERHUB_TOKEN=${{ secrets.DOCKERHUB_TOKEN }}
 
   deploy:
     name: Deploy to Production

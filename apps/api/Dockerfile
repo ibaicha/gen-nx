@@ -34,23 +34,7 @@ RUN npx nx run api:build
 RUN echo "### Après build Nx ###" && tree -a /app
 
 # Étape 3 : Target spécifique pour Prisma Studio
-FROM base AS prisma-studio
 
-WORKDIR /app
-
-# Copier uniquement les fichiers utiles depuis l'étape développement
-# # COPY --from=development /app/node_modules ./node_modules
-# # COPY --from=development /app/package.json ./package.json
-# # COPY --from=development /app/apps/api/prisma ./prisma
-
-COPY --from=development /app/package.json ./
-COPY --from=development /app/package-lock.json ./
-COPY --from=development /app/node_modules ./
-COPY --from=development /app/apps/api/prisma ./
-
-
-# Optionnel : pour inspecter la structure
-RUN echo "### Prisma Studio Target ###" && tree -a /app
 
 # Étape 4 : Image production
 FROM base AS production 
