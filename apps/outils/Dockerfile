@@ -10,7 +10,7 @@ RUN apk add --no-cache \
 WORKDIR /app
 
 RUN echo "### Before COPY FN ###" && tree -a /app
-
+COPY apps/api/prisma ./prisma
 COPY package.json .
 COPY package-lock.json .
 

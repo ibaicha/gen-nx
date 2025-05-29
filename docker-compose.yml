@@ -72,7 +72,7 @@ services:
     container_name: prisma-studio-mysql
     build:
       context: .
-      dockerfile: ./apps/api/prisma/Dockerfile
+      dockerfile: ./apps/outils/Dockerfile
     restart: unless-stopped
     command:
       [
