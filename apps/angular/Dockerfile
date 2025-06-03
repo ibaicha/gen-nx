@@ -1,6 +1,3 @@
-# ----------------------------
-# Étape 1 : Construction de l'application Angular
-# ----------------------------
 
 # Utilise une image Node.js officielle (version 18.14) pour construire l'app
 FROM node:22-alpine AS builder
@@ -19,33 +16,24 @@ COPY . .
 
 # Construire l'application Angular en mode production via Nx
 RUN npx nx build angular --configuration production
-# RUN npx nx run angular:build
-# Cela génère le code compilé dans `dist/apps/angular/browser`
-
-# ----------------------------
-# Étape 2 : Serveur Nginx pour héberger le frontend
-# ----------------------------
 
 # Utiliser la dernière image Nginx officielle pour servir l'app
 FROM nginx:latest AS nginx
 
-# (Optionnel, en commentaire) : Surcharger la configuration Nginx par défaut
-# COPY apps/angular/config/nginx.conf  /etc/nginx/conf.d/default.conf
-
 # Supprimer le contenu HTML par défaut de Nginx
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copier le code Angular compilé depuis l’étape précédente vers Nginx
 # COPY dist/apps/angular/browser /usr/share/nginx/html
 COPY --from=builder /app/dist/apps/angular/browser /usr/share/nginx/html
 
-
-
 # Copier une configuration Nginx personnalisée (utile pour les routes Angular)
-COPY apps/angular/config/nginx.conf  /etc/nginx/conf.d/default.conf
+# COPY apps/angular/config/nginx.conf  /etc/nginx/conf.d/default.conf
+# COPY docker/nginx/nginx.conf  /etc/nginx/conf.d/default.conf
 
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Exposer le port 80 pour accéder à l'app via HTTP
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 80
 
 # Démarrer Nginx en mode "foreground" (nécessaire pour Docker)

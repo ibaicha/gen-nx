@@ -72,6 +72,8 @@ import { PointAgenceModule } from '../tiers/point_agence/point_agence.module'
 import { AgenceModule } from '../tiers/agence/agence.module'
 import { AgenceOpModule } from '../tiers/agence_op/agence_op.module'
 import { SocieteOpModule } from '../tiers/societe_op/societe_op.module'
+import { HealthController } from '../health/health.controller'
+import { HealthModule } from '../health/health.module'
 
 @Module({
   imports: [
@@ -155,6 +157,7 @@ import { SocieteOpModule } from '../tiers/societe_op/societe_op.module'
     PointAgenceModule,
     OpModule,
     AgenceModule,
+    HealthModule,
 
     //EventsGateway,
   ],
