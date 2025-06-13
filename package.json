@@ -20,6 +20,7 @@
     "docker:restart-prod": "./docker-nx-restart-prod.sh",
     "docker:restart:angular": "./docker-nx-restart-cible.sh angular-app",
     "docker:restart:nestjs": "./docker-nx-restart-cible.sh nestjs-app",
+    "docker:restart:nginx": "./docker-nx-restart-cible.sh nginx",
     "docker:restart:mysql": "./docker-nx-restart-cible.sh mysql-db",
     "docker:restart:phpmyadmin": "./docker-nx-restart-cible.sh phpmyadmin",
     "docker:restart:studio": "./docker-nx-restart-cible.sh prisma-studio",

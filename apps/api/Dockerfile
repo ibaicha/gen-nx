@@ -1,6 +1,6 @@
 # Étape 1 : Build de base
 FROM node:22-alpine AS base
-
+RUN echo "✅ Démarrage de la construction de l'image Docker... Nestjs"
 RUN apk add --no-cache \
     bash \
     git \

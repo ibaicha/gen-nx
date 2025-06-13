@@ -1,5 +1,4 @@
 services:
-  # === Base de données MySQL ===
   mysql-db:
     container_name: mysql-db
     image: mysql:8.0
@@ -17,8 +16,13 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - app-network
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
-  # === Backend NestJS ===
   nestjs-app:
     container_name: nestjs-app
     build:
@@ -30,7 +34,7 @@ services:
     env_file:
       - ./apps/api/.env
     ports:
-      - '3000:3000'
+      - '3000:3000' # Exposé pour Nginx
     volumes:
       - ./apps/api:/usr/src/app
       - /usr/src/app/node_modules
@@ -39,8 +43,13 @@ services:
       - app-network
     stdin_open: true
     tty: true
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
-  # === Frontend Angular ===
   angular-app:
     container_name: angular-app
     build:
@@ -50,11 +59,17 @@ services:
       - nestjs-app
     restart: always
     ports:
-      - '8080:80'
+      - '80:80'
     networks:
       - app-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost/index.html']
 
-  # === Interface Web pour MySQL ===
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
   phpmyadmin:
     container_name: phpmyadmin
     image: phpmyadmin/phpmyadmin
@@ -65,17 +80,17 @@ services:
     environment:
       PMA_HOST: mysql-db
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
     ports:
       - '8081:80'
     networks:
       - app-network
 
-  # === Prisma Studio ===
   prisma-studio:
     container_name: prisma-studio
     build:
       context: .
-      dockerfile: ./apps/api/Dockerfile
+      dockerfile: ./apps/outils/Dockerfile
     restart: unless-stopped
     command:
       [
@@ -93,28 +108,31 @@ services:
     networks:
       - app-network
 
-  # === Reverse Proxy Nginx ===
   nginx:
     container_name: nginx-proxy
-    image: nginx:1.25-alpine
+
     build:
       context: .
-      dockerfile: ./nginx/Dockerfile
+      dockerfile: ./apps/nginx/Dockerfile
+
     depends_on:
       - angular-app
       - nestjs-app
     restart: unless-stopped
     ports:
-      - '80:80'
-      - '443:443'
+      - '8080:80'
+
     networks:
       - app-network
 
-# === Réseaux ===
-networks:
-  app-network:
+    volumes:
+      - ./html:/usr/share/nginx/html
 
-# === Volumes persistants ===
 volumes:
   db_data:
   migrations:
+
+networks:
+  app-network:
+    name: angular-project-network # Nom explicite
+    driver: bridge

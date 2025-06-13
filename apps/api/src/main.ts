@@ -12,16 +12,22 @@ const helmet = require('helmet')
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
+      /*
       origin: [
+        'http://localhost',
         'http://localhost:4200',
-        'http://localhost:8080:80',
         'http://localhost:8080',
+        'http://localhost:8082',
       ],
+      */
+      origin: '*',
+
       methods: 'GET,POST,PUT,DELETE',
     }, // Configuration fine pour CORS
     snapshot: true, // Amélioration du démarrage si compatible
   })
 
+  // app.setGlobalPrefix('api')
   // Configuration Swagger
   const config = new DocumentBuilder()
     .setTitle("Ges'Ops")
@@ -56,14 +62,18 @@ async function bootstrap() {
 
   if (process.env.NODE_ENV === 'development') {
     app.enableCors({
+      /*
       origin: [
+        'http://localhost',
         'http://localhost:4200',
-        'http://localhost:8080:80',
         'http://localhost:8080',
+        'http://localhost:8082',
       ], // Domaines autorisés
-      methods: 'GET,POST,PUT,DELETE', // Méthodes HTTP autorisées
+      */
+      origin: '*',
+      methods: 'GET,POST,PUT,DELETE,OPTIONS', // Ajout de OPTIONS pour les preflight
       credentials: true, // Autorise les cookies ou les tokens
-      allowedHeaders: ['Content-Type', 'Authorization'], // En-têtes acceptés
+      allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
       exposedHeaders: ['Authorization'], // En-têtes accessibles dans la réponse
       maxAge: 3600, // Cache la réponse pré-cachée pendant 1 heure
     })
@@ -79,28 +89,3 @@ async function bootstrap() {
 }
 
 bootstrap()
-
-/*
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    cors: true,
-    snapshot: true,
-  })
-  const config = new DocumentBuilder()
-    .setTitle("Ges'Ops")
-    .setDescription('Gestions desOrganisations Paysannes')
-    .setVersion('1.0')
-    .addBearerAuth() // Optionnel, si votre API utilise un système d'authentification
-    //.addTag('cats')
-    .build()
-  const document = SwaggerModule.createDocument(app, config)
-  SwaggerModule.setup('api', app, document)
-  app.useGlobalPipes(new ValidationPipe())
-  //app.enableCors();
-  await app.listen(3000)
-  console.log(`Application is running on: ${await app.getUrl()}`)
-  console.log(`Swagger documentation available at: ${await app.getUrl()}/api`)
-}
-
-bootstrap()
-*/

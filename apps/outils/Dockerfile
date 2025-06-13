@@ -1,6 +1,6 @@
 
 FROM node:22-alpine
-
+RUN echo "✅ Démarrage de la construction de l'image Docker... Prisma"
 RUN apk add --no-cache \
     bash \
     git \

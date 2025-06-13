@@ -1,43 +1,30 @@
+# ----------------------------
+# Étape 1 : Construction de l'application Angular
+# ----------------------------
 
 # Utilise une image Node.js officielle (version 18.14) pour construire l'app
 FROM node:22-alpine AS builder
-
-# Définir le répertoire de travail dans le conteneur
+RUN echo "✅ Démarrage image  ... Angular"
+# Étape 1 : build Angular
+ 
 WORKDIR /app
-
-# Copier les fichiers de dépendances pour npm
 COPY package.json package-lock.json ./
-
-# Installer les dépendances du projet
-RUN npm install
-
-# Copier tout le code source du projet (y compris le code Angular)
+RUN npm install --frozen-lockfile
 COPY . .
-
-# Construire l'application Angular en mode production via Nx
 RUN npx nx build angular --configuration production
 
-# Utiliser la dernière image Nginx officielle pour servir l'app
-FROM nginx:latest AS nginx
-
-# Supprimer le contenu HTML par défaut de Nginx
+# Étape 2 : servir avec Nginx
+FROM nginx:1.25-alpine
 RUN rm -rf /usr/share/nginx/html/*
-
-# COPY dist/apps/angular/browser /usr/share/nginx/html
 COPY --from=builder /app/dist/apps/angular/browser /usr/share/nginx/html
-
-# Copier une configuration Nginx personnalisée (utile pour les routes Angular)
-# COPY apps/angular/config/nginx.conf  /etc/nginx/conf.d/default.conf
-# COPY docker/nginx/nginx.conf  /etc/nginx/conf.d/default.conf
-
-COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
-
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
-
+COPY ./apps/nginx/default.conf /etc/nginx/conf.d/default.conf
+RUN chmod -R 755 /usr/share/nginx/html
 EXPOSE 80
-
-# Démarrer Nginx en mode "foreground" (nécessaire pour Docker)
 CMD ["nginx", "-g", "daemon off;"]
+
+
+
+
 
 
 
